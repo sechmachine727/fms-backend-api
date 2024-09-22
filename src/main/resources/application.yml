@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: fms-api
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://100.100.112.9:5432/fms_prod
+    username: fmsapi
+    password: skibididopdopyesyes
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  web:
+    resources:
+      add-mappings: true
