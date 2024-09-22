@@ -58,5 +58,5 @@ jobs:
           script: |
             docker pull sechmachine/fms:latest
             docker stop fms || true
-            docker rm your-app || true
+            docker rm fms || true
             docker run -d --name fms -p 8080:8080 sechmachine/fms:latest
