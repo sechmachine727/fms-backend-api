@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: self-hosted
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
 
@@ -40,6 +40,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           tags: sechmachine/fms:latest
 
