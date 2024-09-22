@@ -2,7 +2,7 @@
 FROM amazoncorretto:17.0.12-alpine3.20
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /home/sechmachine/actions-runner/fms/fms-backend-api/fms-backend-api
 
 # Copy the jar file into the container
 COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
