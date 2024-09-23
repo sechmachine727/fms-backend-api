@@ -12,10 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "topic")
 public class Topic {
@@ -63,4 +60,7 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "technical_group_id", nullable = false)
     private TechnicalGroup technicalGroup;
+
+    @OneToMany(mappedBy = "topic")
+    private List<TopicTrainingProgram> topicTrainingPrograms;
 }

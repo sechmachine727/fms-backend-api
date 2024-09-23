@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "trainer")
 public class Trainer {

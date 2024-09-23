@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "topic_assessment")
 public class TopicAssessment {

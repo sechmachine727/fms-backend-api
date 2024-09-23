@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "fms_user_group", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "group_id"}))
 public class UserGroup {

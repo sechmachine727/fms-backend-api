@@ -6,10 +6,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
+
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "lesson", uniqueConstraints = @UniqueConstraint(columnNames = {"unit_id", "calendar_topic_id"}))
 public class Lesson {

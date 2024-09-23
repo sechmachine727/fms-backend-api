@@ -8,10 +8,7 @@ import org.fms.training.converter.ContactTypeConverter;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "fms_user")
 public class User {

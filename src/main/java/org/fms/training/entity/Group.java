@@ -12,10 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "fms_group")
 public class Group {

@@ -11,10 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "training_program")
 public class TrainingProgram {
@@ -60,4 +57,7 @@ public class TrainingProgram {
 
     @OneToMany(mappedBy = "trainingProgram")
     private List<Group> groups;
+
+    @OneToMany(mappedBy = "trainingProgram")
+    private List<TopicTrainingProgram> topicTrainingPrograms;
 }

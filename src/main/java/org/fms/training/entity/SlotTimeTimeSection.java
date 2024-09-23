@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "slot_time_time_section", uniqueConstraints = @UniqueConstraint(columnNames = {"slot_time_id", "time_section_id"}))
 public class SlotTimeTimeSection {

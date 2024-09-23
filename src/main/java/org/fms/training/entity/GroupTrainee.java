@@ -7,10 +7,7 @@ import org.fms.training.converter.TraineeGroupStatusTypeConverter;
 import java.time.LocalDateTime;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "group_trainee", uniqueConstraints = @UniqueConstraint(columnNames = {"trainee_id", "group_id"}))
 public class GroupTrainee {

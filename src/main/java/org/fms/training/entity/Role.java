@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "role")
 public class Role {

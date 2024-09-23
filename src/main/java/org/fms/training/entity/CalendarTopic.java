@@ -8,10 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "calendar_topic", uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "topic_id"}))
 public class CalendarTopic {

@@ -11,8 +11,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "day_of_week")
 public class DayOfWeek {
