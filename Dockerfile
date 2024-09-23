@@ -1,4 +1,4 @@
-FROM amazoncorretto:17.0.12-alpine3.20
+FROM ibm-semeru-runtimes:open-17.0.12.1_7-jre-jammy
 
 # Set the working directory
 WORKDIR /app
