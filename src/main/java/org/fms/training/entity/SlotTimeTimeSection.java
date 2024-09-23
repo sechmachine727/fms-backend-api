@@ -12,9 +12,11 @@ public class SlotTimeTimeSection {
     @ManyToOne
     @JoinColumn(name = "slot_time_id")
     SlotTime slotTime;
+
     @ManyToOne
     @JoinColumn(name = "time_section_id")
     TimeSection timeSection;
+
     @Id
     @Column(name = "slot_time_time_section_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

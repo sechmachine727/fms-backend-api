@@ -1,7 +1,7 @@
 package org.fms.training.repository;
 
 import org.fms.training.entity.Trainer;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TrainerRepository extends ListCrudRepository<Trainer, Integer> {
+public interface TrainerRepository extends JpaRepository<Trainer, Integer> {
 }

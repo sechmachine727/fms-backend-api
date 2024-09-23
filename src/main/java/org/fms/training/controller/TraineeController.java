@@ -3,6 +3,7 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.TraineeDTO;
 import org.fms.training.entity.Trainee;
+import org.fms.training.service.TopicService;
 import org.fms.training.service.TraineeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController()
 public class TraineeController {
     private final TraineeService traineeService;
+    private final TopicService topicService;
 
 
     @GetMapping
@@ -76,4 +78,6 @@ public class TraineeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update trainee failed");
         }
     }
+    
+    
 }

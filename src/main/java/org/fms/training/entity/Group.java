@@ -80,5 +80,5 @@ public class Group {
     private List<UserGroup> userGroups;
 
     @OneToMany(mappedBy = "group")
-    private Set<CalendarTopic> calendarTopics;
+    private List<CalendarTopic> calendarTopics;
 }

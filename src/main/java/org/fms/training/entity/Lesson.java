@@ -16,10 +16,10 @@ public class Lesson {
     @Column(name = "lesson_id", nullable = false)
     private Integer id;
 
-    @Column(name = "startDate", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "endDate", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @ManyToOne

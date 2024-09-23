@@ -15,13 +15,16 @@ public class GroupTrainee {
     @ManyToOne
     @JoinColumn(name = "trainee_id")
     Trainee trainee;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     Group group;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "group_trainee_id")
     private Integer groupTraineeId;
+
     @Column(name = "actual_reason", columnDefinition = "TEXT")
     private String actualReason;
 

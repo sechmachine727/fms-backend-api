@@ -14,6 +14,7 @@ public class DayOfWeek {
     @Id
     @Column(name = "day_of_week_id", nullable = false)
     private Integer id;
+
     @Column(name = "day", length = 50, nullable = false)
     private String day;
 

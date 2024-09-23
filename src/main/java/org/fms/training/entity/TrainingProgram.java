@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.ActiveAndInactiveStatusConverter;
+import org.fms.training.enums.Status;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -38,7 +39,7 @@ public class TrainingProgram {
 
     @Convert(converter = ActiveAndInactiveStatusConverter.class)
     @Column(name = "status", nullable = false)
-    private String status;
+    private Status status;
 
     @CreatedDate
     @Column(name = "created_date", nullable = false)

@@ -12,9 +12,11 @@ public class UserGroup {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     Group group;
+
     @Id
     @Column(name = "user_group_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

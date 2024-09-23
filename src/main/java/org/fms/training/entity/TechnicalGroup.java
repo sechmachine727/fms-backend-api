@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class TechnicalGroup {
     @OneToMany(mappedBy = "technicalGroup")
     private Set<TrainingProgram> trainingPrograms;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "technicalGroup")
     private Set<Topic> topics;
 }

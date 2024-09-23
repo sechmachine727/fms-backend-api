@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "entry_information")
 public class EntryInformation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_information_id", nullable = false)
     private Integer Id;
 
     @Column(name = "toeic_score")
-    private Double toeic_score;
+    private Integer toeic_score;
 
     @Column(name = "english_communication_skill")
     private String englishCommunicationSkill;

@@ -1,7 +1,7 @@
 package org.fms.training.repository;
 
 import org.fms.training.entity.Group;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GroupRepository extends ListCrudRepository<Group, Integer> {
+public interface GroupRepository extends JpaRepository<Group, Integer> {
 }

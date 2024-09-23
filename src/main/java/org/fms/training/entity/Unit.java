@@ -1,5 +1,7 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +22,8 @@ public class Unit {
     private String unitName;
 
     @Column(name = "unit_number", nullable = false)
-    private int unitNumber;
+    private Integer unitNumber;
+
     @OneToMany(mappedBy = "unit")
     private List<UnitSection> unitSections;
 
@@ -28,6 +31,7 @@ public class Unit {
     private List<Lesson> lessons;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 }

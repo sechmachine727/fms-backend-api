@@ -19,7 +19,7 @@ public class Trainer {
     @Column(name = "certificate", nullable = false)
     private String certificate;
 
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone", nullable = false, length = 11)
     private String phone;
 
     @Column(name = "professional_level", nullable = false)

@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class CalendarTopic {
     private Group group;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 

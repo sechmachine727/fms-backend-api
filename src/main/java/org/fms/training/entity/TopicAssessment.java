@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ public class TopicAssessment {
     @Column(name = "topic_assessment_id", nullable = false)
     private Integer id;
 
-    @Column(name = "asssessment_name", nullable = false)
+    @Column(name = "assessment_name", nullable = false)
     private String assessmentName;
 
     @Column(name = "quantity", nullable = false)
@@ -27,6 +28,7 @@ public class TopicAssessment {
     private String note;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     @JoinColumn(name = "topic_id", referencedColumnName = "topic_id")
     private Topic topic;
 }
