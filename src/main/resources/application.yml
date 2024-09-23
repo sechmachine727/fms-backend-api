@@ -1,6 +1,6 @@
 spring:
   application:
-    name: fms-api
+    name: fms-backend-api
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://100.100.112.9:5432/fms_dev
