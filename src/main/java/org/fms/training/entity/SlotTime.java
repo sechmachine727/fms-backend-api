@@ -1,30 +1,35 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_slot_time")
+@Table(name = "slot_time")
 public class SlotTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "slot_time_id", nullable = false)
-    private Integer id;
+    private Integer slotTimeId;
 
-    @Column(name = "weekday", nullable = false)
-    private String weekday;
-
-    @Column(name = "slot_type", nullable = false)
+    @Column(name = "slot_type", nullable = false, length = 50)
     private String slotType;
 
-    @ManyToMany(mappedBy = "slotTimes", fetch = FetchType.LAZY)
-    private Set<TimeSection> timeSections;
+    @ManyToOne
+    @JoinColumn(name = "day_of_week_id", nullable = false)
+    private DayOfWeek dayOfWeek;
 
-    @OneToMany(mappedBy = "slotTime")
-    private Set<CalendarTopic> calendarTopics;
+    @OneToMany(mappedBy = "slotTime", cascade = CascadeType.ALL)
+    private List<SlotTimeTimeSection> slotTimeTimeSections;
+
+    @OneToMany(mappedBy = "slotTime", cascade = CascadeType.ALL)
+    private List<CalendarTopicSlotTime> calendarTopicSlotTimes;
 }

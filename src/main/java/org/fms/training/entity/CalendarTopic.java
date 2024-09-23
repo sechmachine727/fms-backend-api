@@ -1,16 +1,19 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_calendar_topic", uniqueConstraints = @UniqueConstraint(columnNames = {"calendar_id", "topic_id"}))
+@Table(name = "calendar_topic", uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "topic_id"}))
 public class CalendarTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +27,16 @@ public class CalendarTopic {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "calendar_id", nullable = false)
-    private Calendar calendar;
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    @ManyToOne
-    @JoinColumn(name = "slot_time_id", nullable = false)
-    private SlotTime slotTime;
+    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL)
+    private List<CalendarTopicSlotTime> calendarTopicSlotTimes;
 
     @OneToMany(mappedBy = "calendarTopic")
-    private List<Session> sessions;
+    private List<Lesson> lessons;
 }

@@ -1,20 +1,22 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_location")
+@Table(name = "location")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id", nullable = false)
     private Integer id;
 
-    @Column(name = "location_name", nullable = false)
+    @Column(name = "location_name", nullable = false, length = 150)
     private String locationName;
 
     @ManyToOne

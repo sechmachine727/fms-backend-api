@@ -1,17 +1,23 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.fms.training.converter.GroupStatusConverter;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_group")
+@Table(name = "fms_group")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,9 +70,6 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupTrainee> groupTrainees;
 
-    @OneToOne(mappedBy = "group", cascade = CascadeType.ALL)
-    private Calendar calendar;
-
     @ManyToOne
     @JoinColumn(name = "training_program_id", nullable = false)
     private TrainingProgram trainingProgram;
@@ -77,4 +80,10 @@ public class Group {
     @ManyToOne
     @JoinColumn(name = "site_id", nullable = false)
     private Site site;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<UserGroup> userGroups;
+
+    @OneToMany(mappedBy = "group")
+    private Set<CalendarTopic> calendarTopics;
 }

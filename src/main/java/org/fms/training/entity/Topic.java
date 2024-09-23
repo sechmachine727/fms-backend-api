@@ -1,8 +1,7 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.fms.training.converter.ActiveAndInactiveStatusConverter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -13,18 +12,21 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_topic")
+@Table(name = "topic")
 public class Topic {
     @Id
     @Column(name = "topic_id", nullable = false)
     private Integer id;
 
-    @Column(name = "topic_code", nullable = false)
+    @Column(name = "topic_code", nullable = false, length = 100)
     private String topicCode;
 
-    @Column(name = "topic_name", nullable = false)
+    @Column(name = "topic_name", nullable = false, length = 250)
     private String topicName;
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
@@ -52,8 +54,8 @@ public class Topic {
     @OneToMany(mappedBy = "topic")
     private Set<Unit> units;
 
-    @OneToOne(mappedBy = "topic")
-    private TopicAssessment topicAssessment;
+    @OneToMany(mappedBy = "topic")
+    private List<TopicAssessment> topicAssessments;
 
     @OneToMany(mappedBy = "topic")
     private List<CalendarTopic> calendarTopics;

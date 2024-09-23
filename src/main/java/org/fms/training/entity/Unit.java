@@ -1,15 +1,17 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_unit")
+@Table(name = "unit")
 public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +21,13 @@ public class Unit {
     @Column(name = "unit_name", nullable = false)
     private String unitName;
 
+    @Column(name = "unit_number", nullable = false)
+    private int unitNumber;
     @OneToMany(mappedBy = "unit")
     private List<UnitSection> unitSections;
 
     @OneToMany(mappedBy = "unit")
-    private List<Session> sessions;
+    private List<Lesson> lessons;
 
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)

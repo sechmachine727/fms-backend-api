@@ -1,20 +1,28 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_session", uniqueConstraints = @UniqueConstraint(columnNames = {"unit_id", "calendar_topic_id"}))
-public class Session {
+@Table(name = "lesson", uniqueConstraints = @UniqueConstraint(columnNames = {"unit_id", "calendar_topic_id"}))
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lesson_id", nullable = false)
     private Integer id;
-    private LocalDate date;
+
+    @Column(name = "startDate", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "endDate", nullable = false)
+    private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name = "unit_id", nullable = false)

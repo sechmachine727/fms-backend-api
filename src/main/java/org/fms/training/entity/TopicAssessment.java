@@ -1,13 +1,15 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_topic_assessment")
+@Table(name = "topic_assessment")
 public class TopicAssessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ public class TopicAssessment {
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "topic_id", referencedColumnName = "topic_id")
     private Topic topic;
 }

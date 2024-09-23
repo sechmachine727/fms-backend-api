@@ -1,13 +1,15 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_trainer")
+@Table(name = "trainer")
 public class Trainer {
     @Id
     @Column(name = "trainer_id", nullable = false)

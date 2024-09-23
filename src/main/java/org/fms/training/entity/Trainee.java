@@ -1,17 +1,19 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_Trainee")
+@Table(name = "trainee")
 public class Trainee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

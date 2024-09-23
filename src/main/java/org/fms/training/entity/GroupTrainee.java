@@ -1,29 +1,31 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.fms.training.converter.TraineeGroupStatusTypeConverter;
 
 import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "R_group_trainee")
+@Table(name = "group_trainee", uniqueConstraints = @UniqueConstraint(columnNames = {"trainee_id", "group_id"}))
 public class GroupTrainee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "group_trainee_id")
+    private Integer groupTraineeId;
+
     @ManyToOne
-    @MapsId("traineeId")
     @JoinColumn(name = "trainee_id")
     Trainee trainee;
 
     @ManyToOne
-    @MapsId("traineeId")
     @JoinColumn(name = "group_id")
     Group group;
-
-    @EmbeddedId
-    private GroupTraineeKey id;
 
     @Column(name = "actual_reason", columnDefinition = "TEXT")
     private String actualReason;

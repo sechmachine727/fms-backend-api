@@ -2,15 +2,18 @@ package org.fms.training.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_role")
+@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +23,6 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Set<User> users;
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    private List<UserRole> userRoles;
 }

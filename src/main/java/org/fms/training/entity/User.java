@@ -2,16 +2,18 @@ package org.fms.training.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.fms.training.converter.ContactTypeConverter;
 
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_user")
+@Table(name = "fms_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,11 +45,9 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Trainer trainer;
 
-    @ManyToMany
-    @JsonManagedReference
-    @JoinTable(
-            name = "R_user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    @OneToMany(mappedBy = "user")
+    private List<UserRole> userRoles;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserGroup> userGroups;
 }
