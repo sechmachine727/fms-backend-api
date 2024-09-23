@@ -1,7 +1,8 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fms.training.converter.TraineeGroupStatusTypeConverter;
 
 import java.time.LocalDateTime;
@@ -11,19 +12,16 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "group_trainee", uniqueConstraints = @UniqueConstraint(columnNames = {"trainee_id", "group_id"}))
 public class GroupTrainee {
+    @ManyToOne
+    @JoinColumn(name = "trainee_id")
+    Trainee trainee;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    Group group;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "group_trainee_id")
     private Integer groupTraineeId;
-
-    @ManyToOne
-    @JoinColumn(name = "trainee_id")
-    Trainee trainee;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    Group group;
-
     @Column(name = "actual_reason", columnDefinition = "TEXT")
     private String actualReason;
 

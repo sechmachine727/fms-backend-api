@@ -2,12 +2,9 @@ package org.fms.training.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
