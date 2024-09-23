@@ -3,7 +3,7 @@ spring:
     name: fms-api
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://100.100.112.9:5432/fms_prod
+    url: jdbc:postgresql://100.100.112.9:5432/fms_dev
     password: skibididopdopyesyes
   jpa:
     show-sql: true
