@@ -1,34 +1,31 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_time_section")
+@Table(name = "time_section")
 public class TimeSection {
     @Id
     @Column(name = "time_section_id")
-    private Integer id;
+    private Integer timeSectionId;
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private String startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private String endTime;
 
-    @OneToMany(mappedBy = "timeSection")
-    private Set<SubSection> subSections;
+    @OneToMany(mappedBy = "timeSection", cascade = CascadeType.ALL)
+    private List<SlotTimeTimeSection> slotTimeTimeSections;
 
-    @ManyToMany
-    @JoinTable(
-            name = "R_SlotTime_TimeSection",
-            joinColumns = @JoinColumn(name = "time_section_id"),
-            inverseJoinColumns = @JoinColumn(name = "slot_time_id"))
-    private List<SlotTime> slotTimes;
+
 }

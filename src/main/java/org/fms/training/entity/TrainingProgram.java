@@ -1,8 +1,7 @@
 package org.fms.training.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.fms.training.converter.ActiveAndInactiveStatusConverter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,9 +11,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "T_training_program")
+@Table(name = "training_program")
 public class TrainingProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
