@@ -15,7 +15,7 @@ public class TopicAssessment {
     @Column(name = "topic_assessment_id", nullable = false)
     private Integer id;
 
-    @Column(name = "assessment_name", nullable = false)
+    @Column(name = "assessment_name", nullable = false, length = 50)
     private String assessmentName;
 
     @Column(name = "quantity", nullable = false)

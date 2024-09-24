@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,37 +20,37 @@ public class Trainee {
     @Column(name = "trainee_id", nullable = false)
     private Integer Id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "dob")
+    @Column(name = "dob", nullable = false)
     private LocalDateTime dob;
 
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private boolean gender;
 
-    @Column(name = "gpa")
+    @Column(name = "gpa", nullable = false)
     private Double gpa;
 
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = false, length = 11)
     private String phone;
 
-    @Column(name = "national_id")
+    @Column(name = "national_id", nullable = false, length = 12)
     private String nationalId;
 
-    @Column(name = "language")
+    @Column(name = "language", nullable = false, length = 20)
     private String language;
 
-    @Column(name = "university")
+    @Column(name = "university", length = 50)
     private String university;
 
     @Column(name = "university_graduation_date")
-    private Integer universityGraduationDate;
+    private LocalDate universityGraduationDate;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @JsonBackReference

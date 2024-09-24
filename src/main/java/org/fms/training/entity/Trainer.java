@@ -13,7 +13,7 @@ public class Trainer {
     @Column(name = "trainer_id", nullable = false)
     private Integer id;
 
-    @Column(name = "job_rank", nullable = false)
+    @Column(name = "job_rank", nullable = false, length = 20)
     private String jobRank;
 
     @Column(name = "certificate", nullable = false)
@@ -22,13 +22,13 @@ public class Trainer {
     @Column(name = "phone", nullable = false, length = 11)
     private String phone;
 
-    @Column(name = "professional_level", nullable = false)
+    @Column(name = "professional_level", nullable = false, length = 20)
     private String professionalLevel;
 
-    @Column(name = "trainer_type", nullable = false)
+    @Column(name = "trainer_type", nullable = false, length = 20)
     private String trainerType;
 
-    @Column(name = "contribution_type", nullable = false)
+    @Column(name = "contribution_type", nullable = false, length = 20)
     private String contributionType;
 
     @Column(name = "note", columnDefinition = "TEXT")

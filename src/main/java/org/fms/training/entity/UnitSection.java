@@ -24,13 +24,13 @@ public class UnitSection {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "delivery_type", nullable = false)
+    @Column(name = "delivery_type", nullable = false, length = 50)
     private String deliveryType;
 
     @Column(name = "duration", nullable = false)
     private Double duration;
 
-    @Column(name = "training_format", nullable = false)
+    @Column(name = "training_format", nullable = false, length = 50)
     private String trainingFormat;
 
     @Column(name = "note", columnDefinition = "TEXT")

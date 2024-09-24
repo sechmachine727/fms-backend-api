@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "calendar_topic_slot_time", uniqueConstraints = @UniqueConstraint(columnNames = {"slot_time_id", "calendar_topic_id"}))
+@Table(name = "calendar_topic_slot_time")
 public class CalendarTopicSlotTime {
     @ManyToOne
     @JoinColumn(name = "slot_time_id")

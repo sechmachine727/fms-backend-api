@@ -3,18 +3,17 @@ package org.fms.training.dto.trainingprogramdto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-public class ReadTrainingProgramDTO {
+public class SaveTrainingProgramDTO {
     private String name;
     private String code;
     private String region;
     private Integer version;
     private String description;
     private String status;
-    private String technicalGroupCode;
-    private String createdDate;
-    private String lastModifiedBy;
-    private String lastModifiedDate;
-//    private List<Topic> topics;
+    private Integer technicalGroupId;
+    private List<Integer> topicIds;
 }

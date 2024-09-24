@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.ContactTypeConverter;
+import org.fms.training.enums.ContactType;
 
 import java.util.List;
 
@@ -35,9 +36,9 @@ public class User {
 
     @Convert(converter = ContactTypeConverter.class)
     @Column(name = "contact_type", nullable = false)
-    private String contactType;
+    private ContactType contactType;
 
-    @Column(name = "department", nullable = false)
+    @Column(name = "department", nullable = false, length = 100)
     private String department;
 
     @OneToOne(mappedBy = "user")

@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.TraineeGroupStatusTypeConverter;
+import org.fms.training.enums.Status;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "group_trainee", uniqueConstraints = @UniqueConstraint(columnNames = {"trainee_id", "group_id"}))
+@Table(name = "group_trainee")
 public class GroupTrainee {
     @ManyToOne
     @JoinColumn(name = "trainee_id")
@@ -36,7 +37,7 @@ public class GroupTrainee {
 
     @Convert(converter = TraineeGroupStatusTypeConverter.class)
     @Column(name = "status", nullable = false)
-    private String status;
+    private Status status;
 
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;

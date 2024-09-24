@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.util.List;
 
 @Data
@@ -16,11 +17,11 @@ public class TimeSection {
     @Column(name = "time_section_id")
     private Integer timeSectionId;
 
-    @Column(name = "start_time", nullable = false)
-    private String startTime;
+    @Column(name = "start_time", nullable = false, length = 10)
+    private Time startTime;
 
-    @Column(name = "end_time", nullable = false)
-    private String endTime;
+    @Column(name = "end_time", nullable = false, length = 10)
+    private Time endTime;
 
     @JsonBackReference
     @OneToMany(mappedBy = "timeSection", cascade = CascadeType.ALL)

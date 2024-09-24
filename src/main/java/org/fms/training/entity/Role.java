@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "role_id")
     private Integer id;
 
-    @Column(name = "role_name", nullable = false, unique = true)
+    @Column(name = "role_name", nullable = false, unique = true, length = 25)
     private String roleName;
 
     @JsonBackReference

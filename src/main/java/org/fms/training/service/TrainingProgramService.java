@@ -1,20 +1,22 @@
 package org.fms.training.service;
 
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TrainingProgram;
+import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
+import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
+import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TrainingProgramService {
-    Optional<List<TrainingProgram>> findAll();
+    Optional<List<ListTrainingProgramDTO>> findAll();
 
-    Optional<TrainingProgram> findById(Integer id);
+    Optional<ReadTrainingProgramDTO> findById(Integer id);
 
-    @Transactional
-    TrainingProgram createTrainingProgram(TrainingProgram trainingProgram, List<Integer> topicIds);
 
     @Transactional
-    TrainingProgram updateTrainingProgram(Integer trainingProgramId, TrainingProgram trainingProgram, List<Topic> topics);
+    ReadTrainingProgramDTO createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO);
+
+    @Transactional
+    ReadTrainingProgramDTO updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
 }

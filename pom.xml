@@ -59,6 +59,17 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.6.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,5 +88,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                    <optional>true</optional>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>

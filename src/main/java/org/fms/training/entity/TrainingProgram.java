@@ -10,6 +10,7 @@ import org.fms.training.enums.Status;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "training_program")
 public class TrainingProgram {
     @Id
@@ -24,19 +26,19 @@ public class TrainingProgram {
     @Column(name = "training_program_id", nullable = false)
     private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "training_program_name", nullable = false, length = 250)
     private String name;
 
     @Column(name = "version", nullable = false)
     private Integer version;
 
-    @Column(name = "code", nullable = false, length = 50)
+    @Column(name = "code", nullable = false, length = 100, unique = true)
     private String code;
 
-    @Column(name = "region", nullable = false)
+    @Column(name = "region", nullable = false, length = 100)
     private String region;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Convert(converter = ActiveAndInactiveStatusConverter.class)
@@ -52,7 +54,7 @@ public class TrainingProgram {
     private LocalDateTime lastModifiedDate;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by", nullable = false)
+    @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
     @ManyToOne

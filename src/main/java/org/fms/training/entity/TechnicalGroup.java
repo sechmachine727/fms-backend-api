@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class TechnicalGroup {
     @Column(name = "technical_group_id", nullable = false)
     private Integer id;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true, length = 20)
     private String code;
 
     @Column(name = "detail", nullable = false, columnDefinition = "TEXT")

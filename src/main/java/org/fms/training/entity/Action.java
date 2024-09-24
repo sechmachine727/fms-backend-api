@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "action")
 public class Action {
     @Id
@@ -21,7 +23,7 @@ public class Action {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "actor", nullable = false)
+    @Column(name = "actor", nullable = false, length = 50)
     private String actor;
 
     @CreatedDate

@@ -6,10 +6,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.GroupStatusConverter;
+import org.fms.training.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -21,28 +21,28 @@ public class Group {
     @Column(name = "group_id", nullable = false)
     private Integer id;
 
-    @Column(name = "group_name", nullable = false)
+    @Column(name = "group_name", nullable = false, unique = true, length = 100)
     private String groupName;
 
-    @Column(name = "delivery_type", nullable = false)
+    @Column(name = "delivery_type", nullable = false, length = 50)
     private String deliveryType;
 
-    @Column(name = "trainee_type", nullable = false)
+    @Column(name = "trainee_type", nullable = false, length = 50)
     private String traineeType;
 
     @Column(name = "plan_revenue", nullable = false)
     private Double planRevenue;
 
-    @Column(name = "scope", nullable = false)
+    @Column(name = "scope", nullable = false, length = 50)
     private String scope;
 
-    @Column(name = "format_type", nullable = false)
+    @Column(name = "format_type", nullable = false, length = 50)
     private String formatType;
 
     @Column(name = "trainee_number", nullable = false)
     private Integer traineeNumber;
 
-    @Column(name = "key_program", nullable = false)
+    @Column(name = "key_program", nullable = false, length = 50)
     private String keyProgram;
 
     @Column(name = "expected_start_date", nullable = false)
@@ -61,8 +61,8 @@ public class Group {
     private String note;
 
     @Convert(converter = GroupStatusConverter.class)
-    @Column(name = "status")
-    private String status;
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)

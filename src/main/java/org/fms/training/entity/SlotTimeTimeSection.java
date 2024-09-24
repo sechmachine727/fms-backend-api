@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "slot_time_time_section", uniqueConstraints = @UniqueConstraint(columnNames = {"slot_time_id", "time_section_id"}))
+@Table(name = "slot_time_time_section")
 public class SlotTimeTimeSection {
     @ManyToOne
     @JsonManagedReference

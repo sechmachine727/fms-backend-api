@@ -2,7 +2,6 @@ package org.fms.training.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,14 @@ import org.fms.training.enums.Status;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "topic")
 public class Topic {
@@ -25,7 +26,7 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "topic_code", nullable = false, length = 100)
+    @Column(name = "topic_code", nullable = false, length = 100, unique = true)
     private String topicCode;
 
     @Column(name = "topic_name", nullable = false, length = 250)
@@ -34,7 +35,7 @@ public class Topic {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "pass_criteria", nullable = false)
+    @Column(name = "pass_criteria", nullable = false, columnDefinition = "TEXT")
     private String passCriteria;
 
     @Convert(converter = ActiveAndInactiveStatusConverter.class)
@@ -50,7 +51,7 @@ public class Topic {
     private LocalDateTime lastModifiedDate;
 
     @LastModifiedBy
-    @Column(name = "last_modified_by", nullable = false)
+    @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
     @OneToMany(mappedBy = "topic")

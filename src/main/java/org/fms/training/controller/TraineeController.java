@@ -17,8 +17,6 @@ import java.util.List;
 @RestController()
 public class TraineeController {
     private final TraineeService traineeService;
-    private final TopicService topicService;
-
 
     @GetMapping
     public ResponseEntity<List<Trainee>> getAll() {
@@ -78,6 +76,6 @@ public class TraineeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update trainee failed");
         }
     }
-    
-    
+
+
 }

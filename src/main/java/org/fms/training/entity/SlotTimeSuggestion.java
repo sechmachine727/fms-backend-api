@@ -14,6 +14,6 @@ public class SlotTimeSuggestion {
     @Column(name = "slot_time_suggestion_id", nullable = false)
     private Integer id;
 
-    @Column(name = "suggestion_name")
+    @Column(name = "suggestion_name", length = 100)
     private String suggestionName;
 }
