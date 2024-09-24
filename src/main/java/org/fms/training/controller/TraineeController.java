@@ -1,9 +1,11 @@
 package org.fms.training.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.TraineeDTO;
 import org.fms.training.entity.Trainee;
 import org.fms.training.service.TraineeService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

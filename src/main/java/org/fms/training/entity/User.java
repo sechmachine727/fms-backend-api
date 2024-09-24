@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.fms.training.converter.ContactTypeConverter;
+import org.fms.training.enums.ContactType;
 
 import java.util.List;
 
@@ -37,17 +38,22 @@ public class User {
 
     @Convert(converter = ContactTypeConverter.class)
     @Column(name = "contact_type", nullable = false)
-    private String contactType;
+    private ContactType contactType;
 
     @Column(name = "department", nullable = false)
     private String department;
 
     @OneToOne(mappedBy = "user")
+    @ToString.Exclude
     private Trainer trainer;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<UserGroup> userGroups;
+
+
 }
