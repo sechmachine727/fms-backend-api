@@ -10,7 +10,7 @@ public class ContactTypeConverter implements AttributeConverter<ContactType, Str
     public String convertToDatabaseColumn(ContactType attribute) {
         return switch (attribute) {
             case OFFICIAL -> "Official";
-            case COLLABORATOR -> "Collator";
+            case COLLABORATOR -> "Collaborator";
         };
     }
 
@@ -18,7 +18,7 @@ public class ContactTypeConverter implements AttributeConverter<ContactType, Str
     public ContactType convertToEntityAttribute(String dbData) {
         return switch (dbData) {
             case "Official" -> ContactType.OFFICIAL;
-            case "Collator" -> ContactType.COLLABORATOR;
+            case "Collaborator" -> ContactType.COLLABORATOR;
             default -> null;
         };
     }
