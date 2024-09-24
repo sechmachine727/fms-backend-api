@@ -1,4 +1,4 @@
-name: Deploy to Dockerhub
+name: Deploy production image to Dockerhub
 
 on:
   push:
