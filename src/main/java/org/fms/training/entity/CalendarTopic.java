@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,9 +34,11 @@ public class CalendarTopic {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL)
     private List<CalendarTopicSlotTime> calendarTopicSlotTimes;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "calendarTopic")
     private List<Lesson> lessons;
 }

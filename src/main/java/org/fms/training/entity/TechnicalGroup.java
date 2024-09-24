@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,10 +24,11 @@ public class TechnicalGroup {
     @Column(name = "detail", nullable = false, columnDefinition = "TEXT")
     private String detail;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "technicalGroup")
-    private Set<TrainingProgram> trainingPrograms;
+    private List<TrainingProgram> trainingPrograms;
 
     @JsonBackReference
     @OneToMany(mappedBy = "technicalGroup")
-    private Set<Topic> topics;
+    private List<Topic> topics;
 }

@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class TimeSection {
     @Column(name = "end_time", nullable = false)
     private String endTime;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "timeSection", cascade = CascadeType.ALL)
     private List<SlotTimeTimeSection> slotTimeTimeSections;
 

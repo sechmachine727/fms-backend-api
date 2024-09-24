@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Action {
     private LocalDateTime createdDate;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 }

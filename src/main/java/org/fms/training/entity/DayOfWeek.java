@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class DayOfWeek {
     @Column(name = "day", length = 50, nullable = false)
     private String day;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "dayOfWeek")
     private List<SlotTime> slotTimes;
 }

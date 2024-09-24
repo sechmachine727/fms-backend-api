@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "fms_user_group", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "group_id"}))
 public class UserGroup {
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     User user;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "group_id")
     Group group;
 

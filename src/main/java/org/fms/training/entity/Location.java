@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class Location {
     private String locationName;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "site_id", nullable = false)
     private Site site;
 }

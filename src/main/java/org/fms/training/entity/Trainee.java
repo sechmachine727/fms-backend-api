@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,6 +52,7 @@ public class Trainee {
     @Column(name = "email")
     private String email;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL)
     private List<GroupTrainee> groupTrainees = new ArrayList<>();
 

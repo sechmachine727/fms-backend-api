@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class CalendarTopicSlotTime {
     SlotTime slotTime;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "calendar_topic_id")
     CalendarTopic calendarTopic;
 

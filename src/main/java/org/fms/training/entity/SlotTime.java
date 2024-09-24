@@ -1,5 +1,7 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,12 +22,15 @@ public class SlotTime {
     private String slotType;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "day_of_week_id", nullable = false)
     private DayOfWeek dayOfWeek;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "slotTime", cascade = CascadeType.ALL)
     private List<SlotTimeTimeSection> slotTimeTimeSections;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "slotTime", cascade = CascadeType.ALL)
     private List<CalendarTopicSlotTime> calendarTopicSlotTimes;
 }

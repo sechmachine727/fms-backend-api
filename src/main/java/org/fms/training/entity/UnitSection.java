@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,7 @@ public class UnitSection {
     private String note;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "unit_id", nullable = false)
     private Unit unit;
 }

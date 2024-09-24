@@ -24,6 +24,7 @@ public class Unit {
     @Column(name = "unit_number", nullable = false)
     private Integer unitNumber;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "unit")
     private List<UnitSection> unitSections;
 

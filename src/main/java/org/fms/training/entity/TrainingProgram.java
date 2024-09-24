@@ -1,5 +1,7 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,12 +56,15 @@ public class TrainingProgram {
     private String lastModifiedBy;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "technical_group_id", nullable = false)
     private TechnicalGroup technicalGroup;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "trainingProgram")
     private List<Group> groups;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "trainingProgram")
     private List<TopicTrainingProgram> topicTrainingPrograms;
 }

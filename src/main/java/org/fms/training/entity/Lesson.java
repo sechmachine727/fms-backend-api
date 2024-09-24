@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,12 @@ public class Lesson {
     private LocalDate endDate;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "unit_id", nullable = false)
     private Unit unit;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "calendar_topic_id", nullable = false)
     private CalendarTopic calendarTopic;
 }

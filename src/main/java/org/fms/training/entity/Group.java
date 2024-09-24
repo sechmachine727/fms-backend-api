@@ -1,5 +1,7 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -62,23 +64,29 @@ public class Group {
     @Column(name = "status")
     private String status;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<GroupTrainee> groupTrainees;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "training_program_id", nullable = false)
     private TrainingProgram trainingProgram;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Action> actions;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "site_id", nullable = false)
     private Site site;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<UserGroup> userGroups;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "group")
     private List<CalendarTopic> calendarTopics;
 }
