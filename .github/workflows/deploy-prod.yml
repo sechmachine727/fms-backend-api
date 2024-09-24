@@ -22,7 +22,6 @@ jobs:
         with:
           java-version: '17'
           distribution: temurin
-          overwrite-settings: true
           cache: maven
 
       - name: Build with Maven
