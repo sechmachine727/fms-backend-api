@@ -42,13 +42,18 @@ public class User {
     private String department;
 
     @OneToOne(mappedBy = "user")
+    @ToString.Exclude
     private Trainer trainer;
 
     @JsonBackReference
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<UserRole> userRoles;
 
     @JsonBackReference
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<UserGroup> userGroups;
+
+
 }
