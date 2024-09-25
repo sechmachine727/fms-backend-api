@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ListTopicDTO {
-    private String name;
     private String code;
+    private String name;
     private String status;
     private String technicalGroupCode;
     private String lastModifiedBy;
-    private String lastModifiedDate;
+    private String modifiedDate;
 }
