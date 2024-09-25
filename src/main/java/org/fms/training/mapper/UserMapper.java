@@ -29,13 +29,13 @@ public interface UserMapper {
 
     void updateUserFromDTO(SaveUserDTO saveUserDTO, @MappingTarget User user);
 
-    default String map(UserRole role) {
+    default String convertToRoleName(UserRole role) {
         return role.getRole().getRoleName();
     }
 
-    default List<String> map(List<UserRole> roles) {
+    default List<String> convertToRoleNameList(List<UserRole> roles) {
         return roles.stream()
-                .map(this::map)
+                .map(this::convertToRoleName)
                 .collect(Collectors.toList());
     }
 }

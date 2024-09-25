@@ -1,40 +1,53 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.traineedto.ListTraineeDTO;
+import org.fms.training.dto.traineedto.ReadTraineeDTO;
+import org.fms.training.dto.traineedto.SaveTraineeDTO;
 import org.fms.training.entity.Trainee;
+import org.fms.training.mapper.TraineeMapper;
 import org.fms.training.repository.TraineeRepository;
 import org.fms.training.service.TraineeService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
+    private final TraineeMapper traineeMapper;
 
     @Override
-    public List<Trainee> findAll() {
-        return traineeRepository.findAll();
+    public Optional<List<ListTraineeDTO>> getAllTrainees() {
+        List<Trainee> trainees = traineeRepository.findAll();
+        List<ListTraineeDTO> listTraineeDTOs = trainees.stream()
+                .map(traineeMapper::toListTraineeDTO)
+                .collect(Collectors.toList());
+        return Optional.of(listTraineeDTOs);
     }
 
     @Override
-    public Trainee getTrainee(Integer id) {
-        return traineeRepository.findById(id).orElse(null);
+    public Optional<ReadTraineeDTO> getTraineeById(Integer id) {
+        return traineeRepository.findById(id)
+                .map(traineeMapper::toReadTraineeDTO);
     }
 
     @Override
-    public void deleteTrainee(Integer id) {
-        traineeRepository.deleteById(id);
-    }
-
-    @Override
-    public void save(Trainee trainee) {
+    @Transactional
+    public void addTrainee(SaveTraineeDTO saveTraineeDTO) {
+        Trainee trainee = traineeMapper.toTraineeEntity(saveTraineeDTO);
         traineeRepository.save(trainee);
     }
 
     @Override
-    public void update(Trainee trainee) {
-        traineeRepository.save(trainee);
+    @Transactional
+    public void updateTrainee(Integer traineeId, SaveTraineeDTO saveTraineeDTO) {
+        Trainee trainee = traineeRepository.findById(traineeId)
+                .orElseThrow(() -> new RuntimeException("Trainee does not exist " + traineeId));
+        traineeMapper.updateTraineeFromDTO(saveTraineeDTO, trainee);
     }
 }

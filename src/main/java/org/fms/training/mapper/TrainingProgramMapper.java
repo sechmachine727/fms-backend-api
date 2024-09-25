@@ -31,13 +31,13 @@ public interface TrainingProgramMapper {
 
     void updateTrainingProgramEntityFromDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, @MappingTarget TrainingProgram trainingProgram);
 
-    default Integer map(TopicTrainingProgram topicTrainingProgram) {
+    default Integer convertToTopicId(TopicTrainingProgram topicTrainingProgram) {
         return topicTrainingProgram.getTopic().getId();
     }
 
-    default List<Integer> map(List<TopicTrainingProgram> topicTrainingPrograms) {
+    default List<Integer> convertToTopicIdList(List<TopicTrainingProgram> topicTrainingPrograms) {
         return topicTrainingPrograms.stream()
-                .map(this::map)
+                .map(this::convertToTopicId)
                 .collect(Collectors.toList());
     }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ReadUserDTO {
-    private Integer id;
     private String account;
     private String email;
     private String employeeId;
