@@ -8,6 +8,7 @@ import org.fms.training.entity.TechnicalGroup;
 import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicTrainingProgram;
 import org.fms.training.entity.TrainingProgram;
+import org.fms.training.enums.Status;
 import org.fms.training.mapper.TrainingProgramMapper;
 import org.fms.training.repository.TechnicalGroupRepository;
 import org.fms.training.repository.TopicRepository;
@@ -17,6 +18,7 @@ import org.fms.training.service.TrainingProgramService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,40 +49,77 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     @Transactional
     @Override
-    public ReadTrainingProgramDTO createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    public void createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO) {
         TrainingProgram trainingProgram = trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO);
         TechnicalGroup technicalGroup = technicalGroupRepository.findById(saveTrainingProgramDTO.getTechnicalGroupId())
                 .orElseThrow(() -> new RuntimeException("TechnicalGroup not found"));
         trainingProgram.setTechnicalGroup(technicalGroup);
+
+        // Save the training program first to get its ID
         TrainingProgram savedTrainingProgram = trainingProgramRepository.save(trainingProgram);
-        return getReadTrainingProgramDTO(saveTrainingProgramDTO, savedTrainingProgram);
+
+        // Add new topics
+        List<TopicTrainingProgram> newTopics = saveTrainingProgramDTO.getTopicIds().stream()
+                .map(topicId -> {
+                    Topic topic = topicRepository.findById(topicId)
+                            .orElseThrow(() -> new RuntimeException("Topic not found"));
+                    if (!topic.getStatus().equals(Status.ACTIVE)) {
+                        throw new RuntimeException("Cannot add inactive topic: " + topic.getId());
+                    }
+                    TopicTrainingProgram topicTrainingProgram = new TopicTrainingProgram();
+                    topicTrainingProgram.setTrainingProgram(savedTrainingProgram);
+                    topicTrainingProgram.setTopic(topic);
+                    return topicTrainingProgram;
+                })
+                .collect(Collectors.toList());
+        topicTrainingProgramRepository.saveAll(newTopics);
+
+        // Ensure topicTrainingPrograms is not null
+        if (savedTrainingProgram.getTopicTrainingPrograms() == null) {
+            savedTrainingProgram.setTopicTrainingPrograms(new ArrayList<>());
+        }
+        savedTrainingProgram.getTopicTrainingPrograms().addAll(newTopics);
+
+        trainingProgramMapper.toReadTrainingProgramDTO(savedTrainingProgram);
     }
 
     @Transactional
     @Override
-    public ReadTrainingProgramDTO updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    public void updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO) {
         TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(trainingProgramId)
                 .orElseThrow(() -> new RuntimeException("TrainingProgram not found"));
+
         // Remove existing topics
         List<TopicTrainingProgram> existingTopics = topicTrainingProgramRepository.findByTrainingProgramId(trainingProgramId);
         topicTrainingProgramRepository.deleteAll(existingTopics);
 
         // Update training program
         trainingProgramMapper.updateTrainingProgramEntityFromDTO(saveTrainingProgramDTO, existingTrainingProgram);
-        trainingProgramRepository.save(existingTrainingProgram);
 
         // Add new topics
-        return getReadTrainingProgramDTO(saveTrainingProgramDTO, existingTrainingProgram);
-    }
+        List<TopicTrainingProgram> newTopics = saveTrainingProgramDTO.getTopicIds().stream()
+                .map(topicId -> {
+                    Topic topic = topicRepository.findById(topicId)
+                            .orElseThrow(() -> new RuntimeException("Topic not found"));
+                    if (!topic.getStatus().equals(Status.ACTIVE)) {
+                        throw new RuntimeException("Cannot add inactive topic: " + topic.getId());
+                    }
+                    TopicTrainingProgram topicTrainingProgram = new TopicTrainingProgram();
+                    topicTrainingProgram.setTrainingProgram(existingTrainingProgram);
+                    topicTrainingProgram.setTopic(topic);
+                    return topicTrainingProgram;
+                })
+                .collect(Collectors.toList());
+        topicTrainingProgramRepository.saveAll(newTopics);
 
-    private ReadTrainingProgramDTO getReadTrainingProgramDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, TrainingProgram savedTrainingProgram) {
-        for (Integer topicId : saveTrainingProgramDTO.getTopicIds()) {
-            Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new RuntimeException("Topic not found"));
-            TopicTrainingProgram topicTrainingProgram = new TopicTrainingProgram();
-            topicTrainingProgram.setTrainingProgram(savedTrainingProgram);
-            topicTrainingProgram.setTopic(topic);
-            topicTrainingProgramRepository.save(topicTrainingProgram);
+        // Ensure topicTrainingPrograms is not null
+        if (existingTrainingProgram.getTopicTrainingPrograms() == null) {
+            existingTrainingProgram.setTopicTrainingPrograms(new ArrayList<>());
         }
-        return trainingProgramMapper.toReadTrainingProgramDTO(savedTrainingProgram);
+        existingTrainingProgram.getTopicTrainingPrograms().addAll(newTopics);
+
+        trainingProgramRepository.save(existingTrainingProgram);
+
+        trainingProgramMapper.toReadTrainingProgramDTO(existingTrainingProgram);
     }
 }

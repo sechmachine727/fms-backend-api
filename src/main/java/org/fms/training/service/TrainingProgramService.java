@@ -14,8 +14,8 @@ public interface TrainingProgramService {
     Optional<ReadTrainingProgramDTO> findById(Integer id);
 
     @Transactional
-    ReadTrainingProgramDTO createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO);
+    void createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO);
 
     @Transactional
-    ReadTrainingProgramDTO updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
+    void updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
 }
