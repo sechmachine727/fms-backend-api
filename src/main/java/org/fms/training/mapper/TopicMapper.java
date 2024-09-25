@@ -1,2 +1,4 @@
-package org.fms.training.mapper;public interface TopicMapper {
+package org.fms.training.mapper;
+
+public interface TopicMapper {
 }
