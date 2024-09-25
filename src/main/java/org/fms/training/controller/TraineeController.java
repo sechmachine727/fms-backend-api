@@ -3,7 +3,6 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.TraineeDTO;
 import org.fms.training.entity.Trainee;
-import org.fms.training.service.TopicService;
 import org.fms.training.service.TraineeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

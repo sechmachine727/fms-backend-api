@@ -13,7 +13,6 @@ public interface TrainingProgramService {
 
     Optional<ReadTrainingProgramDTO> findById(Integer id);
 
-
     @Transactional
     ReadTrainingProgramDTO createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO);
 

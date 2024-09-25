@@ -34,7 +34,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     public Optional<List<ListTrainingProgramDTO>> findAll() {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.findAll();
         List<ListTrainingProgramDTO> listTrainingProgramDTOs = trainingPrograms.stream()
-                .map(trainingProgramMapper::toListDTO)
+                .map(trainingProgramMapper::toListTrainingProgramDTO)
                 .collect(Collectors.toList());
         return Optional.of(listTrainingProgramDTOs);
     }
@@ -42,13 +42,13 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Override
     public Optional<ReadTrainingProgramDTO> findById(Integer id) {
         return trainingProgramRepository.findById(id)
-                .map(trainingProgramMapper::toReadDTO);
+                .map(trainingProgramMapper::toReadTrainingProgramDTO);
     }
 
     @Transactional
     @Override
     public ReadTrainingProgramDTO createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        TrainingProgram trainingProgram = trainingProgramMapper.toEntity(saveTrainingProgramDTO);
+        TrainingProgram trainingProgram = trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO);
         TechnicalGroup technicalGroup = technicalGroupRepository.findById(saveTrainingProgramDTO.getTechnicalGroupId())
                 .orElseThrow(() -> new RuntimeException("TechnicalGroup not found"));
         trainingProgram.setTechnicalGroup(technicalGroup);
@@ -66,7 +66,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         topicTrainingProgramRepository.deleteAll(existingTopics);
 
         // Update training program
-        trainingProgramMapper.updateEntityFromDTO(saveTrainingProgramDTO, existingTrainingProgram);
+        trainingProgramMapper.updateTrainingProgramEntityFromDTO(saveTrainingProgramDTO, existingTrainingProgram);
         trainingProgramRepository.save(existingTrainingProgram);
 
         // Add new topics
@@ -81,6 +81,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             topicTrainingProgram.setTopic(topic);
             topicTrainingProgramRepository.save(topicTrainingProgram);
         }
-        return trainingProgramMapper.toReadDTO(savedTrainingProgram);
+        return trainingProgramMapper.toReadTrainingProgramDTO(savedTrainingProgram);
     }
 }
