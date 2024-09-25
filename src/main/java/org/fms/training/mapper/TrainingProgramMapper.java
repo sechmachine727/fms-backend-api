@@ -10,22 +10,21 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TrainingProgramMapper {
-
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "version", target = "version")
     @Mapping(source = "createdDate", target = "createdDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
     @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
     @Mapping(source = "lastModifiedBy", target = "lastModifiedBy")
 //    @Mapping(source = "topicTrainingPrograms", target = "topics")
-    ReadTrainingProgramDTO toReadDTO(TrainingProgram trainingProgram);
+    ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
-    ListTrainingProgramDTO toListDTO(TrainingProgram trainingProgram);
+    ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")
     @Mapping(target = "topicTrainingPrograms", ignore = true)
-    TrainingProgram toEntity(SaveTrainingProgramDTO saveTrainingProgramDTO);
+    TrainingProgram toTrainingProgramEntity(SaveTrainingProgramDTO saveTrainingProgramDTO);
 
-    void updateEntityFromDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, @MappingTarget TrainingProgram trainingProgram);
+    void updateTrainingProgramEntityFromDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, @MappingTarget TrainingProgram trainingProgram);
 }

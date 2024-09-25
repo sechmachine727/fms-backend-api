@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
+
     @Override
     public List<RoleDTO> findAll() {
         List<Role> roles = roleRepository.findAll();

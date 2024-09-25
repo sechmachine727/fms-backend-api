@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.fms.training.converter.ContactTypeConverter;
+import org.fms.training.converter.StatusConverter;
 import org.fms.training.enums.ContactType;
+import org.fms.training.enums.Status;
 
 import java.util.List;
 
@@ -32,8 +34,9 @@ public class User {
     @Column(name = "employee_id", nullable = false, unique = true)
     private String employeeId;
 
+    @Convert(converter = StatusConverter.class)
     @Column(name = "status")
-    private boolean status;
+    private Status status;
 
     @Convert(converter = ContactTypeConverter.class)
     @Column(name = "contact_type", nullable = false)

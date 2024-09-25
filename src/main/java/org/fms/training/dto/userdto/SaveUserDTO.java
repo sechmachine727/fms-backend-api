@@ -1,18 +1,21 @@
-package org.fms.training.dto;
+package org.fms.training.dto.userdto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fms.training.enums.ContactType;
+import org.fms.training.enums.Status;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class SaveUserDTO {
     private String account;
     private String email;
     private String employeeId;
-    private boolean status;
+    private Status status;
     private ContactType contactType;
     private String department;
     private List<Integer> roles;

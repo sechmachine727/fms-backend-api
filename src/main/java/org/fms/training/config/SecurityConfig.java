@@ -16,13 +16,14 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfig    {
+public class SecurityConfig {
     private final CorsFilter corsFilter;
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
     private final String[] PUBLIC_ENDPOINTS = {
+            "/api/**",
             "/api/login",
             "/api/register",
             "/swagger-ui/index.html",
@@ -47,9 +48,9 @@ public class SecurityConfig    {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers("/api/trainees/**").hasAnyRole("TRAINER")
+                                /*.requestMatchers("/api/trainees/**").hasAnyRole("TRAINER")
                                 .requestMatchers("/api/roles/**").hasAnyRole("TRAINER", "FAMANAGER")
-                                .requestMatchers("/api/training-programs/**").hasAnyRole("CONTENTMANAGER", "FAMANAGER")
+                                .requestMatchers("/api/training-programs/**").hasAnyRole("CONTENTMANAGER", "FAMANAGER")*/
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

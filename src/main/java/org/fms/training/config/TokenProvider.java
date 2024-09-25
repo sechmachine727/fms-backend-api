@@ -21,10 +21,9 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+    private final String AUTHORITIES_KEY = "authorities";
     @Value("${security.jwt.secret-key}")
     private String secretKey;
-
-    private final String AUTHORITIES_KEY = "authorities";
 
     public String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()

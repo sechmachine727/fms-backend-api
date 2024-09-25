@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fms.training.converter.ActiveAndInactiveStatusConverter;
+import org.fms.training.converter.StatusConverter;
 import org.fms.training.enums.Status;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -41,7 +41,7 @@ public class TrainingProgram {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Convert(converter = ActiveAndInactiveStatusConverter.class)
+    @Convert(converter = StatusConverter.class)
     @Column(name = "status", nullable = false)
     private Status status;
 

@@ -1,11 +1,11 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.RoleDTO;
-import org.fms.training.dto.UserDTO;
+import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
+import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.repository.UserRoleRepository;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,25 +30,19 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final UserMapper userMapper;
 
+    @Transactional
     @Override
-    public User register(UserDTO userDTO) {
-            User user = new User();
-            user.setAccount(userDTO.getAccount());
-            user.setEmail(userDTO.getEmail());
-            user.setEmployeeId(userDTO.getEmployeeId());
-            user.setContactType(userDTO.getContactType());
-            user.setDepartment(userDTO.getDepartment());
-            user.setStatus(user.isStatus());
+    public SaveUserDTO register(SaveUserDTO saveUserDTO) {
+        User user = userMapper.toUserEntity(saveUserDTO);
+        String encodedPassword = passwordEncoder.encode("1234");
+        user.setEncryptedPassword(encodedPassword);
+        User savedUser = userRepository.save(user);
 
-            String encodedPassword = passwordEncoder.encode("1234");
-            user.setEncryptedPassword(encodedPassword);
-
-            User savedUser = userRepository.save(user);
-
-        if (userDTO.getRoles() != null) {
+        if (saveUserDTO.getRoles() != null) {
             List<UserRole> userRoles = new ArrayList<>();
-            for (Integer roleId : userDTO.getRoles()) {
+            for (Integer roleId : saveUserDTO.getRoles()) {
                 Role role = roleRepository.findById(roleId)
                         .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
                 UserRole userRole = new UserRole();
@@ -60,8 +53,8 @@ public class UserServiceImpl implements UserService {
             userRoleRepository.saveAll(userRoles);
             user.setUserRoles(userRoles);
         }
-        return savedUser;
-
+        userMapper.toSaveUserDTO(savedUser);
+        return userMapper.toSaveUserDTO(savedUser);
     }
 
     @Override
@@ -80,23 +73,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isValidUser(UserDTO userDTO) {
-        if (userDTO == null || userDTO.getAccount() == null || userDTO.getEmail() == null) {
+    public boolean isValidUser(SaveUserDTO saveUserDTO) {
+        if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
             return false;
         }
-        return !userDTO.getAccount().isBlank() &&
-                !userDTO.getEmail().isBlank() &&
-                Validation.isEmailValid(userDTO.getEmail()) &&
-                !userDTO.getDepartment().isBlank();
+        return !saveUserDTO.getAccount().isBlank() &&
+                !saveUserDTO.getEmail().isBlank() &&
+                Validation.isEmailValid(saveUserDTO.getEmail()) &&
+                !saveUserDTO.getDepartment().isBlank();
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByAccount(username).orElse(null);
         return userRepository.findByAccount(username)
                 .map(this::createSpringSecurityUser)
-                .orElseThrow(() -> new UsernameNotFoundException("Userdetail not found for the user " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User detail not found for the user " + username));
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {

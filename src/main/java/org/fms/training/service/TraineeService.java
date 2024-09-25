@@ -11,7 +11,7 @@ public interface TraineeService {
 
     void deleteTrainee(Integer id);
 
-    Trainee save(Trainee trainee);
+    void save(Trainee trainee);
 
-    Trainee update(Trainee trainee);
+    void update(Trainee trainee);
 }

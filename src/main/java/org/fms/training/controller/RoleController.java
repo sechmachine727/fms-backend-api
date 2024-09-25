@@ -1,9 +1,7 @@
 package org.fms.training.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.RoleDTO;
-import org.fms.training.dto.UserDTO;
 import org.fms.training.service.RoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,7 @@ import java.util.List;
 @RestController()
 public class RoleController {
     private final RoleService roleService;
+
     @GetMapping()
     public ResponseEntity<List<RoleDTO>> getAll() {
         return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);

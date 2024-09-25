@@ -29,12 +29,12 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee save(Trainee trainee) {
-        return traineeRepository.save(trainee);
+    public void save(Trainee trainee) {
+        traineeRepository.save(trainee);
     }
 
     @Override
-    public Trainee update(Trainee trainee) {
-        return traineeRepository.save(trainee);
+    public void update(Trainee trainee) {
+        traineeRepository.save(trainee);
     }
 }
