@@ -2,6 +2,7 @@ package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.topicdto.ListTopicDTO;
+import org.fms.training.dto.topicdto.TopicDetailDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.service.TopicService;
@@ -29,11 +30,9 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Topic>> retrieve(@PathVariable Integer id) {
-        Optional<Topic> topic = topicService.findById(id);
-        if (topic.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok(topic);
+    public ResponseEntity<TopicDetailDTO> getTopicDetail(@PathVariable Integer id) {
+        return topicService.getTopicDetail(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

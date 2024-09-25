@@ -25,7 +25,7 @@ public class Unit {
     private Integer unitNumber;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "unit")
+    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UnitSection> unitSections;
 
     @OneToMany(mappedBy = "unit")
