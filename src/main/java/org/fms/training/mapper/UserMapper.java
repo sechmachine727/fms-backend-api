@@ -1,10 +1,15 @@
 package org.fms.training.mapper;
 
+import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.User;
+import org.fms.training.entity.UserRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -19,5 +24,18 @@ public interface UserMapper {
 
     User toUserEntity(SaveUserDTO saveUserDTO);
 
+    @Mapping(source = "userRoles", target = "roleNames")
+    ReadUserDTO toReadUserDTO(User user);
+
     void updateUserFromDTO(SaveUserDTO saveUserDTO, @MappingTarget User user);
+
+    default String map(UserRole role) {
+        return role.getRole().getRoleName();
+    }
+
+    default List<String> map(List<UserRole> roles) {
+        return roles.stream()
+                .map(this::map)
+                .collect(Collectors.toList());
+    }
 }
