@@ -5,6 +5,7 @@ import org.fms.training.config.TokenProvider;
 import org.fms.training.dto.AuthenticationResponse;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.dto.userdto.UserLoginDTO;
+import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.fms.training.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,22 +53,23 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {
+            User user = userService.findByAccount(userLoginDTO.getAccount());
+            if (user == null || user.getStatus() != Status.ACTIVE) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponse("User is inactive"));
+            }
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userLoginDTO.getAccount(),
                     userLoginDTO.getPassword()
             );
-            if (userLoginDTO.getStatus() != Status.INACTIVE) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponse("Account is inactive"));
-            }
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = tokenProvider.createToken(authentication);
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt, "Bearer ");
             return ResponseEntity.ok(authenticationResponse);
         } catch (AuthenticationException e) {
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse("Account or password is incorrect");
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse("Username or password is incorrect");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authenticationResponse);
         }
     }
-
 }

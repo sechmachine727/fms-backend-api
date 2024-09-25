@@ -11,5 +11,4 @@ import org.fms.training.enums.Status;
 public class UserLoginDTO {
     private String account;
     private String password;
-    private Status status;
 }

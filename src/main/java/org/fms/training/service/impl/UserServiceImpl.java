@@ -5,6 +5,7 @@ import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
+import org.fms.training.enums.Status;
 import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.UserRepository;
@@ -19,8 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,7 +89,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByAccount(username)
+        User user = userRepository.findByAccount(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (user.getStatus() == null || user.getStatus() != Status.ACTIVE) {
+            throw new UsernameNotFoundException("User is not active");
+        }
+        return Optional.of(user)
                 .map(this::createSpringSecurityUser)
                 .orElseThrow(() -> new UsernameNotFoundException("User detail not found for the user " + username));
     }
