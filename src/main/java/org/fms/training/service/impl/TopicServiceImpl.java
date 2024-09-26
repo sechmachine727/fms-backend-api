@@ -41,21 +41,17 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Optional<TopicDetailDTO> getTopicDetail(Integer topicId) {
-        // Bước 1: Lấy Topic
         Optional<Topic> topicOptional = topicRepository.findTopicById(topicId);
         if (!topicOptional.isPresent()) {
-            return Optional.empty(); // Trả về Optional.empty() nếu không tìm thấy Topic
+            return Optional.empty();
         }
 
         Topic topic = topicOptional.get();
 
-        // Bước 2: Lấy Units
         List<Unit> units = unitRepository.findUnitsByTopicId(topicId);
 
-        // Bước 3: Lấy Topic Assessments
         List<TopicAssessment> topicAssessments = topicAssessmentRepository.findTopicAssessmentsByTopicId(topicId);
 
-        // Bước 4: Chuyển đổi sang DTO
         TopicDetailDTO detailDTO = mapToTopicDetailDTO(topic, units, topicAssessments);
         return Optional.of(detailDTO);
     }
@@ -67,28 +63,48 @@ public class TopicServiceImpl implements TopicService {
         dto.setPassCriteria(topic.getPassCriteria());
         dto.setTechnicalGroupCode(topic.getTechnicalGroup().getCode());
 
-        // Bước 5: Chuyển đổi Units sang DTO
         List<UnitDTO> unitDTOs = units.stream().map(unit -> {
             UnitDTO unitDTO = new UnitDTO();
             unitDTO.setUnitName(unit.getUnitName());
+            final Double[] totalDurationClassMeeting = {0.0};
+            final Double[] totalDurationGuidesReview = {0.0};
+            final Double[] totalDurationProductIncrement = {0.0};
+            final Double[] totalDuration = {0.0};
 
-            // Lấy các UnitSection cho mỗi Unit
             List<UnitSectionDTO> unitSectionDTOs = unit.getUnitSections().stream().map(section -> {
                 UnitSectionDTO sectionDTO = new UnitSectionDTO();
                 sectionDTO.setTitle(section.getTitle());
                 sectionDTO.setDeliveryType(section.getDeliveryType());
                 sectionDTO.setDuration(section.getDuration());
                 sectionDTO.setTrainingFormat(section.getTrainingFormat());
+                switch (section.getDeliveryType()) {
+                    case "Class Meeting":
+                        totalDurationClassMeeting[0] += section.getDuration();
+                        break;
+                    case "Guides/Review":
+                        totalDurationGuidesReview[0] += section.getDuration();
+                        break;
+                    case "Product Increment":
+                        totalDurationProductIncrement[0] += section.getDuration();
+                        break;
+                    default:
+                        break;
+                }
+
+                totalDuration[0] += section.getDuration();
                 return sectionDTO;
             }).collect(Collectors.toList());
 
             unitDTO.setUnitSections(unitSectionDTOs);
+            unitDTO.setTotalDurationClassMeeting(totalDurationClassMeeting[0]);
+            unitDTO.setTotalDurationGuidesReview(totalDurationGuidesReview[0]);
+            unitDTO.setTotalDurationProductIncrement(totalDurationProductIncrement[0]);
+            unitDTO.setTotalDuration(totalDuration[0]);
             return unitDTO;
         }).collect(Collectors.toList());
 
         dto.setUnits(unitDTOs);
 
-        // Bước 6: Chuyển đổi TopicAssessment sang DTO
         List<TopicAssessmentDTO> assessmentDTOs = topicAssessments.stream().map(assessment -> {
             TopicAssessmentDTO assessmentDTO = new TopicAssessmentDTO();
             assessmentDTO.setAssessmentName(assessment.getAssessmentName());
