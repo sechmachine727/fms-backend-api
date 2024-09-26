@@ -20,6 +20,7 @@ public class TrainingProgramController {
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> findAll() {
         Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll();
+        System.out.println("adasd");
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

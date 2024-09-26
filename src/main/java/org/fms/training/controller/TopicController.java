@@ -1,6 +1,9 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.topicdto.ListTopicDTO;
+import org.fms.training.dto.topicdto.TopicDetailDTO;
+import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.service.TopicService;
 import org.springframework.http.HttpStatus;
@@ -20,16 +23,16 @@ public class TopicController {
     private final TopicService topicService;
 
     @GetMapping
-    public ResponseEntity<Optional<List<Topic>>> getAll() {
-        return new ResponseEntity<>(topicService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ListTopicDTO>> findAll() {
+        Optional<List<ListTopicDTO>> result = topicService.findAll();
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Topic>> retrieve(@PathVariable Integer id) {
-        Optional<Topic> topic = topicService.findById(id);
-        if (topic.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok(topic);
+    public ResponseEntity<TopicDetailDTO> getTopicDetail(@PathVariable Integer id) {
+        return topicService.getTopicDetail(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

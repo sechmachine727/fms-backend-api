@@ -36,7 +36,7 @@ public class UnitSection {
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonManagedReference
     @JoinColumn(name = "unit_id", nullable = false)
     private Unit unit;
