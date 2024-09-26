@@ -54,7 +54,11 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {
             User user = userService.findByAccount(userLoginDTO.getAccount());
-            if (user == null || user.getStatus() != Status.ACTIVE) {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponse("Username or password is incorrect"));
+            }
+
+            if (user.getStatus() != Status.ACTIVE) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponse("User is inactive"));
             }
 

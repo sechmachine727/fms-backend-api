@@ -24,26 +24,9 @@ public class Group {
     @Column(name = "group_name", nullable = false, unique = true, length = 100)
     private String groupName;
 
-    @Column(name = "delivery_type", nullable = false, length = 50)
-    private String deliveryType;
-
-    @Column(name = "trainee_type", nullable = false, length = 50)
-    private String traineeType;
-
-    @Column(name = "plan_revenue", nullable = false)
-    private Double planRevenue;
-
-    @Column(name = "scope", nullable = false, length = 50)
-    private String scope;
-
-    @Column(name = "format_type", nullable = false, length = 50)
-    private String formatType;
-
     @Column(name = "trainee_number", nullable = false)
     private Integer traineeNumber;
 
-    @Column(name = "key_program", nullable = false, length = 50)
-    private String keyProgram;
 
     @Column(name = "expected_start_date", nullable = false)
     private LocalDateTime expectedStartDate;
@@ -59,6 +42,34 @@ public class Group {
 
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
+
+    @Column(name = "plan_revenue")
+    private Double planRevenue;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "delivery_type_id", nullable = false)
+    private DeliveryType deliveryType;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "trainee_type_id", nullable = false)
+    private TraineeType traineeType;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "scope_id", nullable = false)
+    private Scope scope;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "format_type_id", nullable = false)
+    private FormatType formatType;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "key_program_id", nullable = false)
+    private KeyProgram keyProgram;
 
     @Convert(converter = GroupStatusConverter.class)
     @Column(name = "status", nullable = false)
