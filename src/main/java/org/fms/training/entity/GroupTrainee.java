@@ -1,5 +1,6 @@
 package org.fms.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,12 @@ import java.time.LocalDateTime;
 @Table(name = "group_trainee")
 public class GroupTrainee {
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "trainee_id")
     Trainee trainee;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "group_id")
     Group group;
 
