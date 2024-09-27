@@ -9,12 +9,14 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring",uses = {UnitMapper.class})
 public interface TopicMapper {
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "topicName", target = "name")
     @Mapping(source = "topicCode", target = "code")
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss")
     ListTopicDTO toListDTO(Topic topic);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "topicCode", target = "code")
     @Mapping(source = "topicName", target = "name")
     @Mapping(source = "passCriteria", target = "passCriteria")

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TopicDetailDTO {
+    private Integer id;
     private String code;
     private String name;
     private String passCriteria;
