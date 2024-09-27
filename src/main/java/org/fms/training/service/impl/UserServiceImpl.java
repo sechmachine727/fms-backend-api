@@ -1,6 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
 import org.fms.training.entity.User;
@@ -20,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,6 +87,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<List<ReadUserDTO>> findAll() {
+        List<User> users = userRepository.findAll();
+        List<ReadUserDTO> listUserDTOs = users.stream()
+                .map(userMapper::toReadUserDTO)
+                .collect(Collectors.toList());
+        return Optional.of(listUserDTOs);
+    }
+
+    @Override
+    public Optional<ReadUserDTO> findById(Integer id) {
+        return userRepository.findById(id)
+                .map(userMapper::toReadUserDTO);
+    }
+
+    @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByAccount(username)
@@ -97,6 +112,33 @@ public class UserServiceImpl implements UserService {
         return Optional.of(user)
                 .map(this::createSpringSecurityUser)
                 .orElseThrow(() -> new UsernameNotFoundException("User detail not found for the user " + username));
+    }
+
+    @Transactional
+    @Override
+    public void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        //Remove existing roles
+        List<UserRole> existingRoles = userRoleRepository.findByUserId(userId);
+        userRoleRepository.deleteAll(existingRoles);
+
+        //Update user
+        userMapper.updateUserFromDTO(saveUserDTO, user);
+
+        //Add new roles
+        List<UserRole> newRoles = saveUserDTO.getRoles().stream()
+                .map(roleId -> {
+                    Role role = roleRepository.findById(roleId)
+                            .orElseThrow(() -> new RuntimeException("Role not found"));
+                    UserRole userRole = new UserRole();
+                    userRole.setUser(user);
+                    userRole.setRole(role);
+                    return userRole;
+                })
+                .collect(Collectors.toList());
+        userRoleRepository.saveAll(newRoles);
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {

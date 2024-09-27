@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.enums.Status;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class ReadTrainingProgramDTO {
@@ -17,5 +19,5 @@ public class ReadTrainingProgramDTO {
     private String createdDate;
     private String lastModifiedBy;
     private String lastModifiedDate;
-//    private List<Topic> topics;
+    private List<Integer> topicIds;
 }
