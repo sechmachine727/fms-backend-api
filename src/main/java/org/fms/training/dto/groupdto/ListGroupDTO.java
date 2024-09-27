@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.enums.GroupStatus;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 public class ListGroupDTO {
@@ -13,7 +15,7 @@ public class ListGroupDTO {
     private Integer trainingProgramId;
     private String trainingProgramName;
     private String siteName;
-    private String classAdminEmployeeId;
+    private List<String> classAdminEmployeeId;
     private String expectedStartDate;
     private String expectedEndDate;
     private String actualStartDate;
