@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.RoleDTO;
+import org.fms.training.dto.userdto.RoleDTO;
 
 import java.util.List;
 

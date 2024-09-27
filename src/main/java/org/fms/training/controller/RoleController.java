@@ -1,7 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.RoleDTO;
+import org.fms.training.dto.userdto.RoleDTO;
 import org.fms.training.service.RoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
