@@ -58,6 +58,7 @@ public class TopicServiceImpl implements TopicService {
 
     private TopicDetailDTO mapToTopicDetailDTO(Topic topic, List<Unit> units, List<TopicAssessment> topicAssessments) {
         TopicDetailDTO dto = new TopicDetailDTO();
+        dto.setId(topic.getId());
         dto.setCode(topic.getTopicCode());
         dto.setName(topic.getTopicName());
         dto.setPassCriteria(topic.getPassCriteria());
@@ -77,6 +78,7 @@ public class TopicServiceImpl implements TopicService {
                 sectionDTO.setDeliveryType(section.getDeliveryType());
                 sectionDTO.setDuration(section.getDuration());
                 sectionDTO.setTrainingFormat(section.getTrainingFormat());
+                sectionDTO.setNote(section.getNote());
                 switch (section.getDeliveryType()) {
                     case "Class Meeting":
                         totalDurationClassMeeting[0] += section.getDuration();
