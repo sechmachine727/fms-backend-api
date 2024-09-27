@@ -20,6 +20,7 @@ public class TrainingProgramController {
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> findAll() {
         Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll();
+        System.out.println("adasd");
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -32,14 +33,18 @@ public class TrainingProgramController {
     }
 
     @PostMapping
-    public ResponseEntity<ReadTrainingProgramDTO> createTrainingProgram(@RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        ReadTrainingProgramDTO result = trainingProgramService.createTrainingProgram(saveTrainingProgramDTO);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<String> createTrainingProgram(@RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
+        trainingProgramService.createTrainingProgram(saveTrainingProgramDTO);
+        return ResponseEntity.ok("Create training program success");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReadTrainingProgramDTO> updateTrainingProgram(@PathVariable Integer id, @RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        ReadTrainingProgramDTO result = trainingProgramService.updateTrainingProgram(id, saveTrainingProgramDTO);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<String> updateTrainingProgram(@PathVariable Integer id, @RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
+        try {
+            trainingProgramService.updateTrainingProgram(id, saveTrainingProgramDTO);
+            return ResponseEntity.ok("Update training program success");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

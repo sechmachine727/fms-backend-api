@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "fms_user_group", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "group_id"}))
+@Table(name = "fms_user_group")
 public class UserGroup {
     @ManyToOne
     @JsonManagedReference

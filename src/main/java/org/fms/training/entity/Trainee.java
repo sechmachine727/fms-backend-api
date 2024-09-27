@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.converter.GenderConverter;
+import org.fms.training.enums.Gender;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,11 @@ public class Trainee {
     private String name;
 
     @Column(name = "dob", nullable = false)
-    private LocalDateTime dob;
+    private LocalDate dob;
 
+    @Convert(converter = GenderConverter.class)
     @Column(name = "gender", nullable = false)
-    private boolean gender;
+    private Gender gender;
 
     @Column(name = "gpa", nullable = false)
     private Double gpa;

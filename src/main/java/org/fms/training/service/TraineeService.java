@@ -1,17 +1,18 @@
 package org.fms.training.service;
 
-import org.fms.training.entity.Trainee;
+import org.fms.training.dto.traineedto.ListTraineeDTO;
+import org.fms.training.dto.traineedto.ReadTraineeDTO;
+import org.fms.training.dto.traineedto.SaveTraineeDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TraineeService {
-    List<Trainee> findAll();
+    Optional<List<ListTraineeDTO>> getAllTrainees();
 
-    Trainee getTrainee(Integer id);
+    Optional<ReadTraineeDTO> getTraineeById(Integer id);
 
-    void deleteTrainee(Integer id);
+    void addTrainee(SaveTraineeDTO saveTraineeDTO);
 
-    void save(Trainee trainee);
-
-    void update(Trainee trainee);
+    void updateTrainee(Integer id, SaveTraineeDTO saveTraineeDTO);
 }

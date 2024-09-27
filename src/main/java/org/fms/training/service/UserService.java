@@ -1,8 +1,12 @@
 package org.fms.training.service;
 
+import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
     SaveUserDTO register(SaveUserDTO saveUserDTO);
@@ -14,4 +18,10 @@ public interface UserService extends UserDetailsService {
     User existsByAccount(String account);
 
     boolean isValidUser(SaveUserDTO saveUserDTO);
+
+    Optional<List<ReadUserDTO>> findAll();
+
+    Optional<ReadUserDTO> findById(Integer id);
+
+    void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO);
 }
