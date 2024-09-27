@@ -17,8 +17,8 @@ public class Scope {
     @Column(name = "scope_id", nullable = false)
     private Integer id;
 
-    @Column(name = "site_name", nullable = false, length = 150)
-    private String siteName;
+    @Column(name = "scope_name", nullable = false, length = 150)
+    private String scopeName;
 
     @JsonBackReference
     @OneToMany(mappedBy = "scope")
