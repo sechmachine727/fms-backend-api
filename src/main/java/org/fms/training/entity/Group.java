@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.GroupStatusConverter;
-import org.fms.training.enums.Status;
+import org.fms.training.enums.GroupStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +26,6 @@ public class Group {
 
     @Column(name = "trainee_number", nullable = false)
     private Integer traineeNumber;
-
 
     @Column(name = "expected_start_date", nullable = false)
     private LocalDateTime expectedStartDate;
@@ -73,7 +72,7 @@ public class Group {
 
     @Convert(converter = GroupStatusConverter.class)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private GroupStatus status;
 
     @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)

@@ -7,7 +7,7 @@ import org.fms.training.enums.Status;
 @Data
 @NoArgsConstructor
 public class ListTrainingProgramDTO {
-    private String name;
+    private String trainingProgramName;
     private String code;
     private Integer version;
     private String description;

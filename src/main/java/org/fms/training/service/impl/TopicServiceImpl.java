@@ -17,7 +17,6 @@ import org.fms.training.service.TopicService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Optional<TopicDetailDTO> getTopicDetail(Integer topicId) {
         Optional<Topic> topicOptional = topicRepository.findTopicById(topicId);
-        if (!topicOptional.isPresent()) {
+        if (topicOptional.isEmpty()) {
             return Optional.empty();
         }
 
