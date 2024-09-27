@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 import org.fms.training.enums.Status;
 
 @Converter
-public class ActiveAndInactiveStatusConverter implements AttributeConverter<Status, String> {
+public class StatusConverter implements AttributeConverter<Status, String> {
     @Override
     public String convertToDatabaseColumn(Status attribute) {
         return switch (attribute) {

@@ -2,6 +2,7 @@ package org.fms.training.dto.trainingprogramdto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.enums.Status;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class SaveTrainingProgramDTO {
     private String region;
     private Integer version;
     private String description;
-    private String status;
+    private Status status;
     private Integer technicalGroupId;
     private List<Integer> topicIds;
 }
