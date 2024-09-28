@@ -1,5 +1,6 @@
 package org.fms.training.service;
 
+import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.User;
@@ -24,4 +25,5 @@ public interface UserService extends UserDetailsService {
     Optional<ReadUserDTO> findById(Integer id);
 
     void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO);
+    List<ClassAdminDTO> getClassAdminUsers();
 }

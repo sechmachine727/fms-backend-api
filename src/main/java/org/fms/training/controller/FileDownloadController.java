@@ -20,11 +20,11 @@ public class FileDownloadController {
 
     @GetMapping("/download-template")
     public ResponseEntity<InputStreamResource> downloadTemplate() throws IOException {
-        Path filePath = Paths.get("templates/import-template.xlsx");
+        Path filePath = Paths.get("templates/Template_Import_Syllabus.xlsx");
         ByteArrayInputStream fileInputStream = new ByteArrayInputStream(Files.readAllBytes(filePath));
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=import-template.xlsx");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Template_Import_Syllabus.xlsx");
 
         return ResponseEntity.ok()
                 .headers(headers)

@@ -1,6 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper userMapper;
+    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
 
     @Transactional
     @Override
@@ -145,10 +147,21 @@ public class UserServiceImpl implements UserService {
         userRoleRepository.saveAll(newRoles);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClassAdminDTO> getClassAdminUsers() {
+        List<User> classAdminUsers = userRoleRepository.findUsersByRoleId(CLASS_ADMIN_ROLE_ID);
+        return classAdminUsers.stream()
+                .map(userMapper::toClassAdminDTO)
+                .collect(Collectors.toList());
+    }
+
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
         List<GrantedAuthority> grantedAuthorities = user.getUserRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().getRoleName()))
                 .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getAccount(), user.getEncryptedPassword(), grantedAuthorities);
     }
+
+
 }

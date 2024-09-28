@@ -1,6 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.service.UserService;
@@ -61,5 +62,10 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/class-admins")
+    public List<ClassAdminDTO> getClassAdmins() {
+        return userService.getClassAdminUsers();
     }
 }

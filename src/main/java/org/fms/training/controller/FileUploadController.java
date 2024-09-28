@@ -3,6 +3,7 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.service.ImportService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +18,7 @@ public class FileUploadController {
 
     private final ImportService importService;
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             File excelFile = convertMultiPartToFile(file);

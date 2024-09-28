@@ -1,5 +1,6 @@
 package org.fms.training.mapper;
 
+import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Department;
@@ -21,6 +22,10 @@ public interface UserMapper {
     @Mapping(source = "department.departmentName", target = "departmentName")
     @Mapping(source = "userRoles", target = "roleNames")
     ReadUserDTO toReadUserDTO(User user);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "account", target = "account")
+    ClassAdminDTO toClassAdminDTO(User user);
 
     void updateUserFromDTO(SaveUserDTO saveUserDTO, @MappingTarget User user);
 
