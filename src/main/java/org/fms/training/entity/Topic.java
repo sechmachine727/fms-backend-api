@@ -33,6 +33,9 @@ public class Topic {
     @Column(name = "topic_name", nullable = false, length = 250)
     private String topicName;
 
+    @Column(name = "version", nullable = false, length = 50)
+    private String version;
+
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
