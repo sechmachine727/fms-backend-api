@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
             userRoleRepository.saveAll(userRoles);
             user.setUserRoles(userRoles);
         }
-        userMapper.toSaveUserDTO(savedUser);
         return userMapper.toSaveUserDTO(savedUser);
     }
 
@@ -73,6 +72,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User existsByAccount(String account) {
         return userRepository.findByAccount(account).orElse(null);
+    }
+
+    @Override
+    public User existsByEmployeeId(String employeeId) {
+        return userRepository.findByEmployeeId(employeeId).orElse(null);
     }
 
     @Override
