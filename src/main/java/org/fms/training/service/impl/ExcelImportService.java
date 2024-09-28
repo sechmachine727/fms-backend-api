@@ -1,92 +1,86 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.fms.training.entity.TechnicalGroup;
 import org.fms.training.entity.Topic;
-import org.fms.training.entity.Unit;
-import org.fms.training.entity.UnitSection;
+import org.fms.training.entity.TopicAssessment;
+import org.fms.training.enums.Status;
+import org.fms.training.repository.TechnicalGroupRepository;
+import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
-import org.fms.training.repository.UnitRepository;
-import org.fms.training.repository.UnitSectionRepository;
 import org.fms.training.service.ImportService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class ExcelImportService implements ImportService {
 
     private final TopicRepository topicRepository;
-    private final UnitRepository unitRepository;
-    private final UnitSectionRepository unitSectionRepository;
+    private final TopicAssessmentRepository topicAssessmentRepository;
+    private final TechnicalGroupRepository technicalGroupRepository;
 
-    @Override
     @Transactional
-    public void importDataFromFile(MultipartFile file) throws IOException {
-        InputStream inputStream = file.getInputStream();
-        Workbook workbook = WorkbookFactory.create(inputStream);
+    public void importDataFromFile(File excelFile) {
+        try (FileInputStream fis = new FileInputStream(excelFile);
+             Workbook workbook = WorkbookFactory.create(fis)) {
 
-        Sheet syllabusSheet = workbook.getSheet("syllabus");
-        List<Topic> topics = new ArrayList<>();
-        for (int i = 1; i <= syllabusSheet.getLastRowNum(); i++) {
-            Row row = syllabusSheet.getRow(i);
-            if (row == null) continue;
+            Sheet sheet = workbook.getSheet("Syllabus");
+            if (sheet == null) {
+                throw new IllegalArgumentException("Sheet 'Syllabus' not found");
+            }
 
+            // Reading the Topic data from the excel
+            Row row = sheet.getRow(1); // Row 1 for Technical Group
+            String technicalGroupCode = row.getCell(1).getStringCellValue();
+
+            // Fetch or Create Technical Group
+            TechnicalGroup technicalGroup = technicalGroupRepository.findByCode(technicalGroupCode)
+                    .orElseGet(() -> {
+                        TechnicalGroup newTechnicalGroup = new TechnicalGroup();
+                        newTechnicalGroup.setCode(technicalGroupCode);
+                        return technicalGroupRepository.save(newTechnicalGroup); // Save and return new Technical Group
+                    });
+
+            String topicName = sheet.getRow(2).getCell(1).getStringCellValue();  // Row 2 for Topic Name
+            String topicCode = sheet.getRow(3).getCell(1).getStringCellValue();  // Row 3 for Topic Code
+            String version = sheet.getRow(4).getCell(1).getStringCellValue();    // Row 4 for Version
+            String passCriteria = sheet.getRow(10).getCell(1).getStringCellValue(); // Row 10 for Pass Criteria
+
+            // Create and save the Topic entity
             Topic topic = new Topic();
-            topic.setTopicCode(getCellValue(row.getCell(0)));
-            topic.setTopicName(getCellValue(row.getCell(1)));
-            topic.setPassCriteria(getCellValue(row.getCell(2)));
+            topic.setTechnicalGroup(technicalGroup);  // Set the Technical Group object (with ID)
+            topic.setTopicName(topicName);
+            topic.setTopicCode(topicCode);
+            topic.setVersion(version);
+            topic.setPassCriteria(passCriteria);
+            topic.setStatus(Status.ACTIVE);
+            topic.setLastModifiedDate(LocalDateTime.now());
+            topic.setLastModifiedBy("admin");
 
             Topic savedTopic = topicRepository.save(topic);
-            topics.add(savedTopic);
-        }
 
-        Sheet scheduleDetailSheet = workbook.getSheet("schedule detail");
-        for (int i = 1; i <= scheduleDetailSheet.getLastRowNum(); i++) {
-            Row row = scheduleDetailSheet.getRow(i);
-            if (row == null) continue;
+            // Insert into TopicAssessment based on Assessment Scheme
+            Row assessmentRow = sheet.getRow(10); // Row 10 for assessments
+            TopicAssessment topicAssessment = new TopicAssessment();
+            topicAssessment.setAssessmentName("Final Report");
+            topicAssessment.setQuantity(1); // Assuming this is a fixed value
+            topicAssessment.setWeightedNumber(100); // Assuming 100% is fixed
+            topicAssessment.setTopic(savedTopic);
 
-            String topicCode = getCellValue(row.getCell(0));
-            Topic topic = topics.stream()
-                    .filter(t -> t.getTopicCode().equals(topicCode))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Topic not found for code: " + topicCode));
+            topicAssessmentRepository.save(topicAssessment);
 
-            Unit unit = new Unit();
-            unit.setUnitName(getCellValue(row.getCell(1)));
-            unit.setTopic(topic);
-            Unit savedUnit = unitRepository.save(unit);
-
-            UnitSection unitSection = new UnitSection();
-            unitSection.setTitle(getCellValue(row.getCell(2)));
-            unitSection.setDeliveryType(getCellValue(row.getCell(3)));
-            unitSection.setDuration(Double.parseDouble(getCellValue(row.getCell(4))));
-            unitSection.setTrainingFormat(getCellValue(row.getCell(5)));
-            unitSection.setUnit(savedUnit);
-
-            unitSectionRepository.save(unitSection);
-        }
-
-        workbook.close();
-    }
-
-    private String getCellValue(Cell cell) {
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return String.valueOf((int) cell.getNumericCellValue());
-            default:
-                return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to import Excel file: " + e.getMessage());
         }
     }
 }
