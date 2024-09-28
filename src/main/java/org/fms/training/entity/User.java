@@ -1,13 +1,14 @@
 package org.fms.training.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.fms.training.converter.ContactTypeConverter;
 import org.fms.training.converter.StatusConverter;
-import org.fms.training.enums.ContactType;
+import org.fms.training.enums.ContractType;
 import org.fms.training.enums.Status;
 
 import java.util.List;
@@ -39,11 +40,13 @@ public class User {
     private Status status;
 
     @Convert(converter = ContactTypeConverter.class)
-    @Column(name = "contact_type", nullable = false)
-    private ContactType contactType;
+    @Column(name = "contract_type", nullable = false)
+    private ContractType contractType;
 
-    @Column(name = "department", nullable = false, length = 100)
-    private String department;
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     @OneToOne(mappedBy = "user")
     @ToString.Exclude
@@ -58,6 +61,4 @@ public class User {
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private List<UserGroup> userGroups;
-
-
 }

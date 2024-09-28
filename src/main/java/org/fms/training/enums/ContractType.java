@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @RequiredArgsConstructor
-public enum ContactType {
+public enum ContractType {
     OFFICIAL("Official"),
     COLLABORATOR("Collaborator");
 

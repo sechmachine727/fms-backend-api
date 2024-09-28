@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         return !saveUserDTO.getAccount().isBlank() &&
                 !saveUserDTO.getEmail().isBlank() &&
                 Validation.isEmailValid(saveUserDTO.getEmail()) &&
-                !saveUserDTO.getDepartment().isBlank();
+                !saveUserDTO.getDepartmentId().equals(0);
     }
 
     @Override
