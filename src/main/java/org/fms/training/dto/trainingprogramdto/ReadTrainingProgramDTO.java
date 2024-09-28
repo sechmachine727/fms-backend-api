@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ReadTrainingProgramDTO {
+    private Integer id;
     private String trainingProgramName;
     private String code;
     private String region;
@@ -19,5 +20,5 @@ public class ReadTrainingProgramDTO {
     private String createdDate;
     private String lastModifiedBy;
     private String lastModifiedDate;
-    private List<Integer> topicIds;
+    private List<TopicInfoDTO> topicInfoList;
 }
