@@ -6,12 +6,12 @@ import org.fms.training.dto.topicdto.TopicDetailDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.service.TopicService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +23,13 @@ public class TopicController {
     private final TopicService topicService;
 
     @GetMapping
-    public ResponseEntity<List<ListTopicDTO>> findAll() {
-        Optional<List<ListTopicDTO>> result = topicService.findAll();
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Page<ListTopicDTO>> findAll(
+            @RequestParam(defaultValue = "0") int page,   // Trang mặc định là 0
+            @RequestParam(defaultValue = "2") int size   // Số phần tử trong mỗi trang mặc định là 2
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ListTopicDTO> result = topicService.findAll(pageable);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{id}")
@@ -34,5 +37,16 @@ public class TopicController {
         return topicService.getTopicDetail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ListTopicDTO>> searchByCodeOrName(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ListTopicDTO> result = topicService.searchByCodeOrName(keyword, pageable);
+        return ResponseEntity.ok(result);
     }
 }
