@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
-    @Mapping(source = "createdDate", target = "createdDate", dateFormat = "Dd-MMM-YYYY")
-    @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "Dd-MMM-YYYY")
+    @Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "dd-MMM-YYYY")
     ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
-    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "Dd-MMM-YYYY")
+    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")

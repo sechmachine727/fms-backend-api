@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.enums.Gender;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 public class ListTraineeDTO {
@@ -13,6 +11,6 @@ public class ListTraineeDTO {
     private String email;
     private String phone;
     private Gender gender;
-    private LocalDate dob;
+    private String dob;
     private String University;
 }

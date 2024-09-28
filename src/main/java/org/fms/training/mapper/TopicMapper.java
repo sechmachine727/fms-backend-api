@@ -5,13 +5,6 @@ import org.fms.training.dto.topicdto.TopicDetailDTO;
 import org.fms.training.entity.Topic;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Mapper(componentModel = "spring",uses = {UnitMapper.class})
 public interface TopicMapper {
@@ -22,14 +15,8 @@ public interface TopicMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "lastModifiedBy", target = "lastModifiedBy")
-    @Mapping(source = "lastModifiedDate", target = "modifiedDate", qualifiedByName = "formatDateToCustom")
+    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTopicDTO toListDTO(Topic topic);
-
-    @Named("formatDateToCustom")
-    static String formatDateToCustom(LocalDateTime lastModifiedDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
-        return lastModifiedDate != null ? lastModifiedDate.format(formatter) : null;
-    }
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "topicCode", target = "code")
