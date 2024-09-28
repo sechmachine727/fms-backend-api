@@ -29,8 +29,8 @@ public class TrainingProgram {
     @Column(name = "training_program_name", nullable = false, length = 250)
     private String trainingProgramName;
 
-    @Column(name = "version", nullable = false)
-    private Integer version;
+    @Column(name = "version", nullable = false, length = 50)
+    private String version;
 
     @Column(name = "code", nullable = false, length = 100, unique = true)
     private String code;

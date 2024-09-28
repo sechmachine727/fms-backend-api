@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class TopicInfoDTO {
     private Integer id;
     private String topicCode;
-    private Integer version;
+    private String version;
     private String topicName;
 }

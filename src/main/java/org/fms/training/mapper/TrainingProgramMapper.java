@@ -36,8 +36,7 @@ public interface TrainingProgramMapper {
                     TopicInfoDTO dto = new TopicInfoDTO();
                     dto.setId(topicTrainingProgram.getTopic().getId());
                     dto.setTopicCode(topicTrainingProgram.getTopic().getTopicCode());
-//                    dto.setVersion(topicTrainingProgram.getTopic().getVersion());
-                    //TODO: Uncomment the above after entity has Version field
+                    dto.setVersion(topicTrainingProgram.getTopic().getVersion());
                     dto.setTopicName(topicTrainingProgram.getTopic().getTopicName());
                     return dto;
                 })

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.StatusConverter;
 import org.fms.training.enums.Status;
-import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -33,7 +32,7 @@ public class Topic {
     @Column(name = "topic_name", nullable = false, length = 250)
     private String topicName;
 
-    @Column(name = "version", nullable = false, length = 50)
+    @Column(name = "version", nullable = false)
     private String version;
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
