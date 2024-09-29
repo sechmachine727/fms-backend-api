@@ -16,8 +16,6 @@ import org.fms.training.repository.UnitRepository;
 import org.fms.training.service.TopicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,9 +31,9 @@ public class TopicServiceImpl implements TopicService {
     private final TopicMapper topicMapper;
 
     @Override
-    public Page<ListTopicDTO> findAll(Pageable pageable) {
-        Page<Topic> topics = topicRepository.findAll(pageable);
-        return topics.map(topicMapper::toListDTO);
+    public List<ListTopicDTO> findAll() {
+        List<Topic> topics = topicRepository.findAll();
+        return topics.stream().map(topicMapper::toListDTO).collect(Collectors.toList());
     }
 
     @Override

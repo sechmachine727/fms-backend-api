@@ -7,7 +7,6 @@ import org.fms.training.service.TopicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +19,8 @@ public class TopicController {
     private final TopicService topicService;
 
     @GetMapping
-    public ResponseEntity<Page<ListTopicDTO>> findAll(
-            @RequestParam(defaultValue = "0") int page,   // Trang mặc định là 0
-            @RequestParam(defaultValue = "2") int size   // Số phần tử trong mỗi trang mặc định là 2
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ListTopicDTO> result = topicService.findAll(pageable);
+    public ResponseEntity<List<ListTopicDTO>> findAll() {
+        List<ListTopicDTO> result = topicService.findAll();
         return ResponseEntity.ok(result);
     }
 
