@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SaveGroupDTO {
     private String groupName;
+    private String groupCode;
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private Integer siteId;

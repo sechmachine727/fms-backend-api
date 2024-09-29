@@ -11,6 +11,7 @@ import java.util.List;
 public class ListGroupDTO {
     private Integer id;
     private String groupName;
+    private String groupCode;
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private String trainingProgramName;
