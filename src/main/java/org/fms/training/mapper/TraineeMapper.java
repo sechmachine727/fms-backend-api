@@ -10,21 +10,14 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TraineeMapper {
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "phone", target = "phone")
-    @Mapping(source = "dob", target = "dob")
-    @Mapping(source = "gender", target = "gender")
-    @Mapping(source = "gpa", target = "gpa")
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "nationalId", target = "nationalId")
-    @Mapping(source = "language", target = "language")
-    @Mapping(source = "university", target = "university")
-    @Mapping(source = "universityGraduationDate", target = "universityGraduationDate")
+
+    @Mapping(source = "dob", target = "dob", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "universityGraduationDate", target = "universityGraduationDate", dateFormat = "dd-MMM-YYYY")
     ReadTraineeDTO toReadTraineeDTO(Trainee trainee);
 
     Trainee toTraineeEntity(SaveTraineeDTO saveTraineeDTO);
 
+    @Mapping(source = "dob", target = "dob", dateFormat = "dd-MMM-YYYY")
     ListTraineeDTO toListTraineeDTO(Trainee trainee);
 
     void updateTraineeFromDTO(SaveTraineeDTO saveTraineeDTO, @MappingTarget Trainee trainee);

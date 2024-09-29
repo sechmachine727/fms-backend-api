@@ -3,8 +3,6 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.topicdto.ListTopicDTO;
 import org.fms.training.dto.topicdto.TopicDetailDTO;
-import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
-import org.fms.training.entity.Topic;
 import org.fms.training.service.TopicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/topics")
@@ -37,6 +34,17 @@ public class TopicController {
         return topicService.getTopicDetail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ListTopicDTO>> searchByCodeOrName(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ListTopicDTO> result = topicService.searchByCodeOrName(keyword, pageable);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/search")

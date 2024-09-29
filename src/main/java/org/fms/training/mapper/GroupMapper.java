@@ -23,12 +23,20 @@ public interface GroupMapper {
     @Mapping(source = "formatType.formatTypeName", target = "formatTypeName")
     @Mapping(source = "keyProgram.keyProgramName", target = "keyProgramName")
     @Mapping(source = "userGroups", target = "employeeIds", qualifiedByName = "toEmployeeId")
+    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MMM-YYYY")
     ReadGroupDTO toReadGroupDTO(Group group);
 
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
     @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
     @Mapping(source = "site.siteName", target = "siteName")
     @Mapping(source = "userGroups", target = "classAdminEmployeeId")
+    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MMM-YYYY")
     ListGroupDTO toListGroupDTO(Group group);
 
     @Mapping(target = "trainingProgram", source = "trainingProgramId")

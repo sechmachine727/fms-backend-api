@@ -28,27 +28,6 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody SaveUserDTO saveUserDTO) {
-        try {
-            if (!userService.isValidUser(saveUserDTO)) {
-                return new ResponseEntity<>("Input invalid", HttpStatus.BAD_REQUEST);
-            }
-            if (userService.existsByAccount(saveUserDTO.getAccount()) != null) {
-                return new ResponseEntity<>("User already exists in the system", HttpStatus.BAD_REQUEST);
-            }
-            if (userService.existsByEmail(saveUserDTO.getEmail()) != null) {
-                return new ResponseEntity<>("Email already exists in the system", HttpStatus.BAD_REQUEST);
-            }
-            SaveUserDTO result = userService.register(saveUserDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Save user success: " + result.getAccount());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {

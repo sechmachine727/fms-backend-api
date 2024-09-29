@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
             userRoleRepository.saveAll(userRoles);
             user.setUserRoles(userRoles);
         }
-        userMapper.toSaveUserDTO(savedUser);
         return userMapper.toSaveUserDTO(savedUser);
     }
 
@@ -78,6 +77,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User existsByEmployeeId(String employeeId) {
+        return userRepository.findByEmployeeId(employeeId).orElse(null);
+    }
+
+    @Override
     public boolean isValidUser(SaveUserDTO saveUserDTO) {
         if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
             return false;
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserService {
         return !saveUserDTO.getAccount().isBlank() &&
                 !saveUserDTO.getEmail().isBlank() &&
                 Validation.isEmailValid(saveUserDTO.getEmail()) &&
-                !saveUserDTO.getDepartment().isBlank();
+                !saveUserDTO.getDepartmentId().equals(0);
     }
 
     @Override

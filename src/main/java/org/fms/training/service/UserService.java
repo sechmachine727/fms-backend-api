@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
     User existsByEmail(String email);
 
     User existsByAccount(String account);
-
+    User existsByEmployeeId(String employeeId);
     boolean isValidUser(SaveUserDTO saveUserDTO);
 
     Optional<List<ReadUserDTO>> findAll();
