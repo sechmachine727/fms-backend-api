@@ -34,8 +34,17 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final TrainingProgramMapper trainingProgramMapper;
 
     @Override
-    public Optional<List<ListTrainingProgramDTO>> findAll() {
-        List<TrainingProgram> trainingPrograms = trainingProgramRepository.findAll();
+    public Optional<List<ListTrainingProgramDTO>> findAll(String trainingProgramName, String code) {
+        List<TrainingProgram> trainingPrograms;
+        if (trainingProgramName != null && code != null) {
+            trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingAndCodeContaining(trainingProgramName, code);
+        } else if (trainingProgramName != null) {
+            trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContaining(trainingProgramName);
+        } else if (code != null) {
+            trainingPrograms = trainingProgramRepository.findByCodeContaining(code);
+        } else {
+            trainingPrograms = trainingProgramRepository.findAll();
+        }
         List<ListTrainingProgramDTO> listTrainingProgramDTOs = trainingPrograms.stream()
                 .map(trainingProgramMapper::toListTrainingProgramDTO)
                 .collect(Collectors.toList());

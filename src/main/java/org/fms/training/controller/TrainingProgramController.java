@@ -19,14 +19,16 @@ public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
 
     @GetMapping
-    public ResponseEntity<List<ListTrainingProgramDTO>> findAll() {
-        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll();
+    public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
+            @RequestParam(required = false) String trainingProgramName,
+            @RequestParam(required = false) String code) {
+        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll(trainingProgramName, code);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReadTrainingProgramDTO> findById(@PathVariable Integer id) {
+    public ResponseEntity<ReadTrainingProgramDTO> getByTrainingProgramId(@PathVariable Integer id) {
         Optional<ReadTrainingProgramDTO> result = trainingProgramService.findById(id);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

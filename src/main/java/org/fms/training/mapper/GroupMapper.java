@@ -58,7 +58,7 @@ public interface GroupMapper {
                 .map(userGroup -> {
                     User user = userGroup.getUser();
                     for (UserRole role : user.getUserRoles()) {
-                        if (role.getRole().getRoleName().equals("CLASSADMIN")) {
+                        if (role.getRole().getRoleName().contains("GROUP_ADMIN")) {
                             return user.getEmployeeId();
                         }
                     }

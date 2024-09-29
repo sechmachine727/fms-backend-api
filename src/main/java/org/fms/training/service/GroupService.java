@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupService {
-    Optional<List<ListGroupDTO>> getAllGroups();
+    Optional<List<ListGroupDTO>> getAllGroups(String groupName, String groupCode);
 
     Optional<ReadGroupDTO> getGroupById(Integer id);
 

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TrainingProgramService {
-    Optional<List<ListTrainingProgramDTO>> findAll();
+    Optional<List<ListTrainingProgramDTO>> findAll(String trainingProgramName, String code);
 
     Optional<ReadTrainingProgramDTO> findById(Integer id);
 

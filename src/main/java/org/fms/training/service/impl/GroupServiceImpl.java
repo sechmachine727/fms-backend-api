@@ -28,12 +28,22 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<List<ListGroupDTO>> getAllGroups() {
-        List<Group> groups = groupRepository.findAll();
-        List<ListGroupDTO> listGroupDTO = groups.stream()
+    public Optional<List<ListGroupDTO>> getAllGroups(String groupName, String groupCode) {
+        List<Group> groups;
+        if (groupName != null && groupCode != null) {
+            groups = groupRepository.findByGroupNameContainingAndGroupCodeContaining(groupName, groupCode);
+        } else if (groupName != null) {
+            groups = groupRepository.findByGroupNameContaining(groupName);
+        } else if (groupCode != null) {
+            groups = groupRepository.findByGroupCodeContaining(groupCode);
+        } else {
+            groups = groupRepository.findAll();
+        }
+        List<ListGroupDTO> listGroupDTOs = groups.stream()
                 .map(groupMapper::toListGroupDTO)
                 .collect(Collectors.toList());
-        return Optional.of(listGroupDTO);
+        return Optional.of(listGroupDTOs);
+
     }
 
     @Override

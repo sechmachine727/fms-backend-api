@@ -17,8 +17,11 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping
-    public ResponseEntity<List<ListGroupDTO>> getAllGroups() {
-        return groupService.getAllGroups()
+    public ResponseEntity<List<ListGroupDTO>> getAllGroups(
+            @RequestParam(required = false) String groupName,
+            @RequestParam(required = false) String groupCode
+    ) {
+        return groupService.getAllGroups(groupName, groupCode)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
