@@ -9,9 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(source = "account", target = "account")
@@ -20,7 +17,6 @@ public interface UserMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "contactType", target = "contactType")
     @Mapping(source = "department", target = "department")
-    @Mapping(target = "roles", ignore = true)
     SaveUserDTO toSaveUserDTO(User user);
 
     User toUserEntity(SaveUserDTO saveUserDTO);
@@ -36,11 +32,5 @@ public interface UserMapper {
 
     default String convertToRoleName(UserRole role) {
         return role.getRole().getRoleName();
-    }
-
-    default List<String> convertToRoleNameList(List<UserRole> roles) {
-        return roles.stream()
-                .map(this::convertToRoleName)
-                .collect(Collectors.toList());
     }
 }

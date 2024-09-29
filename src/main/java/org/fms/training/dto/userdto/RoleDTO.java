@@ -1,4 +1,4 @@
-package org.fms.training.dto;
+package org.fms.training.dto.userdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

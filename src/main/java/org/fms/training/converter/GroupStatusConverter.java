@@ -21,6 +21,15 @@ public class GroupStatusConverter implements AttributeConverter<GroupStatus, Str
 
     @Override
     public GroupStatus convertToEntityAttribute(String dbData) {
-        return null;
+        return switch (dbData) {
+            case "Planning" -> GroupStatus.PLANNING;
+            case "Assigned" -> GroupStatus.ASSIGNED;
+            case "Reviewing" -> GroupStatus.REVIEWING;
+            case "Declined" -> GroupStatus.DECLINED;
+            case "In Progress" -> GroupStatus.IN_PROGRESS;
+            case "Pending Close" -> GroupStatus.PENDING_CLOSE;
+            case "Closed" -> GroupStatus.CLOSED;
+            default -> null;
+        };
     }
 }

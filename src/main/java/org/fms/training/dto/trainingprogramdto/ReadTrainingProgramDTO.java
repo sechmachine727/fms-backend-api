@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ReadTrainingProgramDTO {
-    private String name;
+    private String trainingProgramName;
     private String code;
     private String region;
     private Integer version;

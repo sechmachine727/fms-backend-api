@@ -27,7 +27,7 @@ public class TrainingProgram {
     private Integer id;
 
     @Column(name = "training_program_name", nullable = false, length = 250)
-    private String name;
+    private String trainingProgramName;
 
     @Column(name = "version", nullable = false)
     private Integer version;
