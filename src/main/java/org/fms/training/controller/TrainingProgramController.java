@@ -1,8 +1,8 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.ListTrainingProgramNameWithVersionDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
 import org.fms.training.service.TrainingProgramService;
@@ -49,8 +49,8 @@ public class TrainingProgramController {
     }
 
     @GetMapping("/technical-group/{technicalGroupId}")
-    public ResponseEntity<List<ListTrainingProgramNameWithVersionDTO>> findByTechnicalGroupId(@PathVariable Integer technicalGroupId) {
-        Optional<List<ListTrainingProgramNameWithVersionDTO>> result = Optional.ofNullable(trainingProgramService.findByTechnicalGroupId(technicalGroupId));
+    public ResponseEntity<List<ListByTechnicalGroupDTO>> findByTechnicalGroupId(@PathVariable Integer technicalGroupId) {
+        Optional<List<ListByTechnicalGroupDTO>> result = Optional.ofNullable(trainingProgramService.findByTechnicalGroupId(technicalGroupId));
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

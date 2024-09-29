@@ -26,13 +26,13 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")
     TrainingProgram toTrainingProgramEntity(SaveTrainingProgramDTO saveTrainingProgramDTO);
 
-    @Mapping(source = "trainingProgram", target = "trainingProgramNameWithVersion", qualifiedByName = "convertToTrainingProgramNameWithVersion")
-    ListTrainingProgramNameWithVersionDTO toListTrainingProgramNameWithVersionDTO(TrainingProgram trainingProgram);
+    @Mapping(source = "trainingProgram", target = "trainingProgramNameVersion", qualifiedByName = "convertToTrainingProgramNameVersion")
+    ListByTechnicalGroupDTO toListByTechnicalGroupDTO(TrainingProgram trainingProgram);
 
     void updateTrainingProgramEntityFromDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, @MappingTarget TrainingProgram trainingProgram);
 
-    @Named("convertToTrainingProgramNameWithVersion")
-    default String convertToTrainingProgramNameWithVersion(TrainingProgram trainingProgram) {
+    @Named("convertToTrainingProgramNameVersion")
+    default String convertToTrainingProgramNameVersion(TrainingProgram trainingProgram) {
         return trainingProgram.getTrainingProgramName() + " - " + trainingProgram.getVersion();
     }
 
