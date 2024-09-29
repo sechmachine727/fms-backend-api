@@ -19,8 +19,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<ReadUserDTO>> findAll() {
-        Optional<List<ReadUserDTO>> result = userService.findAll();
+    public ResponseEntity<List<ReadUserDTO>> findAll(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String account,
+            @RequestParam(required = false) String employeeId
+    ) {
+        Optional<List<ReadUserDTO>> result = userService.findAll(email, account, employeeId);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

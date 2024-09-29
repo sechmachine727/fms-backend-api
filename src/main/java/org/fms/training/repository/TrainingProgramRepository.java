@@ -12,14 +12,10 @@ import java.util.List;
 public interface TrainingProgramRepository extends JpaRepository<TrainingProgram, Integer> {
     List<TrainingProgram> findByTechnicalGroupId(Integer technicalGroupId);
 
-    @Query("SELECT tp FROM TrainingProgram tp WHERE LOWER(tp.trainingProgramName) LIKE LOWER(CONCAT('%', :trainingProgramName, '%'))")
-    List<TrainingProgram> findByTrainingProgramNameContaining(@Param("trainingProgramName") String trainingProgramName);
-
-    @Query("SELECT tp FROM TrainingProgram tp WHERE LOWER(tp.code) LIKE LOWER(CONCAT('%', :code, '%'))")
-    List<TrainingProgram> findByCodeContaining(@Param("code") String code);
-
-    @Query("SELECT tp FROM TrainingProgram tp WHERE LOWER(tp.trainingProgramName) LIKE LOWER(CONCAT('%', :trainingProgramName, '%')) AND LOWER(tp.code) LIKE LOWER(CONCAT('%', :code, '%'))")
-    List<TrainingProgram> findByTrainingProgramNameContainingAndCodeContaining(@Param("trainingProgramName") String trainingProgramName, @Param("code") String code);
-
-
+    @Query("SELECT tp FROM TrainingProgram tp WHERE " +
+            "(:trainingProgramName IS NULL OR :trainingProgramName = '' OR LOWER(tp.trainingProgramName) LIKE LOWER(CONCAT('%', :trainingProgramName, '%'))) AND " +
+            "(:code IS NULL OR :code = '' OR LOWER(tp.code) LIKE LOWER(CONCAT('%', :code, '%')))")
+    List<TrainingProgram> findByTrainingProgramNameContainingIgnoreCaseAndCodeContainingIgnoreCase(
+            @Param("trainingProgramName") String trainingProgramName,
+            @Param("code") String code);
 }

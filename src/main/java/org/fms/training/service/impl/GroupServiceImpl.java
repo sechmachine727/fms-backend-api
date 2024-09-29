@@ -29,21 +29,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Optional<List<ListGroupDTO>> getAllGroups(String groupName, String groupCode) {
-        List<Group> groups;
-        if (groupName != null && groupCode != null) {
-            groups = groupRepository.findByGroupNameContainingAndGroupCodeContaining(groupName, groupCode);
-        } else if (groupName != null) {
-            groups = groupRepository.findByGroupNameContaining(groupName);
-        } else if (groupCode != null) {
-            groups = groupRepository.findByGroupCodeContaining(groupCode);
-        } else {
-            groups = groupRepository.findAll();
-        }
-        List<ListGroupDTO> listGroupDTOs = groups.stream()
+        List<Group> groups = groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(groupName, groupCode);
+        return Optional.of(groups.stream()
                 .map(groupMapper::toListGroupDTO)
-                .collect(Collectors.toList());
-        return Optional.of(listGroupDTOs);
-
+                .collect(Collectors.toList()));
     }
 
     @Override

@@ -20,7 +20,7 @@ public interface UserService extends UserDetailsService {
     User existsByEmployeeId(String employeeId);
     boolean isValidUser(SaveUserDTO saveUserDTO);
 
-    Optional<List<ReadUserDTO>> findAll();
+    Optional<List<ReadUserDTO>> findAll(String email, String Account, String employeeId);
 
     Optional<ReadUserDTO> findById(Integer id);
 

@@ -93,12 +93,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<List<ReadUserDTO>> findAll() {
-        List<User> users = userRepository.findAll();
-        List<ReadUserDTO> listUserDTOs = users.stream()
+    public Optional<List<ReadUserDTO>> findAll(String email, String account, String employeeId) {
+        List<User> users = userRepository.findByEmailContainingIgnoreCaseAndAccountContainingIgnoreCaseAndEmployeeIdContainingIgnoreCase(email, account, employeeId);
+        return Optional.of(users.stream()
                 .map(userMapper::toReadUserDTO)
-                .collect(Collectors.toList());
-        return Optional.of(listUserDTOs);
+                .collect(Collectors.toList()));
     }
 
     @Override
