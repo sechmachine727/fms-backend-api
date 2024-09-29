@@ -1,13 +1,26 @@
-FROM ibm-semeru-runtimes:open-17.0.12.1_7-jre-jammy
+# Use GraalVM for building the native image
+FROM ghcr.io/graalvm/graalvm-ce:latest as builder
+
+# Install native-image tool
+RUN gu install native-image
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the jar file into the container
-COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
+# Copy the source code into the container
+COPY . .
+
+# Build the native image
+RUN ./mvnw package -Pnative -DskipTests
+
+# Create a new stage for the runtime image
+FROM gcr.io/distroless/base-debian10
+
+# Copy the native executable from the builder stage
+COPY --from=builder /app/target/fms-api .
 
 # Expose the port your app runs on
 EXPOSE 8080
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the native executable
+ENTRYPOINT ["./fms-api"]
