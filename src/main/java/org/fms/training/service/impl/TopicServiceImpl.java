@@ -61,11 +61,6 @@ public class TopicServiceImpl implements TopicService {
         return topics.map(topicMapper::toListDTO);
     }
 
-    @Override
-    public Page<ListTopicDTO> searchByCodeOrName(String keyword, Pageable pageable) {
-        Page<Topic> topics = topicRepository.findByTopicCodeContainingOrTopicNameContaining(keyword, keyword, pageable);
-        return topics.map(topicMapper::toListDTO);
-    }
 
     private TopicDetailDTO mapToTopicDetailDTO(Topic topic, List<Unit> units, List<TopicAssessment> topicAssessments) {
         TopicDetailDTO dto = new TopicDetailDTO();

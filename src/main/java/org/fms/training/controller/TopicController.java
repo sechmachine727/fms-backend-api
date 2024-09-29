@@ -47,14 +47,4 @@ public class TopicController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<Page<ListTopicDTO>> searchByCodeOrName(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ListTopicDTO> result = topicService.searchByCodeOrName(keyword, pageable);
-        return ResponseEntity.ok(result);
-    }
 }

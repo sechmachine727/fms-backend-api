@@ -19,12 +19,6 @@ public interface TopicMapper {
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTopicDTO toListDTO(Topic topic);
 
-    @Named("formatDateToCustom")
-    static String formatDateToCustom(LocalDateTime lastModifiedDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
-        return lastModifiedDate != null ? lastModifiedDate.format(formatter) : null;
-    }
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "topicCode", target = "code")
     @Mapping(source = "topicName", target = "name")
