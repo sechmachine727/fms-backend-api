@@ -1,5 +1,6 @@
 package org.fms.training.service;
 
+import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
@@ -18,4 +19,6 @@ public interface TrainingProgramService {
 
     @Transactional
     void updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
+
+    List<ListByTechnicalGroupDTO> findByTechnicalGroupId(Integer technicalGroupId);
 }

@@ -1,14 +1,12 @@
 package org.fms.training.mapper;
 
-import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.TopicInfoDTO;
+import org.fms.training.dto.trainingprogramdto.*;
 import org.fms.training.entity.TopicTrainingProgram;
 import org.fms.training.entity.TrainingProgram;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +26,15 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")
     TrainingProgram toTrainingProgramEntity(SaveTrainingProgramDTO saveTrainingProgramDTO);
 
+    @Mapping(source = "trainingProgram", target = "trainingProgramNameVersion", qualifiedByName = "convertToTrainingProgramNameVersion")
+    ListByTechnicalGroupDTO toListByTechnicalGroupDTO(TrainingProgram trainingProgram);
+
     void updateTrainingProgramEntityFromDTO(SaveTrainingProgramDTO saveTrainingProgramDTO, @MappingTarget TrainingProgram trainingProgram);
+
+    @Named("convertToTrainingProgramNameVersion")
+    default String convertToTrainingProgramNameVersion(TrainingProgram trainingProgram) {
+        return trainingProgram.getTrainingProgramName() + " - " + trainingProgram.getVersion();
+    }
 
     default List<TopicInfoDTO> mapTopicTrainingProgramsToTopicInfoList(List<TopicTrainingProgram> topicTrainingPrograms) {
         return topicTrainingPrograms.stream()
