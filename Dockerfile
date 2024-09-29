@@ -14,13 +14,16 @@ COPY . .
 RUN ./mvnw package -Pnative -DskipTests
 
 # Create a new stage for the runtime image
-FROM gcr.io/distroless/base-debian10
+FROM alpine:latest
+
+# Install necessary runtime dependencies
+RUN apk add --no-cache libstdc++
 
 # Copy the native executable from the builder stage
 COPY --from=builder /app/target/fms-api .
 
 # Expose the port your app runs on
-EXPOSE 8080
+EXPOSE 8081
 
 # Run the native executable
 ENTRYPOINT ["./fms-api"]
