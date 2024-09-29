@@ -2,6 +2,7 @@ package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
+import org.fms.training.dto.trainingprogramdto.ListTrainingProgramNameWithVersionDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
 import org.fms.training.entity.TechnicalGroup;
@@ -121,5 +122,13 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgramRepository.save(existingTrainingProgram);
 
         trainingProgramMapper.toReadTrainingProgramDTO(existingTrainingProgram);
+    }
+
+    @Override
+    public List<ListTrainingProgramNameWithVersionDTO> findByTechnicalGroupId(Integer technicalGroupId) {
+        List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTechnicalGroupId(technicalGroupId);
+        return trainingPrograms.stream()
+                .map(trainingProgramMapper::toListTrainingProgramNameWithVersionDTO)
+                .collect(Collectors.toList());
     }
 }
