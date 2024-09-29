@@ -1,6 +1,6 @@
 package org.fms.training.mapper;
 
-import org.fms.training.dto.deliverytype.DeliveryTypeDTO;
+import org.fms.training.dto.deliverytypedto.DeliveryTypeDTO;
 import org.fms.training.entity.DeliveryType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

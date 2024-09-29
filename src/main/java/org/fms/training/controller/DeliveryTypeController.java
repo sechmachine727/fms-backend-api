@@ -1,7 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.deliverytype.DeliveryTypeDTO;
+import org.fms.training.dto.deliverytypedto.DeliveryTypeDTO;
 import org.fms.training.service.DeliveryTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

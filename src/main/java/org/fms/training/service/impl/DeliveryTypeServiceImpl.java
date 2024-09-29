@@ -1,7 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.deliverytype.DeliveryTypeDTO;
+import org.fms.training.dto.deliverytypedto.DeliveryTypeDTO;
 import org.fms.training.mapper.DeliveryTypeMapper;
 import org.fms.training.repository.DeliveryTypeRepository;
 import org.fms.training.service.DeliveryTypeService;
