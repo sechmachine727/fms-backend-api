@@ -46,6 +46,8 @@ public interface GroupMapper {
     @Mapping(target = "scope", source = "scopeId")
     @Mapping(target = "formatType", source = "formatTypeId")
     @Mapping(target = "keyProgram", source = "keyProgramId")
+    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
     Group toGroupEntity(SaveGroupDTO saveGroupDTO);
 
     @Named("toEmployeeId")
