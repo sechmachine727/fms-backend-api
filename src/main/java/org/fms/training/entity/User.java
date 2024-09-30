@@ -43,7 +43,7 @@ public class User {
     @Column(name = "contract_type", nullable = false)
     private ContractType contractType;
 
-    @JsonManagedReference
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
