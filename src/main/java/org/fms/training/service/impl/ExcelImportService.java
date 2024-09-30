@@ -171,17 +171,17 @@ public class ExcelImportService implements ImportService {
                 if (currentUnit != null) {
                     // Tạo và set UnitSection data
                     UnitSection unitSection = new UnitSection();
-                    unitSection.setTitle(getCellValueAsString(row.getCell(3)));         // Learning Objectives
-                    unitSection.setDescription(getCellValueAsString(row.getCell(2)));   // Content
-                    unitSection.setDeliveryType(getCellValueAsString(row.getCell(4)));  // Delivery Type
+                    unitSection.setTitle(getCellValueAsString(row.getCell(3)).replace("\n", "<br>"));         // Learning Objectives
+                    unitSection.setDescription(getCellValueAsString(row.getCell(2)).replace("\n", "<br>"));   // Content
+                    unitSection.setDeliveryType(getCellValueAsString(row.getCell(4)).replace("\n", "<br>"));  // Delivery Type
                     Double durationValue = getCellValueAsDouble(row.getCell(5));        // Duration
                     if (durationValue != null) {
                         unitSection.setDuration(durationValue);  // Set giá trị Duration nếu hợp lệ
                     } else {
                         throw new IllegalArgumentException("Duration value is missing or invalid at row: " + rowIndex);
                     }
-                    unitSection.setTrainingFormat(getCellValueAsString(row.getCell(6))); // Training Format
-                    unitSection.setNote(getCellValueAsString(row.getCell(7)));          // Notes
+                    unitSection.setTrainingFormat(getCellValueAsString(row.getCell(6)).replace("\n", "<br>")); // Training Format
+                    unitSection.setNote(getCellValueAsString(row.getCell(7)).replace("\n", "<br>"));          // Notes
                     unitSection.setSectionNumber(1);  // Default Section Number
 
                     // Liên kết UnitSection với Unit hiện tại
