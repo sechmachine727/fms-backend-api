@@ -34,8 +34,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final TrainingProgramMapper trainingProgramMapper;
 
     @Override
-    public Optional<List<ListTrainingProgramDTO>> findAll(String trainingProgramName, String code) {
-        List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseAndCodeContainingIgnoreCase(trainingProgramName, code);
+    public Optional<List<ListTrainingProgramDTO>> findAll(String search) {
+        List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
         return Optional.of(trainingPrograms.stream()
                 .map(trainingProgramMapper::toListTrainingProgramDTO)
                 .collect(Collectors.toList()));

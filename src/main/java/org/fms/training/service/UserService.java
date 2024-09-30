@@ -17,10 +17,12 @@ public interface UserService extends UserDetailsService {
     User existsByEmail(String email);
 
     User existsByAccount(String account);
+
     User existsByEmployeeId(String employeeId);
+
     boolean isValidUser(SaveUserDTO saveUserDTO);
 
-    Optional<List<ReadUserDTO>> findAll(String email, String Account, String employeeId);
+    Optional<List<ReadUserDTO>> findAll(String search);
 
     Optional<ReadUserDTO> findById(Integer id);
 

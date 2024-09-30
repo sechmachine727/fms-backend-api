@@ -20,9 +20,8 @@ public class TrainingProgramController {
 
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
-            @RequestParam(required = false) String trainingProgramName,
-            @RequestParam(required = false) String code) {
-        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll(trainingProgramName, code);
+            @RequestParam(required = false) String search) {
+        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.findAll(search);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

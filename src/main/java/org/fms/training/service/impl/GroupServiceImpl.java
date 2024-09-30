@@ -28,8 +28,8 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<List<ListGroupDTO>> getAllGroups(String groupName, String groupCode) {
-        List<Group> groups = groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(groupName, groupCode);
+    public Optional<List<ListGroupDTO>> getAllGroups(String search) {
+        List<Group> groups = groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(search);
         return Optional.of(groups.stream()
                 .map(groupMapper::toListGroupDTO)
                 .collect(Collectors.toList()));

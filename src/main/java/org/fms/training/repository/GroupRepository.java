@@ -11,9 +11,8 @@ import java.util.List;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query("SELECT g FROM Group g WHERE " +
-            "(:groupName IS NULL OR :groupName = '' OR LOWER(g.groupName) LIKE LOWER(CONCAT('%', :groupName, '%'))) AND " +
-            "(:groupCode IS NULL OR :groupCode = '' OR LOWER(g.groupCode) LIKE LOWER(CONCAT('%', :groupCode, '%')))")
+            "(:search IS NULL OR :search = '' OR LOWER(g.groupName) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
+            "(:search IS NULL OR :search = '' OR LOWER(g.groupCode) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<Group> findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(
-            @Param("groupName") String groupName,
-            @Param("groupCode") String groupCode);
+            @Param("search") String search);
 }

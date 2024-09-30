@@ -17,12 +17,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmployeeId(String employeeId);
 
     @Query("SELECT u FROM User u WHERE " +
-            "(:email IS NULL OR :email = '' OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))) AND " +
-            "(:account IS NULL OR :account = '' OR LOWER(u.account) LIKE LOWER(CONCAT('%', :account, '%'))) AND " +
-            "(:employeeId IS NULL OR :employeeId = '' OR LOWER(u.employeeId) LIKE LOWER(CONCAT('%', :employeeId, '%')))")
+            "(:search IS NULL OR :search = '' OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
+            "(:search IS NULL OR :search = '' OR LOWER(u.account) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
+            "(:search IS NULL OR :search = '' OR LOWER(u.employeeId) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<User> findByEmailContainingIgnoreCaseAndAccountContainingIgnoreCaseAndEmployeeIdContainingIgnoreCase(
-            @Param("email") String email,
-            @Param("account") String account,
-            @Param("employeeId") String employeeId
+            @Param("search") String search
     );
 }
