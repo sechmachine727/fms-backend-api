@@ -31,9 +31,11 @@ public class TopicServiceImpl implements TopicService {
     private final TopicMapper topicMapper;
 
     @Override
-    public List<ListTopicDTO> findAll() {
-        List<Topic> topics = topicRepository.findAll();
-        return topics.stream().map(topicMapper::toListDTO).collect(Collectors.toList());
+    public Optional<List<ListTopicDTO>> searchByCodeOrName(String search) {
+        List<Topic> topics = topicRepository.findByTopicCodeContainingOrTopicNameContaining(search);
+        return Optional.of(topics.stream()
+                .map(topicMapper::toListDTO)
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -51,12 +53,6 @@ public class TopicServiceImpl implements TopicService {
 
         TopicDetailDTO detailDTO = mapToTopicDetailDTO(topic, units, topicAssessments);
         return Optional.of(detailDTO);
-    }
-
-    @Override
-    public Page<ListTopicDTO> searchByCodeOrName(String keyword, Pageable pageable) {
-        Page<Topic> topics = topicRepository.findByTopicCodeContainingOrTopicNameContaining(keyword, keyword, pageable);
-        return topics.map(topicMapper::toListDTO);
     }
 
 
