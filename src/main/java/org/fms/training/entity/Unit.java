@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,7 +27,7 @@ public class Unit {
 
     @JsonBackReference
     @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<UnitSection> unitSections;
+    private List<UnitSection> unitSections = new ArrayList<>();;
 
     @OneToMany(mappedBy = "unit")
     private List<Lesson> lessons;
