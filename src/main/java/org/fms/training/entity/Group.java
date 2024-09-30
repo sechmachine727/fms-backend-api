@@ -36,10 +36,10 @@ public class Group {
     @Column(name = "expected_end_date", nullable = false)
     private LocalDateTime expectedEndDate;
 
-    @Column(name = "actual_start_date", nullable = false)
+    @Column(name = "actual_start_date")
     private LocalDateTime actualStartDate;
 
-    @Column(name = "actual_end_date", nullable = false)
+    @Column(name = "actual_end_date")
     private LocalDateTime actualEndDate;
 
     @Column(name = "note", columnDefinition = "TEXT")
