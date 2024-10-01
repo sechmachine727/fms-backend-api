@@ -16,6 +16,8 @@ public class ReadUserDTO {
     private String employeeId;
     private Status status;
     private ContractType contractType;
+    private Integer departmentId;
     private String departmentName;
+    private List<Integer> roleIds;
     private List<String> roleNames;
 }

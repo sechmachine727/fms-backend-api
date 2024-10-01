@@ -9,6 +9,7 @@ import org.fms.training.entity.UserRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -19,8 +20,10 @@ public interface UserMapper {
     @Mapping(target = "department", source = "departmentId")
     User toUserEntity(SaveUserDTO saveUserDTO);
 
+    @Mapping(source = "department.id", target = "departmentId")
     @Mapping(source = "department.departmentName", target = "departmentName")
-    @Mapping(source = "userRoles", target = "roleNames")
+    @Mapping(source = "userRoles", target = "roleIds", qualifiedByName = "toRoleId")
+    @Mapping(source = "userRoles", target = "roleNames", qualifiedByName = "toRoleName")
     ReadUserDTO toReadUserDTO(User user);
 
     @Mapping(source = "id", target = "id")
@@ -29,6 +32,12 @@ public interface UserMapper {
 
     void updateUserFromDTO(SaveUserDTO saveUserDTO, @MappingTarget User user);
 
+    @Named("toRoleId")
+    default Integer convertToRoleId(UserRole role) {
+        return role.getRole().getId();
+    }
+
+    @Named("toRoleName")
     default String convertToRoleName(UserRole role) {
         return role.getRole().getRoleName();
     }
