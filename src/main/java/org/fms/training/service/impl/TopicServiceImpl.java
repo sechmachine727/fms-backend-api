@@ -32,7 +32,7 @@ public class TopicServiceImpl implements TopicService {
         List<Topic> topics = topicRepository.findByTopicCodeContainingOrTopicNameContaining(search);
         return Optional.of(topics.stream()
                 .map(topicMapper::toListDTO)
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
