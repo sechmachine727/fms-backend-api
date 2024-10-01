@@ -19,7 +19,7 @@ public class RoleController {
 
     @GetMapping()
     public ResponseEntity<List<RoleDTO>> getAll() {
-        return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
     }
 
 }

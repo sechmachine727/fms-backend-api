@@ -33,7 +33,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final TrainingProgramMapper trainingProgramMapper;
 
     @Override
-    public Optional<List<ListTrainingProgramDTO>> findAll(String search) {
+    public Optional<List<ListTrainingProgramDTO>> getAllTrainingPrograms(String search) {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
         return Optional.of(trainingPrograms.stream()
                 .map(trainingProgramMapper::toListTrainingProgramDTO)
@@ -41,7 +41,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public Optional<ReadTrainingProgramDTO> findById(Integer id) {
+    public Optional<ReadTrainingProgramDTO> getTrainingProgramById(Integer id) {
         return trainingProgramRepository.findById(id)
                 .map(trainingProgramMapper::toReadTrainingProgramDTO);
     }

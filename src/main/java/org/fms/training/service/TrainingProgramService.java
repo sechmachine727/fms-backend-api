@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TrainingProgramService {
-    Optional<List<ListTrainingProgramDTO>> findAll(String search);
+    Optional<List<ListTrainingProgramDTO>> getAllTrainingPrograms(String search);
 
-    Optional<ReadTrainingProgramDTO> findById(Integer id);
+    Optional<ReadTrainingProgramDTO> getTrainingProgramById(Integer id);
 
     @Transactional
     void createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO);

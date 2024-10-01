@@ -5,5 +5,5 @@ import org.fms.training.dto.userdto.RoleDTO;
 import java.util.List;
 
 public interface RoleService {
-    List<RoleDTO> findAll();
+    List<RoleDTO> getAllRoles();
 }
