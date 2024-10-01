@@ -95,6 +95,11 @@ public class Group {
     @JoinColumn(name = "site_id", nullable = false)
     private Site site;
 
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
+
     @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<UserGroup> userGroups;

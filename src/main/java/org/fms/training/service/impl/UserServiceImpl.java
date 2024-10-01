@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper userMapper;
-    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
 
     @Transactional
     @Override
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findByEmailContainingIgnoreCaseAndAccountContainingIgnoreCaseAndEmployeeIdContainingIgnoreCase(search);
         return Optional.of(users.stream()
                 .map(userMapper::toReadUserDTO)
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
                     userRole.setRole(role);
                     return userRole;
                 })
-                .collect(Collectors.toList());
+                .toList();
         userRoleRepository.saveAll(newRoles);
     }
 
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
         List<User> classAdminUsers = userRoleRepository.findUsersByRoleId(CLASS_ADMIN_ROLE_ID);
         return classAdminUsers.stream()
                 .map(userMapper::toClassAdminDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {

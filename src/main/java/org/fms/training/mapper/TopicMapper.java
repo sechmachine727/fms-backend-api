@@ -5,9 +5,8 @@ import org.fms.training.dto.topicdto.TopicDetailDTO;
 import org.fms.training.entity.Topic;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring",uses = {UnitMapper.class})
+@Mapper(componentModel = "spring", uses = {UnitMapper.class})
 public interface TopicMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "topicName", target = "name")

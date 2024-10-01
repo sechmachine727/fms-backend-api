@@ -4,7 +4,6 @@ import org.fms.training.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.entity.TechnicalGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 

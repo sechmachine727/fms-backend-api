@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class TraineeServiceImpl implements TraineeService {
         List<Trainee> trainees = traineeRepository.findAll();
         List<ListTraineeDTO> listTraineeDTOs = trainees.stream()
                 .map(traineeMapper::toListTraineeDTO)
-                .collect(Collectors.toList());
+                .toList();
         return Optional.of(listTraineeDTOs);
     }
 

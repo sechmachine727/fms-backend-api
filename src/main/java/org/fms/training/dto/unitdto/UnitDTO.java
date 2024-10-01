@@ -1,10 +1,10 @@
 package org.fms.training.dto.unitdto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fms.training.dto.unitsectiondto.UnitSectionDTO;
 
 import java.util.List;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

@@ -16,7 +16,8 @@ public class ListGroupDTO {
     private Integer trainingProgramId;
     private String trainingProgramName;
     private String siteName;
-    private List<String> classAdminEmployeeId;
+    private String locationName;
+    private List<String> classAdminAccount;
     private String expectedStartDate;
     private String expectedEndDate;
     private String actualStartDate;

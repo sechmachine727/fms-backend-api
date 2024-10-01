@@ -2,17 +2,9 @@ package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
-import org.fms.training.entity.TechnicalGroup;
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TopicAssessment;
-import org.fms.training.entity.Unit;
-import org.fms.training.entity.UnitSection;
+import org.fms.training.entity.*;
 import org.fms.training.enums.Status;
-import org.fms.training.repository.TechnicalGroupRepository;
-import org.fms.training.repository.TopicAssessmentRepository;
-import org.fms.training.repository.TopicRepository;
-import org.fms.training.repository.UnitRepository;
-import org.fms.training.repository.UnitSectionRepository;
+import org.fms.training.repository.*;
 import org.fms.training.service.ImportService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,9 +193,6 @@ public class ExcelImportService implements ImportService {
             unitRepository.save(currentUnit);
         }
     }
-
-
-
 
 
     private String getCellValueAsString(Cell cell) {

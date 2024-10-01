@@ -10,19 +10,27 @@ import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
     @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
+    @Mapping(source = "site.id", target = "siteId")
     @Mapping(source = "site.siteName", target = "siteName")
+    @Mapping(source = "location.id", target = "locationId")
+    @Mapping(source = "location.locationName", target = "locationName")
+    @Mapping(source = "deliveryType.id", target = "deliveryTypeId")
     @Mapping(source = "deliveryType.deliveryTypeName", target = "deliveryTypeName")
+    @Mapping(source = "traineeType.id", target = "traineeTypeId")
     @Mapping(source = "traineeType.traineeTypeName", target = "traineeTypeName")
+    @Mapping(source = "scope.id", target = "scopeId")
     @Mapping(source = "scope.scopeName", target = "scopeName")
+    @Mapping(source = "formatType.id", target = "formatTypeId")
     @Mapping(source = "formatType.formatTypeName", target = "formatTypeName")
+    @Mapping(source = "keyProgram.id", target = "keyProgramId")
     @Mapping(source = "keyProgram.keyProgramName", target = "keyProgramName")
-    @Mapping(source = "userGroups", target = "employeeIds", qualifiedByName = "toEmployeeId")
+    @Mapping(source = "userGroups", target = "assignedUserIds", qualifiedByName = "toUserId")
+    @Mapping(source = "userGroups", target = "assignedUserAccounts", qualifiedByName = "toAccount")
     @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
     @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
     @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
@@ -32,7 +40,8 @@ public interface GroupMapper {
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
     @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
     @Mapping(source = "site.siteName", target = "siteName")
-    @Mapping(source = "userGroups", target = "classAdminEmployeeId")
+    @Mapping(source = "location.locationName", target = "locationName")
+    @Mapping(source = "userGroups", target = "classAdminAccount")
     @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
     @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
     @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
@@ -41,6 +50,7 @@ public interface GroupMapper {
 
     @Mapping(target = "trainingProgram", source = "trainingProgramId")
     @Mapping(target = "site", source = "siteId")
+    @Mapping(target = "location", source = "locationId")
     @Mapping(target = "deliveryType", source = "deliveryTypeId")
     @Mapping(target = "traineeType", source = "traineeTypeId")
     @Mapping(target = "scope", source = "scopeId")
@@ -48,24 +58,31 @@ public interface GroupMapper {
     @Mapping(target = "keyProgram", source = "keyProgramId")
     Group toGroupEntity(SaveGroupDTO saveGroupDTO);
 
-    @Named("toEmployeeId")
-    default String convertToEmployeeId(UserGroup userGroup) {
-        return userGroup.getUser().getEmployeeId();
+    @Named("toUserId")
+    default List<Integer> convertToUserId(List<UserGroup> userGroups) {
+        return userGroups.stream()
+                .map(userGroup -> userGroup.getUser().getId())
+                .toList();
     }
 
-    default List<String> convertToClassAdminEmployeeId(List<UserGroup> userGroups) {
+    @Named("toAccount")
+    default String convertToAccount(UserGroup userGroup) {
+        return userGroup.getUser().getAccount();
+    }
+
+    default List<String> convertToClassAdminAccount(List<UserGroup> userGroups) {
         return userGroups.stream()
                 .map(userGroup -> {
                     User user = userGroup.getUser();
                     for (UserRole role : user.getUserRoles()) {
                         if (role.getRole().getRoleName().contains("GROUP_ADMIN")) {
-                            return user.getEmployeeId();
+                            return user.getAccount();
                         }
                     }
                     return null;
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     default TrainingProgram mapTrainingProgram(Integer id) {
@@ -84,6 +101,15 @@ public interface GroupMapper {
         Site site = new Site();
         site.setId(id);
         return site;
+    }
+
+    default Location mapLocation(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        Location location = new Location();
+        location.setId(id);
+        return location;
     }
 
     default DeliveryType mapDeliveryType(Integer id) {

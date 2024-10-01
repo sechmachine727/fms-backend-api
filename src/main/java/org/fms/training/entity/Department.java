@@ -1,6 +1,5 @@
 package org.fms.training.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,5 +23,5 @@ public class Department {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "department")
-    private List<User> Users;
+    private List<User> users;
 }

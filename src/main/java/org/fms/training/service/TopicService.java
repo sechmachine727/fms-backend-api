@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface TopicService {
     List<ListTopicDTO> findAll();
+
     Page<ListTopicDTO> searchByCodeOrName(String keyword, Pageable pageable);
+
     Optional<TopicDetailDTO> getTopicDetail(Integer topicId);
 
 }

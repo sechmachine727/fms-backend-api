@@ -12,10 +12,10 @@ public class EntryInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "entry_information_id", nullable = false)
-    private Integer Id;
+    private Integer id;
 
     @Column(name = "toeic_score")
-    private Integer toeic_score;
+    private Integer toeicScore;
 
     @Column(name = "english_communication_skill", length = 50)
     private String englishCommunicationSkill;

@@ -14,6 +14,7 @@ public class SaveGroupDTO {
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private Integer siteId;
+    private Integer locationId;
     private String expectedStartDate;
     private String expectedEndDate;
     private Double planRevenue;
