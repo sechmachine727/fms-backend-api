@@ -9,7 +9,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface TrainingProgramMapper {
@@ -46,6 +45,6 @@ public interface TrainingProgramMapper {
                     dto.setTopicName(topicTrainingProgram.getTopic().getTopicName());
                     return dto;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }

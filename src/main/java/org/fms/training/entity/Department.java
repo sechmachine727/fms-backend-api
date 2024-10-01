@@ -23,5 +23,5 @@ public class Department {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "department")
-    private List<User> Users;
+    private List<User> users;
 }

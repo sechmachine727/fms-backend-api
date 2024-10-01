@@ -12,5 +12,5 @@ public class ListTraineeDTO {
     private String phone;
     private Gender gender;
     private String dob;
-    private String University;
+    private String university;
 }

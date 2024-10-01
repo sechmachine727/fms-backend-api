@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
-    private final String AUTHORITIES_KEY = "authorities";
+    private static final String AUTHORITIES_KEY = "authorities";
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
@@ -53,7 +53,7 @@ public class TokenProvider {
                     .stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                     .filter(auth -> !auth.trim().isEmpty())
                     .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+                    .toList();
 
             User principal = new User(claims.getSubject(), "", authorities);
 

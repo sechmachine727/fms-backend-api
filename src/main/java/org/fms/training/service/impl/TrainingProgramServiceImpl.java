@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
         return Optional.of(trainingPrograms.stream()
                 .map(trainingProgramMapper::toListTrainingProgramDTO)
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -71,7 +70,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                     topicTrainingProgram.setTopic(topic);
                     return topicTrainingProgram;
                 })
-                .collect(Collectors.toList());
+                .toList();
         topicTrainingProgramRepository.saveAll(newTopics);
 
         // Ensure topicTrainingPrograms is not null
@@ -109,7 +108,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                     topicTrainingProgram.setTopic(topic);
                     return topicTrainingProgram;
                 })
-                .collect(Collectors.toList());
+                .toList();
         topicTrainingProgramRepository.saveAll(newTopics);
 
         // Ensure topicTrainingPrograms is not null
@@ -128,6 +127,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTechnicalGroupId(technicalGroupId);
         return trainingPrograms.stream()
                 .map(trainingProgramMapper::toListByTechnicalGroupDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

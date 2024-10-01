@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class GroupServiceImpl implements GroupService {
         List<Group> groups = groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(search);
         return Optional.of(groups.stream()
                 .map(groupMapper::toListGroupDTO)
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     @Override
@@ -59,7 +58,7 @@ public class GroupServiceImpl implements GroupService {
                     userGroup.setUser(user);
                     return userGroup;
                 })
-                .collect(Collectors.toList());
+                .toList();
         userGroupRepository.saveAll(userGroups);
     }
 }

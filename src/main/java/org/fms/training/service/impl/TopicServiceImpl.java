@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +92,7 @@ public class TopicServiceImpl implements TopicService {
 
                 totalDuration[0] += section.getDuration();
                 return sectionDTO;
-            }).collect(Collectors.toList());
+            }).toList();
 
             unitDTO.setUnitSections(unitSectionDTOs);
             unitDTO.setTotalDurationClassMeeting(totalDurationClassMeeting[0]);
@@ -101,7 +100,7 @@ public class TopicServiceImpl implements TopicService {
             unitDTO.setTotalDurationProductIncrement(totalDurationProductIncrement[0]);
             unitDTO.setTotalDuration(totalDuration[0]);
             return unitDTO;
-        }).collect(Collectors.toList());
+        }).toList();
 
         dto.setUnits(unitDTOs);
 
@@ -112,7 +111,7 @@ public class TopicServiceImpl implements TopicService {
             assessmentDTO.setWeightedNumber(assessment.getWeightedNumber());
             assessmentDTO.setNote(assessment.getNote());
             return assessmentDTO;
-        }).collect(Collectors.toList());
+        }).toList();
 
         dto.setTopicAssessments(assessmentDTOs);
         return dto;

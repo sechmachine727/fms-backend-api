@@ -15,19 +15,28 @@ public class ReadGroupDTO {
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private String trainingProgramName;
+    private Integer siteId;
     private String siteName;
+    private Integer locationId;
+    private String locationName;
     private String expectedStartDate;
     private String expectedEndDate;
     private String actualStartDate;
     private String actualEndDate;
     private String note;
     private Double planRevenue;
+    private Integer deliveryTypeId;
     private String deliveryTypeName;
+    private Integer traineeTypeId;
     private String traineeTypeName;
+    private Integer scopeId;
     private String scopeName;
+    private Integer formatTypeId;
     private String formatTypeName;
+    private Integer keyProgramId;
     private String keyProgramName;
     private GroupStatus status;
-    private List<String> employeeIds;
+    private List<Integer> assignedUserIds;
+    private List<String> assignedUserAccounts;
     //TODO: Add trainee, action and calendar DTOs here to display
 }
