@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
+import org.fms.training.entity.User;
+import org.fms.training.enums.Status;
+import org.fms.training.repository.UserRepository;
 import org.fms.training.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<List<ReadUserDTO>> findAll(
@@ -44,6 +48,31 @@ public class UserController {
         }
     }
 
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<String> updateUserStatus(@PathVariable Integer id) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body("User id is required");
+            }
+            Optional<ReadUserDTO> userOptional = userService.findById(id);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.badRequest().body("User not found");
+            }
+            User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+            if (user.getStatus().equals(Status.ACTIVE)) {
+                userService.updateUserStatus(id, Status.INACTIVE);
+                return ResponseEntity.ok("Update user status to: " + Status.INACTIVE);
+            } else {
+                userService.updateUserStatus(id, Status.ACTIVE);
+                return ResponseEntity.ok("Update user status to: " + Status.ACTIVE);
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid status value");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update user status failed");
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<String> register(@RequestBody SaveUserDTO saveUserDTO) {
         try {
@@ -62,7 +91,7 @@ public class UserController {
             SaveUserDTO result = userService.register(saveUserDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Save user success: " + result.getAccount());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Save user failed");
         }
     }
 

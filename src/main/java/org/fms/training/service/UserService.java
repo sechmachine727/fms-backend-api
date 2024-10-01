@@ -4,6 +4,7 @@ import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.User;
+import org.fms.training.enums.Status;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface UserService extends UserDetailsService {
     void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO);
 
     List<ClassAdminDTO> getClassAdminUsers();
+
+    void updateUserStatus(Integer userId, Status status);
 }

@@ -155,6 +155,15 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public void updateUserStatus(Integer userId, Status status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setStatus(status);
+        userRepository.save(user);
+    }
+
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
         List<GrantedAuthority> grantedAuthorities = user.getUserRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().getRoleName()))
