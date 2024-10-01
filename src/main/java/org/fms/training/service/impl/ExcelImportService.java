@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -25,9 +26,8 @@ public class ExcelImportService implements ImportService {
     private final UnitSectionRepository unitSectionRepository;
 
     @Transactional
-    public void importDataFromFile(File excelFile) {
-        try (FileInputStream fis = new FileInputStream(excelFile);
-             Workbook workbook = WorkbookFactory.create(fis)) {
+    public void importDataFromStream(InputStream inputStream) {
+        try (Workbook workbook = WorkbookFactory.create(inputStream)) {
 
             // Import data from the "Syllabus" sheet
             Sheet syllabusSheet = workbook.getSheet("Syllabus");
@@ -46,7 +46,6 @@ public class ExcelImportService implements ImportService {
             importScheduleDetailSheet(scheduleDetailSheet, savedTopic);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Failed to import Excel file: " + e.getMessage());
         }
     }
