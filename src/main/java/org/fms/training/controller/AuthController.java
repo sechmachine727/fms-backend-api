@@ -3,7 +3,6 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.config.TokenProvider;
 import org.fms.training.dto.userdto.AuthenticationResponse;
-import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.dto.userdto.UserLoginDTO;
 import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
@@ -28,6 +27,7 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {

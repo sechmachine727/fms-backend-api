@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.topicdto.ListTopicDTO;
 import org.fms.training.dto.topicdto.TopicDetailDTO;
 import org.fms.training.service.TopicService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -14,8 +14,6 @@ import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
 import org.fms.training.repository.UnitRepository;
 import org.fms.training.service.TopicService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -119,7 +117,6 @@ public class TopicServiceImpl implements TopicService {
         dto.setTopicAssessments(assessmentDTOs);
         return dto;
     }
-
 
 
 }

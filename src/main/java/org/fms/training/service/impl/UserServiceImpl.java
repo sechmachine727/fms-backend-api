@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper userMapper;
-    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
 
     @Transactional
     @Override

@@ -27,5 +27,6 @@ public interface UserService extends UserDetailsService {
     Optional<ReadUserDTO> findById(Integer id);
 
     void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO);
+
     List<ClassAdminDTO> getClassAdminUsers();
 }
