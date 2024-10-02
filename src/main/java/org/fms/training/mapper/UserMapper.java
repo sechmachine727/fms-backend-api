@@ -3,9 +3,9 @@ package org.fms.training.mapper;
 import org.fms.training.converter.ContactTypeConverter;
 import org.fms.training.dto.contracttypedto.ContractTypeDTO;
 import org.fms.training.dto.departmentdto.DepartmentDTO;
-import org.fms.training.dto.userdto.RoleDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
+import org.fms.training.dto.userdto.RoleDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Department;
 import org.fms.training.entity.User;
@@ -36,9 +36,9 @@ public interface UserMapper {
     @Mapping(source = "account", target = "account")
     ClassAdminDTO toClassAdminDTO(User user);
 
+    @Mapping(target = "department", source = "departmentId")
     void updateUserFromDTO(SaveUserDTO saveUserDTO, @MappingTarget User user);
 
-    // Mapping ContractType sang ContractTypeDTO
     @Named("mapContractType")
     default ContractTypeDTO mapContractType(ContractType contractType) {
         if (contractType == null) return null;
@@ -46,11 +46,9 @@ public interface UserMapper {
         ContactTypeConverter converter = new ContactTypeConverter();
         String displayName = converter.convertToDatabaseColumn(contractType);
 
-        return new ContractTypeDTO(displayName, displayName);  // Returns the display name like "Collaborator" or "Official"
+        return new ContractTypeDTO(displayName, displayName);
     }
 
-
-    // Mapping từ UserRole sang danh sách RoleDTO
     default List<RoleDTO> mapRoles(List<UserRole> userRoles) {
         return userRoles.stream()
                 .map(role -> new RoleDTO(role.getRole().getId(), role.getRole().getRoleName()))
