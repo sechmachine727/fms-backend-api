@@ -43,8 +43,8 @@ jobs:
           context: .
           push: true
           tags: sechmachine/fms:dev
-#
-#      - name: Recreate container with Portainer webhook
-#        run: |
-#          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/2e5f4b34-174e-4fdf-8a5b-f6e0763c1f27
-#          echo "Container recreated"
+
+      - name: Recreate container with Portainer webhook
+        run: |
+          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/6bcd8368-effd-455f-bf8c-be6262008de4
+          echo "Container recreated"
