@@ -1,4 +1,4 @@
-package org.fms.training.service;
+package org.fms.training.service.impl;
 
 // Import necessary classes and annotations
 
@@ -8,7 +8,6 @@ import org.fms.training.dto.traineedto.SaveTraineeDTO;
 import org.fms.training.entity.Trainee;
 import org.fms.training.mapper.TraineeMapper;
 import org.fms.training.repository.TraineeRepository;
-import org.fms.training.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
