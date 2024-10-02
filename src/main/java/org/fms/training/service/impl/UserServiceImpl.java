@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<ClassAdminDTO> getClassAdminUsers() {
-        List<User> classAdminUsers = userRoleRepository.findUsersByRoleName("CLASS_ADMIN");
+        List<User> classAdminUsers = userRoleRepository.findUsersByRoleName("GROUP_ADMIN");
         return classAdminUsers.stream()
                 .map(userMapper::toClassAdminDTO)
                 .toList();
