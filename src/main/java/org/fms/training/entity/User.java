@@ -13,7 +13,8 @@ import org.fms.training.enums.Status;
 import java.util.List;
 
 @Data
-@NoArgsConstructor@Entity
+@NoArgsConstructor
+@Entity
 @Table(name = "fms_user")
 public class User {
     @Id
