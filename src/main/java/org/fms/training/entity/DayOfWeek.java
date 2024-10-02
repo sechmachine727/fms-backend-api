@@ -13,6 +13,7 @@ import java.util.List;
 @Table(name = "day_of_week")
 public class DayOfWeek {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "day_of_week_id", nullable = false)
     private Integer id;
 
