@@ -21,6 +21,6 @@ public class Role {
     private String roleName;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private List<UserRole> userRoles;
 }

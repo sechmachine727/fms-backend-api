@@ -2,6 +2,8 @@ package org.fms.training.dto.userdto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.dto.contracttypedto.ContractTypeDTO;
+import org.fms.training.dto.departmentdto.DepartmentDTO;
 import org.fms.training.enums.ContractType;
 import org.fms.training.enums.Status;
 
@@ -15,9 +17,7 @@ public class ReadUserDTO {
     private String email;
     private String employeeId;
     private Status status;
-    private ContractType contractType;
-    private Integer departmentId;
-    private String departmentName;
-    private List<Integer> roleIds;
-    private List<String> roleNames;
+    private ContractTypeDTO contractType;
+    private DepartmentDTO department;
+    private List<RoleDTO> roles;
 }

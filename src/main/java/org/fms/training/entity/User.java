@@ -13,8 +13,7 @@ import org.fms.training.enums.Status;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@Entity
+@NoArgsConstructor@Entity
 @Table(name = "fms_user")
 public class User {
     @Id
@@ -52,7 +51,7 @@ public class User {
     private Trainer trainer;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<UserRole> userRoles;
 
@@ -61,3 +60,4 @@ public class User {
     @ToString.Exclude
     private List<UserGroup> userGroups;
 }
+

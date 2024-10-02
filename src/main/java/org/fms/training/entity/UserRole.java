@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "fms_user_role")
 public class UserRole {
-    @ManyToOne
-    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     User user;
 
