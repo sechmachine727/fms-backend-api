@@ -19,6 +19,7 @@ public interface TrainingProgramMapper {
     ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
+    @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 
