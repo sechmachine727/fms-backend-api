@@ -1,5 +1,6 @@
 package org.fms.training.mapper;
 
+import org.fms.training.converter.ContactTypeConverter;
 import org.fms.training.dto.contracttypedto.ContractTypeDTO;
 import org.fms.training.dto.departmentdto.DepartmentDTO;
 import org.fms.training.dto.userdto.RoleDTO;
@@ -41,7 +42,11 @@ public interface UserMapper {
     @Named("mapContractType")
     default ContractTypeDTO mapContractType(ContractType contractType) {
         if (contractType == null) return null;
-        return new ContractTypeDTO(contractType.name(), contractType.getDisplayName());
+
+        ContactTypeConverter converter = new ContactTypeConverter();
+        String displayName = converter.convertToDatabaseColumn(contractType);
+
+        return new ContractTypeDTO(displayName, displayName);  // Returns the display name like "Collaborator" or "Official"
     }
 
 

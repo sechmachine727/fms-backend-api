@@ -61,4 +61,16 @@ public class GroupServiceImpl implements GroupService {
                 .toList();
         userGroupRepository.saveAll(userGroups);
     }
+
+    @Override
+    public Group existsByGroupName(String name) {
+        return null;
+    }
+
+    @Override
+    public Group existsByGroupCode(String code) {
+        return null;
+    }
+
+
 }
