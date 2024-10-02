@@ -10,6 +10,6 @@ import java.util.List;
 public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
     List<UserRole> findByUserId(Integer userId);
 
-    @Query("SELECT ur.user FROM UserRole ur WHERE ur.role.id = :roleId")
-    List<User> findUsersByRoleId(Integer roleId);
+    @Query("SELECT ur.user FROM UserRole ur WHERE ur.role.roleName = :roleName")
+    List<User> findUsersByRoleName(String roleName);
 }

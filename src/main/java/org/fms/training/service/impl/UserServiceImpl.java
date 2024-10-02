@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final Integer CLASS_ADMIN_ROLE_ID = 3;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -149,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<ClassAdminDTO> getClassAdminUsers() {
-        List<User> classAdminUsers = userRoleRepository.findUsersByRoleId(CLASS_ADMIN_ROLE_ID);
+        List<User> classAdminUsers = userRoleRepository.findUsersByRoleName("GROUP_ADMIN");
         return classAdminUsers.stream()
                 .map(userMapper::toClassAdminDTO)
                 .toList();
