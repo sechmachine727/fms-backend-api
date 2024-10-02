@@ -3,7 +3,7 @@ name: Deploy Test Environment
 on:
   push:
     branches:
-      - test
+      - development
 
 jobs:
   build-and-deploy:
@@ -42,9 +42,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: sechmachine/fms:test
+          tags: sechmachine/fms:dev
 
       - name: Recreate container with Portainer webhook
         run: |
-          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/2a6e4665-d31b-41c1-8b7d-34c7996d9989
+          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/6bcd8368-effd-455f-bf8c-be6262008de4
           echo "Container recreated"

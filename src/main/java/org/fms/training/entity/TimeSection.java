@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name = "time_section")
 public class TimeSection {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "time_section_id")
     private Integer timeSectionId;
 
