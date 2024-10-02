@@ -4,12 +4,12 @@ spring:
   datasource:
     username: fmsapi
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://100.100.112.9:5432/fms_dev
+    url: jdbc:postgresql://100.100.112.9:5432/fms_testdb
     password: skibididopdopyesyes
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
   web:
     resources:
       add-mappings: true
