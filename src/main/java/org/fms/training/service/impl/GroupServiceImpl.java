@@ -64,12 +64,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group existsByGroupName(String name) {
-        return null;
+        return groupRepository.findByGroupName(name).orElse(null);
     }
 
     @Override
     public Group existsByGroupCode(String code) {
-        return null;
+        return groupRepository.findByGroupCode(code).orElse(null);
     }
 
 
