@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -46,22 +47,25 @@ public class GroupController {
                 return ResponseEntity.badRequest().body("Group code already exists.");
             }
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate startDate;
-            LocalDate endDate;
+            // Parse and validate dates
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            LocalDateTime startDate;
+            LocalDateTime endDate;
 
             try {
-                startDate = LocalDate.parse(saveGroupDTO.getExpectedStartDate(), formatter);
-                endDate = LocalDate.parse(saveGroupDTO.getExpectedEndDate(), formatter);
+                startDate = LocalDateTime.parse(saveGroupDTO.getExpectedStartDate(), formatter);
+                endDate = LocalDateTime.parse(saveGroupDTO.getExpectedEndDate(), formatter);
             } catch (DateTimeParseException e) {
-                return ResponseEntity.badRequest().body("Invalid date format. Please use yyyy-MM-dd.");
+                return ResponseEntity.badRequest().body("Invalid date format. Please use yyyy-MM-dd'T'HH:mm:ss.SSS.");
             }
 
+            // Validate start date is not after end date
             if (startDate.isAfter(endDate)) {
                 return ResponseEntity.badRequest().body("Start date cannot be after end date.");
             }
 
-            if (endDate.isBefore(LocalDate.now())) {
+            // Validate end date is not in the past
+            if (endDate.isBefore(LocalDateTime.now())) {
                 return ResponseEntity.badRequest().body("End date cannot be in the past.");
             }
 
