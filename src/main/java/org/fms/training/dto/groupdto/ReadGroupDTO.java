@@ -15,6 +15,7 @@ public class ReadGroupDTO {
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private String trainingProgramName;
+    private String technicalGroupCode;
     private Integer siteId;
     private String siteName;
     private Integer locationId;

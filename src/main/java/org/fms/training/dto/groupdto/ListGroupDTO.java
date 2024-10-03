@@ -12,9 +12,11 @@ public class ListGroupDTO {
     private Integer id;
     private String groupName;
     private String groupCode;
+    private String technicalGroupCode;
     private Integer traineeNumber;
     private Integer trainingProgramId;
     private String trainingProgramName;
+    private String traineeTypeName;
     private String siteName;
     private String locationName;
     private List<String> classAdminAccount;

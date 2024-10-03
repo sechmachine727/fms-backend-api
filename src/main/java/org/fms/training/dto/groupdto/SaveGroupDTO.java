@@ -13,6 +13,7 @@ public class SaveGroupDTO {
     private String groupCode;
     private Integer traineeNumber;
     private Integer trainingProgramId;
+    private Integer technicalGroupId;
     private Integer siteId;
     private Integer locationId;
     private String expectedStartDate;

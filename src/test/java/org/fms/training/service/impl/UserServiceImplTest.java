@@ -316,11 +316,11 @@ class UserServiceImplTest {
         User user2 = new User();
         List<User> users = List.of(user1, user2);
 
-        given(userRoleRepository.findUsersByRoleId(1)).willReturn(users);
+        given(userRoleRepository.findUsersByRoleName("ROLE")).willReturn(users);
 
         userService.getClassAdminUsers();
 
-        then(userRoleRepository).should().findUsersByRoleId(1);
+        then(userRoleRepository).should().findUsersByRoleName("ROLE");
         then(userMapper).should(times(2)).toClassAdminDTO(any(User.class));
     }
 

@@ -15,6 +15,7 @@ import java.util.Objects;
 public interface GroupMapper {
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
     @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
+    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
     @Mapping(source = "site.id", target = "siteId")
     @Mapping(source = "site.siteName", target = "siteName")
     @Mapping(source = "location.id", target = "locationId")
@@ -39,6 +40,8 @@ public interface GroupMapper {
 
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
     @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
+    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
+    @Mapping(source = "traineeType.traineeTypeName", target = "traineeTypeName")
     @Mapping(source = "site.siteName", target = "siteName")
     @Mapping(source = "location.locationName", target = "locationName")
     @Mapping(source = "userGroups", target = "classAdminAccount")
@@ -49,6 +52,7 @@ public interface GroupMapper {
     ListGroupDTO toListGroupDTO(Group group);
 
     @Mapping(target = "trainingProgram", source = "trainingProgramId")
+    @Mapping(target = "technicalGroup", source = "technicalGroupId")
     @Mapping(target = "site", source = "siteId")
     @Mapping(target = "location", source = "locationId")
     @Mapping(target = "deliveryType", source = "deliveryTypeId")
@@ -155,5 +159,14 @@ public interface GroupMapper {
         KeyProgram keyProgram = new KeyProgram();
         keyProgram.setId(id);
         return keyProgram;
+    }
+
+    default TechnicalGroup mapTechnicalGroup(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        TechnicalGroup technicalGroup = new TechnicalGroup();
+        technicalGroup.setId(id);
+        return technicalGroup;
     }
 }
