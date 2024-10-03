@@ -11,6 +11,7 @@ import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
+import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     @Override
     public Optional<List<ListGroupDTO>> getAllGroups(String search) {
@@ -60,6 +62,23 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
         userGroupRepository.saveAll(userGroups);
+        // Lấy danh sách email của các user được chỉ định
+        List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
+                .map(userId -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                    return user.getEmail();
+                })
+                .toList();
+
+        // Gửi email thông báo cho từng user
+        for (String email : assignedUserEmails) {
+            String subject = "You have been assigned to a new group";
+            String text = "Dear user,\n\nYou have been assigned to group: " + group.getGroupName() + ".\n"
+                    + "Start Date: " + saveGroupDTO.getExpectedStartDate() + "\n"
+                    + "End Date: " + saveGroupDTO.getExpectedEndDate() + "\n\nBest regards,\nYour Company";
+            emailService.sendEmail(email, subject, text);
+        }
     }
 
     @Override

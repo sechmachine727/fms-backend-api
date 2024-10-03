@@ -13,6 +13,17 @@ spring:
   web:
     resources:
       add-mappings: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: datvip1938@gmail.com
+    password: ophpsvjmdihltqgm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 security:
   jwt:
     secret-key: f21595ef3a58b44a0d182786f9dc6db54840821fcc760738064d77ea72d5022bd397208afdfb28b9f907a256bd50527ecf47cb2c80c928c7df57c0f4fe437feab855dbb7d6fb55efacbe8a343408c8391d3b1e53ede2bcb7a0f488b98342642fb6a49d44ddd2c229ecb5a61029fb5ed9f843686e4863b49ed9b2e072213d8757463c8c02993248f8844356ff9fa6a34108c230fca84dcf54268eeec667fcfd93e8a9152cd4fc25ffd4478ad9745cb3446a9ba97da9ccccf8dbba1aa08809dd8264202ebcba893e77115bdfd34f498bfb2b27e64f06d9a40232280c32b9128f8dc60ecb94d898397f95e8e8fbc832421a827ae88ff3bb6032835cc874fb3f5abc
