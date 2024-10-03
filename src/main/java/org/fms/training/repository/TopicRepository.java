@@ -1,6 +1,7 @@
 package org.fms.training.repository;
 
 import org.fms.training.entity.Topic;
+import org.fms.training.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +20,5 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 
     @Query("SELECT t FROM Topic t WHERE t.id = :id")
     Optional<Topic> findTopicById(@Param("id") Integer id);
+    List<Topic> findByStatus(Status status);
 }

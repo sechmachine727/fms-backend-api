@@ -31,4 +31,10 @@ public class TopicController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<ListTopicDTO>> getActiveTopics() {
+        List<ListTopicDTO> activeTopics = topicService.getActiveTopics();
+        return ResponseEntity.ok(activeTopics);
+    }
+
 }

@@ -9,6 +9,7 @@ import org.fms.training.dto.unitsectiondto.UnitSectionDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicAssessment;
 import org.fms.training.entity.Unit;
+import org.fms.training.enums.Status;
 import org.fms.training.mapper.TopicMapper;
 import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
@@ -115,6 +116,14 @@ public class TopicServiceImpl implements TopicService {
 
         dto.setTopicAssessments(assessmentDTOs);
         return dto;
+    }
+
+    public List<ListTopicDTO> getActiveTopics() {
+        // Tìm kiếm các topic có status là "active"
+        List<Topic> activeTopics = topicRepository.findByStatus(Status.ACTIVE);
+        return activeTopics.stream()
+                .map(topicMapper::toListDTO)
+                .toList();
     }
 
 
