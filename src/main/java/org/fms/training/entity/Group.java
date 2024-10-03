@@ -100,6 +100,11 @@ public class Group {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "technical_group_id", nullable = false)
+    private TechnicalGroup technicalGroup;
+
     @JsonBackReference
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<UserGroup> userGroups;
