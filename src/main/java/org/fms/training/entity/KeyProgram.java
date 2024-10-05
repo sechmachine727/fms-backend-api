@@ -20,6 +20,9 @@ public class KeyProgram {
     @Column(name = "key_program_name", nullable = false, length = 150)
     private String keyProgramName;
 
+    @Column(name = "description", nullable = false, length = 150)
+    private String description;
+
     @JsonBackReference
     @OneToMany(mappedBy = "keyProgram")
     private List<Group> groups;
