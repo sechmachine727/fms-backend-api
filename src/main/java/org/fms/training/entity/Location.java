@@ -18,6 +18,9 @@ public class Location {
     @Column(name = "location_name", nullable = false, length = 150)
     private String locationName;
 
+    @Column(name = "location_code", nullable = false, length = 150)
+    private String code;
+
     @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "site_id", nullable = false)
