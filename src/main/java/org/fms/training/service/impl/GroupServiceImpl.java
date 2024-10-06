@@ -1,5 +1,6 @@
 package org.fms.training.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.groupdto.ListGroupDTO;
 import org.fms.training.dto.groupdto.ReadGroupDTO;
@@ -71,13 +72,21 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
 
-        // Gửi email thông báo cho từng user
+        // Gửi email HTML thông báo cho từng user
         for (String email : assignedUserEmails) {
             String subject = "You have been assigned to a new group";
-            String text = "Dear user,\n\nYou have been assigned to group: " + group.getGroupName() + ".\n"
-                    + "Start Date: " + saveGroupDTO.getExpectedStartDate() + "\n"
-                    + "End Date: " + saveGroupDTO.getExpectedEndDate() + "\n\nBest regards,\nYour Company";
-            emailService.sendEmail(email, subject, text);
+            String htmlContent = "<p>Dear user,</p>"
+                    + "<p>You have been assigned to group: <b>" + group.getGroupName() + "</b>.</p>"
+                    + "<p><b>Start Date:</b> " + saveGroupDTO.getExpectedStartDate() + "</p>"
+                    + "<p><b>End Date:</b> " + saveGroupDTO.getExpectedEndDate() + "</p>"
+                    + "<p>Best regards,<br>Your Company</p>";
+
+            try {
+                emailService.sendHtmlEmail(email, subject, htmlContent);
+            } catch (MessagingException e) {
+                // Handle email sending failure (log it or throw exception)
+                throw new RuntimeException("Send email failed!");
+            }
         }
     }
 
