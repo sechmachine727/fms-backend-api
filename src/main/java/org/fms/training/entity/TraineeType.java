@@ -17,8 +17,14 @@ public class TraineeType {
     @Column(name = "trainee_type_id", nullable = false)
     private Integer id;
 
+    @Column(name = "trainee_type_code", nullable = false, length = 150)
+    private String code;
+
     @Column(name = "trainee_type_name", nullable = false, length = 150)
     private String traineeTypeName;
+
+    @Column(name = "description", nullable = false, length = 150)
+    private String description;
 
     @JsonBackReference
     @OneToMany(mappedBy = "traineeType")

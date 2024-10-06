@@ -13,6 +13,7 @@ import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.EmailService;
+import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private final EmailService emailService;
 
     @Override
