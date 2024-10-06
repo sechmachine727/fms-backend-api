@@ -29,6 +29,7 @@ public interface UserMapper {
 
     @Mapping(source = "contractType", target = "contractType", qualifiedByName = "mapContractType")
     @Mapping(source = "department", target = "department")
+    @Mapping(source = "name", target = "name")
     @Mapping(source = "userRoles", target = "roles")
     ReadUserDTO toReadUserDTO(User user);
 
