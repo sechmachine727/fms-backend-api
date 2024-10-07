@@ -2,10 +2,10 @@ spring:
   application:
     name: fms-backend-api
   datasource:
-    username: postgres
+    username: fmsapi
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/fms
-    password: 1234
+    url: jdbc:postgresql://100.100.112.9:5432/fms_dev
+    password: skibididopdopyesyes
   jpa:
     show-sql: true
     hibernate:
