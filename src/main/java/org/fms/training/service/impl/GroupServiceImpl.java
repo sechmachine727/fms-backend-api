@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -64,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
         userGroupRepository.saveAll(userGroups);
-        // Lấy danh sách email của các user được chỉ định
+        // Get all user's mail
         List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
@@ -73,20 +74,18 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
 
-        // Gửi email HTML thông báo cho từng user
+        // Send email notification to each user
         for (String email : assignedUserEmails) {
-            String subject = "You have been assigned to a new group";
-            String htmlContent = "<p>Dear user,</p>"
-                    + "<p>You have been assigned to group: <b>" + group.getGroupName() + "</b>.</p>"
-                    + "<p><b>Start Date:</b> " + saveGroupDTO.getExpectedStartDate() + "</p>"
-                    + "<p><b>End Date:</b> " + saveGroupDTO.getExpectedEndDate() + "</p>"
-                    + "<p>Best regards,<br>Your Company</p>";
+            Map<String, Object> emailVariables = Map.of(
+                    "groupName", group.getGroupName(),
+                    "startDate", saveGroupDTO.getExpectedStartDate(),
+                    "endDate", saveGroupDTO.getExpectedEndDate()
+            );
 
             try {
-                emailService.sendHtmlEmail(email, subject, htmlContent);
+                emailService.sendHtmlEmail(email, "You have been assigned to a new group", "group-assigned-email", emailVariables);
             } catch (MessagingException e) {
-                // Handle email sending failure (log it or throw exception)
-                throw new RuntimeException("Send email failed!");
+                throw new RuntimeException("Failed to send group assignment email", e);
             }
         }
     }

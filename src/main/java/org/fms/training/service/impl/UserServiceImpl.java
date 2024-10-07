@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -66,35 +67,28 @@ public class UserServiceImpl implements UserService {
             savedUser.setUserRoles(userRoles);
         }
 
+        // Prepare role names as a string
         String rolesString = assignedRoles.stream()
                 .map(Role::getRoleName)
                 .collect(Collectors.joining(", "));
 
-        String to = savedUser.getEmail();
-        String subject = "Welcome to FMS";
-        String htmlContent = "<table style=\"width: 100%;font-size:10.5pt;line-height:120%;font-family: Arial, sans-serif;color:#0D0D0D;border-collapse: collapse;\">"
-                + "<tr>"
-                + "<td style=\"padding: 5px;\">"
-                + "<p>Dear " + savedUser.getAccount() + ",</p>"
-                + "<p>Your account has been created successfully.</p>"
-                + "<p>Your password is: <b>" + plainPassword + "</b></p>"
-                + "<p>Your assigned roles: <b>" + rolesString + "</b></p>"
-                + "<p>To login, please visit <a href=\"#\">here</a>.</p>"
-                + "<p>Sincerely,</p>"
-                + "<p>FMS Team.</p>"
-                + "<p><i style=\"color: #D90000; font-size:10.5pt;\">Note: This is an auto-generated email, please do not reply.</i></p>"
-                + "</td>"
-                + "</tr>"
-                + "</table>";
+        // Prepare email variables
+        Map<String, Object> emailVariables = Map.of(
+                "accountName", savedUser.getAccount(),
+                "password", plainPassword,
+                "roles", rolesString
+        );
 
+        // Send email using the welcome-email template
         try {
-            emailService.sendHtmlEmail(to, subject, htmlContent);
+            emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send welcome email", e);
         }
 
         return userMapper.toSaveUserDTO(savedUser);
     }
+
 
     @Override
     public User findByAccount(String account) {
