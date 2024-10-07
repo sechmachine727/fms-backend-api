@@ -8,6 +8,7 @@ import org.fms.training.enums.Status;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
@@ -21,7 +22,8 @@ public interface UserService extends UserDetailsService {
 
     User existsByEmployeeId(String employeeId);
 
-    boolean isValidUser(SaveUserDTO saveUserDTO);
+    boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors);
+    boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors);
 
     Optional<List<ReadUserDTO>> findAll(String search);
 
