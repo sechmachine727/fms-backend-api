@@ -13,6 +13,7 @@ import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.repository.UserRoleRepository;
 import org.fms.training.service.UserService;
+import org.fms.training.util.PasswordUtil;
 import org.fms.training.util.Validation;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SaveUserDTO register(SaveUserDTO saveUserDTO) {
         User user = userMapper.toUserEntity(saveUserDTO);
-        String encodedPassword = passwordEncoder.encode("1234");
+        String encodedPassword = passwordEncoder.encode(PasswordUtil.generateRandomPassword());
         user.setEncryptedPassword(encodedPassword);
         User savedUser = userRepository.save(user);
 

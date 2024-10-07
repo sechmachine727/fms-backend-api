@@ -29,7 +29,6 @@ public class GroupServiceImpl implements GroupService {
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
-    private final EmailService emailService;
 
     @Override
     public Optional<List<ListGroupDTO>> getAllGroups(String search) {
