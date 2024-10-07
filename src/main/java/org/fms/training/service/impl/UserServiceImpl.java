@@ -1,5 +1,6 @@
 package org.fms.training.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
@@ -12,6 +13,7 @@ import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.repository.UserRoleRepository;
+import org.fms.training.service.EmailService;
 import org.fms.training.service.UserService;
 import org.fms.training.util.PasswordUtil;
 import org.fms.training.util.Validation;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserMapper userMapper;
+    private final EmailService emailService;
 
     @Transactional
     @Override
@@ -58,6 +61,21 @@ public class UserServiceImpl implements UserService {
             userRoleRepository.saveAll(userRoles);
             user.setUserRoles(userRoles);
         }
+
+        String subject = "Welcome to our website!";
+        String htmlContent = "<p>Dear " + savedUser.getAccount() + ",</p>"
+                + "<p>Thank you for registering. Here are your login details:</p>"
+                + "<p><b>Username:</b> " + savedUser.getAccount() + "</p>"
+                + "<p><b>Password:</b> " + encodedPassword + "</p>"
+                + "<p>To log in, please visit <a href='#'>our login page</a>.</p>"
+                + "<p>Best regards,<br>Your Company</p>";
+
+        try {
+            emailService.sendHtmlEmail(savedUser.getEmail(), subject, htmlContent);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send registration email", e);
+        }
+
         return userMapper.toSaveUserDTO(savedUser);
     }
 
