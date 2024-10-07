@@ -43,37 +43,54 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public SaveUserDTO register(SaveUserDTO saveUserDTO) {
+        String plainPassword = PasswordUtil.generateRandomPassword();
+        String encodedPassword = passwordEncoder.encode(plainPassword);
         User user = userMapper.toUserEntity(saveUserDTO);
-        String encodedPassword = passwordEncoder.encode(PasswordUtil.generateRandomPassword());
         user.setEncryptedPassword(encodedPassword);
         User savedUser = userRepository.save(user);
 
+        List<Role> assignedRoles = new ArrayList<>();
         if (saveUserDTO.getRoles() != null) {
-            List<UserRole> userRoles = new ArrayList<>();
-            for (Integer roleId : saveUserDTO.getRoles()) {
-                Role role = roleRepository.findById(roleId)
-                        .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
-                UserRole userRole = new UserRole();
-                userRole.setUser(savedUser);
-                userRole.setRole(role);
-                userRoles.add(userRole);
-            }
+            List<UserRole> userRoles = saveUserDTO.getRoles().stream()
+                    .map(roleId -> {
+                        Role role = roleRepository.findById(roleId)
+                                .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
+                        assignedRoles.add(role);
+                        UserRole userRole = new UserRole();
+                        userRole.setUser(savedUser);
+                        userRole.setRole(role);
+                        return userRole;
+                    })
+                    .toList();
             userRoleRepository.saveAll(userRoles);
-            user.setUserRoles(userRoles);
+            savedUser.setUserRoles(userRoles);
         }
 
-        String subject = "Welcome to our website!";
-        String htmlContent = "<p>Dear " + savedUser.getAccount() + ",</p>"
-                + "<p>Thank you for registering. Here are your login details:</p>"
-                + "<p><b>Username:</b> " + savedUser.getAccount() + "</p>"
-                + "<p><b>Password:</b> " + encodedPassword + "</p>"
-                + "<p>To log in, please visit <a href='#'>our login page</a>.</p>"
-                + "<p>Best regards,<br>Your Company</p>";
+        String rolesString = assignedRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.joining(", "));
+
+        String to = savedUser.getEmail();
+        String subject = "Welcome to FMS";
+        String htmlContent = "<table style=\"width: 100%;font-size:10.5pt;line-height:120%;font-family: Arial, sans-serif;color:#0D0D0D;border-collapse: collapse;\">"
+                + "<tr>"
+                + "<td style=\"padding: 5px;\">"
+                + "<p>Dear " + savedUser.getAccount() + ",</p>"
+                + "<p>Your account has been created successfully.</p>"
+                + "<p>Your password is: <b>" + plainPassword + "</b></p>"
+                + "<p>Your assigned roles: <b>" + rolesString + "</b></p>"
+                + "<p>To login, please visit <a href=\"#\">here</a>.</p>"
+                + "<p>Sincerely,</p>"
+                + "<p>FMS Team.</p>"
+                + "<p><i style=\"color: #D90000; font-size:10.5pt;\">Note: This is an auto-generated email, please do not reply.</i></p>"
+                + "</td>"
+                + "</tr>"
+                + "</table>";
 
         try {
-            emailService.sendHtmlEmail(savedUser.getEmail(), subject, htmlContent);
+            emailService.sendHtmlEmail(to, subject, htmlContent);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send registration email", e);
+            throw new RuntimeException("Failed to send welcome email", e);
         }
 
         return userMapper.toSaveUserDTO(savedUser);
