@@ -23,6 +23,7 @@ public interface UserService extends UserDetailsService {
     User existsByEmployeeId(String employeeId);
 
     boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors);
+
     boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors);
 
     Optional<List<ReadUserDTO>> findAll(String search);

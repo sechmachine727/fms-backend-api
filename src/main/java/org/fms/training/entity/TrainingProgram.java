@@ -35,9 +35,6 @@ public class TrainingProgram {
     @Column(name = "code", nullable = false, length = 100, unique = true)
     private String code;
 
-    @Column(name = "region", nullable = false, length = 100)
-    private String region;
-
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
@@ -61,6 +58,11 @@ public class TrainingProgram {
     @JsonManagedReference
     @JoinColumn(name = "technical_group_id", nullable = false)
     private TechnicalGroup technicalGroup;
+
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     @JsonBackReference
     @OneToMany(mappedBy = "trainingProgram")

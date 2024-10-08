@@ -14,7 +14,7 @@ public class Trainer {
     @Column(name = "trainer_id", nullable = false)
     private Integer id;
 
-    @Column(name = "job_rank",  length = 20)
+    @Column(name = "job_rank", length = 20)
     private String jobRank;
 
     @Column(name = "certificate")

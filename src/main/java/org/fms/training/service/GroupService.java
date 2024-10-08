@@ -4,7 +4,6 @@ import org.fms.training.dto.groupdto.ListGroupDTO;
 import org.fms.training.dto.groupdto.ReadGroupDTO;
 import org.fms.training.dto.groupdto.SaveGroupDTO;
 import org.fms.training.entity.Group;
-import org.fms.training.entity.User;
 
 import java.util.List;
 import java.util.Optional;

@@ -41,12 +41,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String >>  updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
+    public ResponseEntity<Map<String, String>> updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
         Map<String, String> errors = new HashMap<>();
         try {
-            if (!userService.isValidUserForUpdate(id, saveUserDTO, errors)) return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            if (!userService.isValidUserForUpdate(id, saveUserDTO, errors))
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             userService.updateUserInfo(id, saveUserDTO);
-            Map<String, String> responseSuccess = new HashMap<String, String>();
+            Map<String, String> responseSuccess = new HashMap<>();
             responseSuccess.put("success", "Update user info success");
             return ResponseEntity.ok(responseSuccess);
         } catch (Exception e) {
@@ -81,10 +82,11 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<Map<String, String >> register(@RequestBody SaveUserDTO saveUserDTO) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody SaveUserDTO saveUserDTO) {
         Map<String, String> errors = new HashMap<>();
         try {
-            if (!userService.isValidUser(saveUserDTO, errors)) return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            if (!userService.isValidUser(saveUserDTO, errors))
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             SaveUserDTO result = userService.register(saveUserDTO);
             Map<String, String> responseSuccess = new HashMap<>();
             responseSuccess.put("success", "Save user success: " + result.getAccount());
@@ -94,7 +96,6 @@ public class UserController {
             return ResponseEntity.internalServerError().body(errors);
         }
     }
-
 
 
     @GetMapping("/class-admins")

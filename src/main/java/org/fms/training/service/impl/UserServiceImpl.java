@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
         boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null;
         boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null;
-        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId())!= null;
+        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null;
 
         if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
             if (checkExistingAccount) {
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
         }
         boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null && existsByAccount(saveUserDTO.getAccount()).getId() != userId;
         boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null && existsByEmail(saveUserDTO.getEmail()).getId() != userId;
-        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId())!= null && existsByEmployeeId(saveUserDTO.getEmployeeId()).getId() != userId;
+        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null && existsByEmployeeId(saveUserDTO.getEmployeeId()).getId() != userId;
 
         if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
             if (checkExistingAccount) {

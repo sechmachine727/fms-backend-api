@@ -20,7 +20,7 @@ public class Site {
     @Column(name = "site_name", nullable = false, length = 150)
     private String siteName;
 
-    @Column(name = "abbreviation", unique = true,nullable = false, length = 150)
+    @Column(name = "abbreviation", unique = true, nullable = false, length = 150)
     private String abbreviation;
 
     @JsonBackReference

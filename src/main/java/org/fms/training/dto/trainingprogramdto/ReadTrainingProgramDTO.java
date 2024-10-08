@@ -12,7 +12,8 @@ public class ReadTrainingProgramDTO {
     private Integer id;
     private String trainingProgramName;
     private String code;
-    private String region;
+    private Integer departmentId;
+    private String departmentName;
     private String version;
     private String description;
     private Status status;

@@ -14,7 +14,8 @@ public class ListTrainingProgramDTO {
     private String trainingProgramName;
     private String code;
     private String version;
-    private String region;
+    private Integer departmentId;
+    private String departmentName;
     private String description;
     private Status status;
     private ListTechnicalGroupDTO technicalGroup;
