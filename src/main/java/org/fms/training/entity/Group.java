@@ -21,7 +21,7 @@ public class Group {
     @Column(name = "group_id", nullable = false)
     private Integer id;
 
-    @Column(name = "group_name", nullable = false, unique = true, length = 100)
+    @Column(name = "group_name", nullable = false, length = 100)
     private String groupName;
 
     @Column(name = "group_code", nullable = false, unique = true, length = 100)

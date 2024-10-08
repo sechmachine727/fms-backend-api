@@ -6,7 +6,6 @@ import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
-import org.fms.training.entity.Trainer;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
 import org.fms.training.enums.Status;

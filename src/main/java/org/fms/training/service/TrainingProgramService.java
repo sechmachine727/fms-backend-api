@@ -23,6 +23,8 @@ public interface TrainingProgramService {
     void updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
 
     List<ListByTechnicalGroupDTO> findByTechnicalGroupId(Integer technicalGroupId);
+
     void updateTrainingProgramStatus(Integer id, Status newStatus);
+
     Optional<TrainingProgram> findById(Integer id);
 }

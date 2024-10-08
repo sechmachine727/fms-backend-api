@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RequiredArgsConstructor
 @RequestMapping("/api/trainees")
 @RestController()
@@ -33,21 +32,13 @@ public class TraineeController {
 
     @PostMapping
     public ResponseEntity<String> addTrainee(@RequestBody SaveTraineeDTO saveTraineeDTO) {
-        try {
-            traineeService.addTrainee(saveTraineeDTO);
-            return ResponseEntity.ok("Add trainee success");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        traineeService.addTrainee(saveTraineeDTO);
+        return ResponseEntity.ok("Add trainee success");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateTrainee(@PathVariable Integer id, @RequestBody SaveTraineeDTO saveTraineeDTO) {
-        try {
-            traineeService.updateTrainee(id, saveTraineeDTO);
-            return ResponseEntity.ok("Update trainee success");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        traineeService.updateTrainee(id, saveTraineeDTO);
+        return ResponseEntity.ok("Update trainee success");
     }
 }

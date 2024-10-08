@@ -8,16 +8,21 @@ import org.fms.training.dto.groupdto.SaveGroupDTO;
 import org.fms.training.entity.Group;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserGroup;
+import org.fms.training.exception.ResourceNotFoundException;
+import org.fms.training.exception.ValidationException;
 import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.EmailService;
-import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,6 +53,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(SaveGroupDTO saveGroupDTO) {
+        validFieldsCheck(saveGroupDTO);
+
         Group group = groupMapper.toGroupEntity(saveGroupDTO);
 
         // Save the group first to get its ID
@@ -57,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
         List<UserGroup> userGroups = saveGroupDTO.getAssignedUserIds().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new RuntimeException("User not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     UserGroup userGroup = new UserGroup();
                     userGroup.setGroup(savedGroup);
                     userGroup.setUser(user);
@@ -65,11 +72,12 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
         userGroupRepository.saveAll(userGroups);
+
         // Get all user's mail
         List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new RuntimeException("User not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     return user.getEmail();
                 })
                 .toList();
@@ -90,6 +98,41 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    private void validFieldsCheck(SaveGroupDTO saveGroupDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (groupRepository.existsByGroupCode(saveGroupDTO.getGroupCode())) {
+            errors.put("groupCode", "Group code already exists.");
+        }
+
+        // Parse and validate dates
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        try {
+            startDate = LocalDateTime.parse(saveGroupDTO.getExpectedStartDate(), formatter);
+            endDate = LocalDateTime.parse(saveGroupDTO.getExpectedEndDate(), formatter);
+        } catch (DateTimeParseException e) {
+            errors.put("dateFormat", "Invalid date format. Please use yyyy-MM-dd'T'HH:mm:ss.SSS.");
+            throw new ValidationException(errors);
+        }
+
+        // Validate start date is not after end date
+        if (startDate.isAfter(endDate)) {
+            errors.put("dateOrder", "Start date cannot be after end date.");
+        }
+
+        // Validate end date is not in the past
+        if (endDate.isBefore(LocalDateTime.now())) {
+            errors.put("datePast", "End date cannot be in the past.");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+    }
+
     @Override
     public Group existsByGroupName(String name) {
         return groupRepository.findByGroupName(name).orElse(null);
@@ -99,6 +142,4 @@ public class GroupServiceImpl implements GroupService {
     public Group existsByGroupCode(String code) {
         return groupRepository.findByGroupCode(code).orElse(null);
     }
-
-
 }

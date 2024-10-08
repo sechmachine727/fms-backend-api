@@ -22,5 +22,6 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
     Optional<Topic> findTopicById(@Param("id") Integer id);
 
     List<Topic> findByStatus(Status status);
+
     Optional<Topic> findByTopicCodeAndVersion(String topicCode, String version);
 }

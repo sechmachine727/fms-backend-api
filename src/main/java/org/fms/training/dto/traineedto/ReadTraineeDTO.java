@@ -7,6 +7,7 @@ import org.fms.training.enums.Gender;
 @Data
 @NoArgsConstructor
 public class ReadTraineeDTO {
+    private Integer id;
     private String name;
     private String email;
     private String phone;
