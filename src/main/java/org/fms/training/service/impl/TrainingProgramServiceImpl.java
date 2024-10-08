@@ -9,7 +9,6 @@ import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicTrainingProgram;
 import org.fms.training.entity.TrainingProgram;
 import org.fms.training.enums.Status;
-import org.fms.training.exception.DuplicateFieldException;
 import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
@@ -71,10 +70,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(trainingProgramId)
                 .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
 
-        if (!existingTrainingProgram.getCode().equals(saveTrainingProgramDTO.getCode()) &&
-                trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
-            throw new DuplicateFieldException("TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
-        }
         updateValidFieldsCheck(saveTrainingProgramDTO);
 
         List<TopicTrainingProgram> existingTopics = topicTrainingProgramRepository.findByTrainingProgramId(trainingProgramId);
@@ -106,6 +101,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     private void updateValidFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
         Map<String, String> errors = new HashMap<>();
+
 
         existsCheck(saveTrainingProgramDTO, errors);
     }
