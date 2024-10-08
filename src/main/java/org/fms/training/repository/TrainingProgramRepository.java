@@ -12,6 +12,8 @@ import java.util.List;
 public interface TrainingProgramRepository extends JpaRepository<TrainingProgram, Integer> {
     List<TrainingProgram> findByTechnicalGroupId(Integer technicalGroupId);
 
+    boolean existsByCode(String code);
+
     @Query("SELECT tp FROM TrainingProgram tp WHERE " +
             "(:search IS NULL OR :search = '' OR LOWER(tp.trainingProgramName) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
             "(:search IS NULL OR :search = '' OR LOWER(tp.code) LIKE LOWER(CONCAT('%', :search, '%')))")
