@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,20 +54,46 @@ public class ExcelImportService implements ImportService {
         Row row = sheet.getRow(1); // Row 1 for Technical Group
         String technicalGroupCode = row.getCell(2).getStringCellValue();
 
+        // Validate technicalGroupCode
+        if (technicalGroupCode == null || technicalGroupCode.isEmpty()) {
+            throw new IllegalArgumentException("Technical Group Code is missing.");
+        }
+
         // Fetch or Create Technical Group
         TechnicalGroup technicalGroup = technicalGroupRepository.findByCode(technicalGroupCode)
                 .orElseThrow(() -> new IllegalArgumentException("Technical group not found with code: " + technicalGroupCode));
 
-        String topicName = sheet.getRow(2).getCell(2).getStringCellValue();  // Row 2 for Topic Name
-        String topicCode = sheet.getRow(3).getCell(2).getStringCellValue();  // Row 3 for Topic Code
+        // Validate and get Topic Name (Row 2, Column 2)
+        String topicName = sheet.getRow(2).getCell(2).getStringCellValue();
+        if (topicName == null || topicName.isEmpty()) {
+            throw new IllegalArgumentException("Topic Name is missing.");
+        }
 
-        // Handling version (Row 4, Column 2)
+        // Validate and get Topic Code (Row 3, Column 2)
+        String topicCode = sheet.getRow(3).getCell(2).getStringCellValue();
+        if (topicCode == null || topicCode.isEmpty()) {
+            throw new IllegalArgumentException("Topic Code is missing.");
+        }
+
+        // Handling version (Row 4, Column 2) and validate
         Cell versionCell = sheet.getRow(4).getCell(2);
         String version = getCellValueAsString(versionCell);
+        if (version == null || version.isEmpty()) {
+            throw new IllegalArgumentException("Version is missing.");
+        }
 
-        // Handling pass criteria (Row 9, Column 3)
+        // Check if Topic Code with the same version already exists
+        Optional<Topic> existingTopic = topicRepository.findByTopicCodeAndVersion(topicCode, version);
+        if (existingTopic.isPresent()) {
+            throw new IllegalArgumentException("Topic with code " + topicCode + " and version " + version + " already exists. Please change the version or topic code.");
+        }
+
+        // Validate and get Pass Criteria (Row 9, Column 3)
         Cell passCriteriaCell = sheet.getRow(9).getCell(3);
         String passCriteria = getCellValueAsString(passCriteriaCell);
+        if (passCriteria == null || passCriteria.isEmpty()) {
+            throw new IllegalArgumentException("Pass Criteria is missing.");
+        }
 
         // Create and save the Topic entity
         Topic topic = new Topic();
@@ -106,7 +133,7 @@ public class ExcelImportService implements ImportService {
 
                         // Set weighted number
                         if (weightedNumberCell != null && weightedNumberCell.getCellType() == CellType.NUMERIC) {
-                            double weightedNumber = weightedNumberCell.getNumericCellValue() * 100;
+                            double weightedNumber = weightedNumberCell.getNumericCellValue();
                             topicAssessment.setWeightedNumber((int) weightedNumber);
                         }
 

@@ -17,5 +17,4 @@ public interface TrainingProgramRepository extends JpaRepository<TrainingProgram
             "(:search IS NULL OR :search = '' OR LOWER(tp.code) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<TrainingProgram> findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(@Param("search") String search);
 
-
 }

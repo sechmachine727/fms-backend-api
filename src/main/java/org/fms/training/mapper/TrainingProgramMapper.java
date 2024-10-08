@@ -1,6 +1,8 @@
 package org.fms.training.mapper;
 
+import org.fms.training.dto.departmentdto.DepartmentDTO;
 import org.fms.training.dto.trainingprogramdto.*;
+import org.fms.training.entity.Department;
 import org.fms.training.entity.TopicTrainingProgram;
 import org.fms.training.entity.TrainingProgram;
 import org.mapstruct.Mapper;
@@ -12,7 +14,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TrainingProgramMapper {
-    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
+    @Mapping(source = "technicalGroup", target = "technicalGroup")
+    @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
     @Mapping(source = "department.id", target = "departmentId")
     @Mapping(source = "department.departmentName", target = "departmentName")
@@ -21,6 +24,7 @@ public interface TrainingProgramMapper {
     ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroup", target = "technicalGroup")
+    @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
     @Mapping(source = "department.id", target = "departmentId")
     @Mapping(source = "department.departmentName", target = "departmentName")
@@ -52,5 +56,11 @@ public interface TrainingProgramMapper {
                     return dto;
                 })
                 .toList();
+    }
+
+
+    default DepartmentDTO mapDepartment(Department department) {
+        if (department == null) return null;
+        return new DepartmentDTO(department.getId(), department.getDepartmentName());
     }
 }
