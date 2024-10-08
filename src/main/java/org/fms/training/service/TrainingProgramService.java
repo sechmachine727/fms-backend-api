@@ -4,6 +4,8 @@ import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
+import org.fms.training.entity.TrainingProgram;
+import org.fms.training.enums.Status;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,4 +23,6 @@ public interface TrainingProgramService {
     void updateTrainingProgram(Integer trainingProgramId, SaveTrainingProgramDTO saveTrainingProgramDTO);
 
     List<ListByTechnicalGroupDTO> findByTechnicalGroupId(Integer technicalGroupId);
+    void updateTrainingProgramStatus(Integer id, Status newStatus);
+    Optional<TrainingProgram> findById(Integer id);
 }
