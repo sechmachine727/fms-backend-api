@@ -47,7 +47,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public void createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        createValidFieldsCheck(saveTrainingProgramDTO);
+        validFieldsCheck(saveTrainingProgramDTO);
 
         TrainingProgram trainingProgram = trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO);
 
@@ -70,7 +70,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(trainingProgramId)
                 .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
 
-        updateValidFieldsCheck(existingTrainingProgram, saveTrainingProgramDTO);
+        validFieldsCheck(existingTrainingProgram, saveTrainingProgramDTO);
 
         List<TopicTrainingProgram> existingTopics = topicTrainingProgramRepository.findByTrainingProgramId(trainingProgramId);
         topicTrainingProgramRepository.deleteAll(existingTopics);
@@ -90,7 +90,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgramMapper.toReadTrainingProgramDTO(existingTrainingProgram);
     }
 
-    private void createValidFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    private void validFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
         Map<String, String> errors = new HashMap<>();
 
         if (trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
@@ -99,13 +99,13 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         existsCheck(saveTrainingProgramDTO, errors);
     }
 
-    private void updateValidFieldsCheck(TrainingProgram trainingProgram, SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    private void validFieldsCheck(TrainingProgram trainingProgram, SaveTrainingProgramDTO saveTrainingProgramDTO) {
         Map<String, String> errors = new HashMap<>();
 
-        if (!trainingProgram.getCode().equals(saveTrainingProgramDTO.getCode()) && trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
+        if (!trainingProgram.getCode().equals(saveTrainingProgramDTO.getCode()) &&
+                trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
             errors.put("trainingProgram", "TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
         }
-
         existsCheck(saveTrainingProgramDTO, errors);
     }
 

@@ -57,7 +57,7 @@ public class TraineeServiceImpl implements TraineeService {
                 traineeRepository.existsByEmail(saveTraineeDTO.getEmail())) {
             throw new DuplicateFieldException("Trainee with email " + saveTraineeDTO.getEmail() + " already exists");
         }
-        validFieldsCheck(saveTraineeDTO);
+        validFieldsCheck(trainee, saveTraineeDTO);
         traineeMapper.updateTraineeFromDTO(saveTraineeDTO, trainee);
     }
 
@@ -71,6 +71,27 @@ public class TraineeServiceImpl implements TraineeService {
             errors.put("phone", "Trainee with phone " + saveTraineeDTO.getPhone() + " already exists");
         }
         if (traineeRepository.existsByNationalId(saveTraineeDTO.getNationalId())) {
+            errors.put("nationalId", "Trainee with national ID " + saveTraineeDTO.getNationalId() + " already exists");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+    }
+
+    private void validFieldsCheck(Trainee trainee, SaveTraineeDTO saveTraineeDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (!trainee.getEmail().equals(saveTraineeDTO.getEmail()) &&
+                traineeRepository.existsByEmail(saveTraineeDTO.getEmail())) {
+            errors.put("email", "Trainee with email " + saveTraineeDTO.getEmail() + " already exists");
+        }
+        if (!trainee.getPhone().equals(saveTraineeDTO.getPhone()) &&
+                traineeRepository.existsByPhone(saveTraineeDTO.getPhone())) {
+            errors.put("phone", "Trainee with phone " + saveTraineeDTO.getPhone() + " already exists");
+        }
+        if (!trainee.getNationalId().equals(saveTraineeDTO.getNationalId()) &&
+                traineeRepository.existsByNationalId(saveTraineeDTO.getNationalId())) {
             errors.put("nationalId", "Trainee with national ID " + saveTraineeDTO.getNationalId() + " already exists");
         }
 
