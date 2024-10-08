@@ -48,7 +48,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public void createTrainingProgram(SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        validFieldsCheck(saveTrainingProgramDTO);
+        createValidFieldsCheck(saveTrainingProgramDTO);
 
         TrainingProgram trainingProgram = trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO);
 
@@ -75,7 +75,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                 trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
             throw new DuplicateFieldException("TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
         }
-        validFieldsCheck(saveTrainingProgramDTO);
+        updateValidFieldsCheck(saveTrainingProgramDTO);
 
         List<TopicTrainingProgram> existingTopics = topicTrainingProgramRepository.findByTrainingProgramId(trainingProgramId);
         topicTrainingProgramRepository.deleteAll(existingTopics);
@@ -95,12 +95,22 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgramMapper.toReadTrainingProgramDTO(existingTrainingProgram);
     }
 
-    private void validFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    private void createValidFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
         Map<String, String> errors = new HashMap<>();
 
         if (trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
             errors.put("trainingProgram", "TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
         }
+        existsCheck(saveTrainingProgramDTO, errors);
+    }
+
+    private void updateValidFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        existsCheck(saveTrainingProgramDTO, errors);
+    }
+
+    private void existsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO, Map<String, String> errors) {
         if (!technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())) {
             errors.put("technicalGroup", "Technical Group not found");
         }
