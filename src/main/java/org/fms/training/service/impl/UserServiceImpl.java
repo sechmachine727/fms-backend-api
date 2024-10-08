@@ -1,5 +1,6 @@
 package org.fms.training.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
@@ -14,7 +15,9 @@ import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.TrainerRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.repository.UserRoleRepository;
+import org.fms.training.service.EmailService;
 import org.fms.training.service.UserService;
+import org.fms.training.util.PasswordUtil;
 import org.fms.training.util.Validation;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,36 +42,56 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRepository userRoleRepository;
     private final TrainerRepository trainerRepository;
     private final UserMapper userMapper;
+    private final EmailService emailService;
 
     @Transactional
     @Override
     public SaveUserDTO register(SaveUserDTO saveUserDTO) {
+        String plainPassword = PasswordUtil.generateRandomPassword();
+        String encodedPassword = passwordEncoder.encode(plainPassword);
         User user = userMapper.toUserEntity(saveUserDTO);
-        String encodedPassword = passwordEncoder.encode("1234");
         user.setEncryptedPassword(encodedPassword);
         User savedUser = userRepository.save(user);
 
+        List<Role> assignedRoles = new ArrayList<>();
         if (saveUserDTO.getRoles() != null) {
-            List<UserRole> userRoles = new ArrayList<>();
-            for (Integer roleId : saveUserDTO.getRoles()) {
-                Role role = roleRepository.findById(roleId)
-                        .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
-                UserRole userRole = new UserRole();
-                userRole.setUser(savedUser);
-                userRole.setRole(role);
-                userRoles.add(userRole);
-
-                if ("GROUP_ADMIN".equalsIgnoreCase(role.getRoleName())) {
-                    Trainer trainer = new Trainer();
-                    trainer.setUser(savedUser);
-                    trainerRepository.save(trainer);
-                }
-            }
+            List<UserRole> userRoles = saveUserDTO.getRoles().stream()
+                    .map(roleId -> {
+                        Role role = roleRepository.findById(roleId)
+                                .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
+                        assignedRoles.add(role);
+                        UserRole userRole = new UserRole();
+                        userRole.setUser(savedUser);
+                        userRole.setRole(role);
+                        return userRole;
+                    })
+                    .toList();
             userRoleRepository.saveAll(userRoles);
-            user.setUserRoles(userRoles);
+            savedUser.setUserRoles(userRoles);
         }
+
+        // Prepare role names as a string
+        String rolesString = assignedRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.joining(", "));
+
+        // Prepare email variables
+        Map<String, Object> emailVariables = Map.of(
+                "accountName", savedUser.getAccount(),
+                "password", plainPassword,
+                "roles", rolesString
+        );
+
+        // Send email using the welcome-email template
+        try {
+            emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send welcome email", e);
+        }
+
         return userMapper.toSaveUserDTO(savedUser);
     }
+
 
     @Override
     public User findByAccount(String account) {

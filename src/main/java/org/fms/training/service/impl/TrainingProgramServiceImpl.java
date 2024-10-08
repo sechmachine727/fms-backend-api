@@ -121,6 +121,21 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public void updateTrainingProgramStatus(Integer id, Status newStatus) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Training Program not found"));
+        trainingProgram.setStatus(newStatus);
+        trainingProgramRepository.save(trainingProgram);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<TrainingProgram> findById(Integer id) {
+        return trainingProgramRepository.findById(id);
+    }
+
     private List<TopicTrainingProgram> mapTopicsToTrainingProgram(List<Integer> topicIds, TrainingProgram trainingProgram) {
         return topicIds.stream()
                 .map(topicId -> {

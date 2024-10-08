@@ -5,6 +5,9 @@ import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
+import org.fms.training.entity.TrainingProgram;
+import org.fms.training.enums.Status;
+import org.fms.training.repository.TrainingProgramRepository;
 import org.fms.training.service.TrainingProgramService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
+    private final TrainingProgramRepository trainingProgramRepository;
 
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
@@ -55,4 +59,35 @@ public class TrainingProgramController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<String> updateTrainingProgramStatus(@PathVariable Integer id) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body("Training Program id is required");
+            }
+
+            Optional<TrainingProgram> trainingProgramOptional = trainingProgramService.findById(id);
+            if (trainingProgramOptional.isEmpty()) {
+                return ResponseEntity.badRequest().body("Training Program not found");
+            }
+
+            TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Training Program not found"));
+
+            // Toggle status between ACTIVE and INACTIVE
+            if (trainingProgram.getStatus().equals(Status.ACTIVE)) {
+                trainingProgramService.updateTrainingProgramStatus(id, Status.INACTIVE);
+                return ResponseEntity.ok("Update training program status to: " + Status.INACTIVE);
+            } else {
+                trainingProgramService.updateTrainingProgramStatus(id, Status.ACTIVE);
+                return ResponseEntity.ok("Update training program status to: " + Status.ACTIVE);
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid status value");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update training program status failed");
+        }
+    }
+
 }

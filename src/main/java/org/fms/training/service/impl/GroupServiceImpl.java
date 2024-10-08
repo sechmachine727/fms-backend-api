@@ -1,5 +1,6 @@
 package org.fms.training.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.groupdto.ListGroupDTO;
 import org.fms.training.dto.groupdto.ReadGroupDTO;
@@ -12,11 +13,13 @@ import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.EmailService;
+import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -62,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
         userGroupRepository.saveAll(userGroups);
-        // Lấy danh sách email của các user được chỉ định
+        // Get all user's mail
         List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
@@ -71,13 +74,19 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
 
-        // Gửi email thông báo cho từng user
+        // Send email notification to each user
         for (String email : assignedUserEmails) {
-            String subject = "You have been assigned to a new group";
-            String text = "Dear user,\n\nYou have been assigned to group: " + group.getGroupName() + ".\n"
-                    + "Start Date: " + saveGroupDTO.getExpectedStartDate() + "\n"
-                    + "End Date: " + saveGroupDTO.getExpectedEndDate() + "\n\nBest regards,\nYour Company";
-            emailService.sendEmail(email, subject, text);
+            Map<String, Object> emailVariables = Map.of(
+                    "groupName", group.getGroupName(),
+                    "startDate", saveGroupDTO.getExpectedStartDate(),
+                    "endDate", saveGroupDTO.getExpectedEndDate()
+            );
+
+            try {
+                emailService.sendHtmlEmail(email, "You have been assigned to a new group", "group-assigned-email", emailVariables);
+            } catch (MessagingException e) {
+                throw new RuntimeException("Failed to send group assignment email", e);
+            }
         }
     }
 
