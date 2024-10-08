@@ -11,7 +11,7 @@ import java.util.List;
 public class SaveTrainingProgramDTO {
     private String trainingProgramName;
     private String code;
-    private String region;
+    private Integer departmentId;
     private Integer version;
     private String description;
     private Status status;

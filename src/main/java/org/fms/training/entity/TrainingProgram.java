@@ -61,7 +61,7 @@ public class TrainingProgram {
 
     @ManyToOne
     @JsonManagedReference
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
     @JsonBackReference

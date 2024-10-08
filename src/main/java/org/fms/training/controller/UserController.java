@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,12 +41,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
+    public ResponseEntity<Map<String, String>> updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
+        Map<String, String> errors = new HashMap<>();
         try {
+            if (!userService.isValidUserForUpdate(id, saveUserDTO, errors))
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             userService.updateUserInfo(id, saveUserDTO);
-            return ResponseEntity.ok("Update user info success");
+            Map<String, String> responseSuccess = new HashMap<>();
+            responseSuccess.put("success", "Update user info success");
+            return ResponseEntity.ok(responseSuccess);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            errors.put("error", e.getMessage());
+            return ResponseEntity.internalServerError().body(errors);
         }
     }
 
@@ -74,26 +82,21 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> register(@RequestBody SaveUserDTO saveUserDTO) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody SaveUserDTO saveUserDTO) {
+        Map<String, String> errors = new HashMap<>();
         try {
-            if (!userService.isValidUser(saveUserDTO)) {
-                return new ResponseEntity<>("Input invalid", HttpStatus.BAD_REQUEST);
-            }
-            if (userService.existsByAccount(saveUserDTO.getAccount()) != null) {
-                return new ResponseEntity<>("User already exists in the system", HttpStatus.BAD_REQUEST);
-            }
-            if (userService.existsByEmail(saveUserDTO.getEmail()) != null) {
-                return new ResponseEntity<>("Email already exists in the system", HttpStatus.BAD_REQUEST);
-            }
-            if (userService.existsByEmployeeId(saveUserDTO.getEmployeeId()) != null) {
-                return new ResponseEntity<>("EmployeeId already exists in the system", HttpStatus.BAD_REQUEST);
-            }
+            if (!userService.isValidUser(saveUserDTO, errors))
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             SaveUserDTO result = userService.register(saveUserDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Save user success: " + result.getAccount());
+            Map<String, String> responseSuccess = new HashMap<>();
+            responseSuccess.put("success", "Save user success: " + result.getAccount());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseSuccess);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Save user failed");
+            errors.put("error", e.getMessage());
+            return ResponseEntity.internalServerError().body(errors);
         }
     }
+
 
     @GetMapping("/class-admins")
     public List<ClassAdminDTO> getClassAdmins() {

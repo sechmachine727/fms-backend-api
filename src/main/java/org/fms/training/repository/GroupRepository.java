@@ -1,7 +1,6 @@
 package org.fms.training.repository;
 
 import org.fms.training.entity.Group;
-import org.fms.training.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

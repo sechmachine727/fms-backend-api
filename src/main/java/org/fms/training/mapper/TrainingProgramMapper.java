@@ -17,6 +17,8 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
+    @Mapping(source = "department.id", target = "departmentId")
+    @Mapping(source = "department.departmentName", target = "departmentName")
     @Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd-MMM-YYYY")
     @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "dd-MMM-YYYY")
     ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
@@ -24,10 +26,13 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
+    @Mapping(source = "department.id", target = "departmentId")
+    @Mapping(source = "department.departmentName", target = "departmentName")
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")
+    @Mapping(source = "departmentId", target = "department.id")
     TrainingProgram toTrainingProgramEntity(SaveTrainingProgramDTO saveTrainingProgramDTO);
 
     @Mapping(source = "trainingProgram", target = "trainingProgramNameVersion", qualifiedByName = "convertToTrainingProgramNameVersion")

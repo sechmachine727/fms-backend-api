@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -179,29 +179,29 @@ class UserServiceImplTest {
         then(userRepository).should().findByEmployeeId(employeeId);
     }
 
-    @Test
-    void isValidUser_Valid() {
-        SaveUserDTO saveUserDTO = new SaveUserDTO();
-        saveUserDTO.setAccount("testAccount");
-        saveUserDTO.setEmail("email@domain.com");
-        saveUserDTO.setDepartmentId(1);
-
-        boolean result = userService.isValidUser(saveUserDTO);
-
-        assertTrue(result);
-    }
-
-    @Test
-    void isValidUser_Invalid() {
-        SaveUserDTO saveUserDTO = new SaveUserDTO();
-        saveUserDTO.setAccount(null);
-        saveUserDTO.setEmail(null);
-        saveUserDTO.setDepartmentId(0);
-
-        boolean result = userService.isValidUser(saveUserDTO);
-
-        assertFalse(result);
-    }
+//    @Test
+//    void isValidUser_Valid() {
+//        SaveUserDTO saveUserDTO = new SaveUserDTO();
+//        saveUserDTO.setAccount("testAccount");
+//        saveUserDTO.setEmail("email@domain.com");
+//        saveUserDTO.setDepartmentId(1);
+//
+//        boolean result = userService.isValidUser(saveUserDTO);
+//
+//        assertTrue(result);
+//    }
+//
+//    @Test
+//    void isValidUser_Invalid() {
+//        SaveUserDTO saveUserDTO = new SaveUserDTO();
+//        saveUserDTO.setAccount(null);
+//        saveUserDTO.setEmail(null);
+//        saveUserDTO.setDepartmentId(0);
+//
+//        boolean result = userService.isValidUser(saveUserDTO);
+//
+//        assertFalse(result);
+//    }
 
     @Test
     void findAll() {

@@ -17,11 +17,6 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CorsFilter corsFilter;
-    private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-
     private static final String[] PUBLIC_ENDPOINTS = {
             "/api/**",
             "/api/login",
@@ -32,7 +27,9 @@ public class SecurityConfig {
             "/swagger-resources/**", // Thêm endpoint cho Swagger Resources
             "/webjars/**"           // Thêm endpoint cho WebJars
     };
-
+    private final CorsFilter corsFilter;
+    private final TokenProvider tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

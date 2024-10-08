@@ -6,11 +6,13 @@ import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
+import org.fms.training.entity.Trainer;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
 import org.fms.training.enums.Status;
 import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
+import org.fms.training.repository.TrainerRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.repository.UserRoleRepository;
 import org.fms.training.service.EmailService;
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final TrainerRepository trainerRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
 
@@ -111,15 +114,62 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isValidUser(SaveUserDTO saveUserDTO) {
+    public boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors) {
         if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
             return false;
         }
+
+        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null;
+        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null;
+        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null;
+
+        if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
+            if (checkExistingAccount) {
+                errors.put("account", "User already exists in the system");
+            }
+            if (checkExistingEmail) {
+                errors.put("email", "Email already exists in the system");
+            }
+            if (checkExistingEmployeeId) {
+                errors.put("employeeId", "EmployeeId already exists in the system");
+            }
+            return false;
+        }
+
         return !saveUserDTO.getAccount().isBlank() &&
                 !saveUserDTO.getEmail().isBlank() &&
                 Validation.isEmailValid(saveUserDTO.getEmail()) &&
-                !saveUserDTO.getDepartmentId().equals(0);
+                errors.isEmpty();
     }
+
+    @Override
+    public boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors) {
+        if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
+            return false;
+        }
+        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null && existsByAccount(saveUserDTO.getAccount()).getId() != userId;
+        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null && existsByEmail(saveUserDTO.getEmail()).getId() != userId;
+        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null && existsByEmployeeId(saveUserDTO.getEmployeeId()).getId() != userId;
+
+        if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
+            if (checkExistingAccount) {
+                errors.put("account", "User already exists in the system");
+            }
+            if (checkExistingEmail) {
+                errors.put("email", "Email already exists in the system");
+            }
+            if (checkExistingEmployeeId) {
+                errors.put("employeeId", "EmployeeId already exists in the system");
+            }
+            return false;
+        }
+
+        return !saveUserDTO.getAccount().isBlank() &&
+                !saveUserDTO.getEmail().isBlank() &&
+                Validation.isEmailValid(saveUserDTO.getEmail()) &&
+                errors.isEmpty();
+    }
+
 
     @Override
     public Optional<List<ReadUserDTO>> findAll(String search) {

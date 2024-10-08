@@ -14,6 +14,7 @@ import java.util.List;
 public class SaveUserDTO {
     private String account;
     private String email;
+    private String name;
     private String employeeId;
     private Status status;
     private ContractType contractType;
