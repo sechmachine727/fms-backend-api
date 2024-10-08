@@ -70,7 +70,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         TrainingProgram existingTrainingProgram = trainingProgramRepository.findById(trainingProgramId)
                 .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
 
-        updateValidFieldsCheck(saveTrainingProgramDTO);
+        updateValidFieldsCheck(existingTrainingProgram, saveTrainingProgramDTO);
 
         List<TopicTrainingProgram> existingTopics = topicTrainingProgramRepository.findByTrainingProgramId(trainingProgramId);
         topicTrainingProgramRepository.deleteAll(existingTopics);
@@ -99,9 +99,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         existsCheck(saveTrainingProgramDTO, errors);
     }
 
-    private void updateValidFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    private void updateValidFieldsCheck(TrainingProgram trainingProgram, SaveTrainingProgramDTO saveTrainingProgramDTO) {
         Map<String, String> errors = new HashMap<>();
 
+        if (!trainingProgram.getCode().equals(saveTrainingProgramDTO.getCode()) && trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
+            errors.put("trainingProgram", "TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
+        }
 
         existsCheck(saveTrainingProgramDTO, errors);
     }
