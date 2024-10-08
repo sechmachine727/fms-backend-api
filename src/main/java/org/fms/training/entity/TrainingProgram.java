@@ -62,6 +62,11 @@ public class TrainingProgram {
     @JoinColumn(name = "technical_group_id", nullable = false)
     private TechnicalGroup technicalGroup;
 
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     @JsonBackReference
     @OneToMany(mappedBy = "trainingProgram")
     private List<Group> groups;
