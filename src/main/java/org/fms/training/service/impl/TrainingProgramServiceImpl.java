@@ -12,15 +12,14 @@ import org.fms.training.enums.Status;
 import org.fms.training.exception.DuplicateFieldException;
 import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
+import org.fms.training.exception.ValidationException;
 import org.fms.training.mapper.TrainingProgramMapper;
 import org.fms.training.repository.*;
 import org.fms.training.service.TrainingProgramService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -97,14 +96,20 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     private void validFieldsCheck(SaveTrainingProgramDTO saveTrainingProgramDTO) {
+        Map<String, String> errors = new HashMap<>();
+
         if (trainingProgramRepository.existsByCode(saveTrainingProgramDTO.getCode())) {
-            throw new DuplicateFieldException("TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
+            errors.put("trainingProgram", "TrainingProgram with code " + saveTrainingProgramDTO.getCode() + " already exists");
         }
         if (!technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())) {
-            throw new ResourceNotFoundException("TechnicalGroup not found");
+            errors.put("technicalGroup", "Technical Group not found");
         }
         if (!departmentRepository.existsById(saveTrainingProgramDTO.getDepartmentId())) {
-            throw new ResourceNotFoundException("Department not found");
+            errors.put("department", "Department not found");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
     }
 
