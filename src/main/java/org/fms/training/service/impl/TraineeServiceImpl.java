@@ -5,7 +5,6 @@ import org.fms.training.dto.traineedto.ListTraineeDTO;
 import org.fms.training.dto.traineedto.ReadTraineeDTO;
 import org.fms.training.dto.traineedto.SaveTraineeDTO;
 import org.fms.training.entity.Trainee;
-import org.fms.training.exception.DuplicateFieldException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
 import org.fms.training.mapper.TraineeMapper;
@@ -53,10 +52,7 @@ public class TraineeServiceImpl implements TraineeService {
     public void updateTrainee(Integer traineeId, SaveTraineeDTO saveTraineeDTO) {
         Trainee trainee = traineeRepository.findById(traineeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trainee does not exist " + traineeId));
-        if (!trainee.getEmail().equals(saveTraineeDTO.getEmail()) &&
-                traineeRepository.existsByEmail(saveTraineeDTO.getEmail())) {
-            throw new DuplicateFieldException("Trainee with email " + saveTraineeDTO.getEmail() + " already exists");
-        }
+
         validFieldsCheck(trainee, saveTraineeDTO);
         traineeMapper.updateTraineeFromDTO(saveTraineeDTO, trainee);
     }
