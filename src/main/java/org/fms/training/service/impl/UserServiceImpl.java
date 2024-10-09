@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         // Prepare email variables
         Map<String, Object> emailVariables = Map.of(
-                "accountName", savedUser.getAccount(),
+                "account", savedUser.getAccount(),
                 "password", plainPassword,
                 "roles", rolesString
         );

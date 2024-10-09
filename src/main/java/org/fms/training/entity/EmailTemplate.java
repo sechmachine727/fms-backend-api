@@ -21,7 +21,6 @@ public class EmailTemplate {
     @Column(name = "subject")
     private String subject;
 
-    @Lob
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
