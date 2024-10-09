@@ -1,6 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.dto.topicassessmentdto.TopicAssessmentDTO;
 import org.fms.training.dto.topicdto.ListTopicDTO;
 import org.fms.training.dto.topicdto.TopicDetailDTO;
@@ -60,7 +61,10 @@ public class TopicServiceImpl implements TopicService {
         dto.setCode(topic.getTopicCode());
         dto.setName(topic.getTopicName());
         dto.setPassCriteria(topic.getPassCriteria());
-        dto.setTechnicalGroupCode(topic.getTechnicalGroup().getCode());
+        ListTechnicalGroupDTO technicalGroupDTO = new ListTechnicalGroupDTO();
+        technicalGroupDTO.setId(topic.getTechnicalGroup().getId());
+        technicalGroupDTO.setCode(topic.getTechnicalGroup().getCode());
+        dto.setTechnicalGroup(technicalGroupDTO);
 
         List<UnitDTO> unitDTOs = units.stream().map(unit -> {
             UnitDTO unitDTO = new UnitDTO();
