@@ -11,7 +11,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Map;
 
@@ -20,9 +19,6 @@ import java.util.Map;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    private final SpringTemplateEngine templateEngine;
-    private final EmailTemplateRepository emailTemplateRepository;
-    private final SpringTemplateEngine templateEngine;
     private final EmailTemplateRepository emailTemplateRepository;
 
     @Override
