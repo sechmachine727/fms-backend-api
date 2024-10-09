@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         // Prepare email variables
         Map<String, Object> emailVariables = Map.of(
-                "accountName", savedUser.getAccount(),
+                "account", savedUser.getAccount(),
                 "password", plainPassword,
                 "roles", rolesString
         );
@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send welcome email", e);
         }
+
 
         return userMapper.toSaveUserDTO(savedUser);
     }
