@@ -24,7 +24,8 @@ public interface TrainingProgramService {
 
     List<ListByTechnicalGroupDTO> findByTechnicalGroupId(Integer technicalGroupId);
 
-    void updateTrainingProgramStatus(Integer id, Status newStatus);
+    @Transactional
+    Status toggleTrainingProgramStatus(Integer id);
 
     Optional<TrainingProgram> findById(Integer id);
 }

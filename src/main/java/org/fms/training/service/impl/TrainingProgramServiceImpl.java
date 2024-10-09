@@ -130,13 +130,15 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                 .toList();
     }
 
-    @Override
     @Transactional
-    public void updateTrainingProgramStatus(Integer id, Status newStatus) {
+    @Override
+    public Status toggleTrainingProgramStatus(Integer id) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Training Program not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Training Program not found"));
+        Status newStatus = trainingProgram.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
         trainingProgram.setStatus(newStatus);
         trainingProgramRepository.save(trainingProgram);
+        return newStatus;
     }
 
     @Override
