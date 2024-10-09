@@ -36,6 +36,29 @@ class TraineeServiceImplTest {
     }
 
     @Test
+    void getTraineeById_withExistentTrainee_shouldReturnTrainee() {
+        // given
+        Integer traineeId = 1;
+        Trainee trainee = new Trainee();
+        given(traineeRepository.findById(traineeId)).willReturn(Optional.of(trainee));
+
+        // when
+        traineeService.getTraineeById(traineeId);
+
+        // then
+        then(traineeRepository).should(times(1)).findById(traineeId);
+    }
+
+    @Test
+    void getAllTrainees_shouldReturnListOfTrainees() {
+        // when
+        traineeService.getAllTrainees();
+
+        // then
+        then(traineeRepository).should(times(1)).findAll();
+    }
+
+    @Test
     void addTrainee_withValidData_shouldSaveTrainee() {
         // given
         SaveTraineeDTO saveTraineeDTO = new SaveTraineeDTO();

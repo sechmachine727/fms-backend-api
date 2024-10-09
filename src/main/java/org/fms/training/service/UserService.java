@@ -1,5 +1,6 @@
 package org.fms.training.service;
 
+import jakarta.mail.MessagingException;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
-    SaveUserDTO register(SaveUserDTO saveUserDTO);
+    SaveUserDTO register(SaveUserDTO saveUserDTO) throws MessagingException;
 
     User findByAccount(String account);
 
