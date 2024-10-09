@@ -141,12 +141,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         return newStatus;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<TrainingProgram> findById(Integer id) {
-        return trainingProgramRepository.findById(id);
-    }
-
     private List<TopicTrainingProgram> mapTopicsToTrainingProgram(List<Integer> topicIds, TrainingProgram trainingProgram) {
         return topicIds.stream()
                 .map(topicId -> {

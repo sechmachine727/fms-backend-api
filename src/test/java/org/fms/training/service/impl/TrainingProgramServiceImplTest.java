@@ -4,6 +4,7 @@ import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.entity.TrainingProgram;
 import org.fms.training.enums.Status;
+import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
 import org.fms.training.mapper.TrainingProgramMapper;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 
@@ -245,7 +247,72 @@ class TrainingProgramServiceImplTest {
     }
 
     @Test
-    void updateTrainingProgramStatus_withActiveStatus_shouldSetToInactive() {
+    void getAllTrainingPrograms_withSearchString_shouldReturnListOfTrainingPrograms() {
+        // given
+        String search = "Java";
+        given(trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search))
+                .willReturn(Collections.emptyList());
+
+        // when
+        trainingProgramService.getAllTrainingPrograms(search);
+
+        // then
+        then(trainingProgramRepository).should(times(1))
+                .findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
+    }
+
+    @Test
+    void createTrainingProgram_withInactiveTopic_shouldThrowInvalidDataException() {
+        // given
+        SaveTrainingProgramDTO saveTrainingProgramDTO = new SaveTrainingProgramDTO();
+        saveTrainingProgramDTO.setCode("TP001");
+        saveTrainingProgramDTO.setTopicIds(List.of(1, 2, 3));
+        saveTrainingProgramDTO.setTechnicalGroupId(1);
+        saveTrainingProgramDTO.setDepartmentId(1);
+
+        TrainingProgram trainingProgram = new TrainingProgram();
+        given(trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO)).willReturn(trainingProgram);
+        given(trainingProgramRepository.save(trainingProgram)).willReturn(trainingProgram);
+
+        Topic topic = new Topic();
+        topic.setStatus(Status.INACTIVE);
+        given(topicRepository.findById(anyInt())).willReturn(Optional.of(topic));
+        given(technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())).willReturn(true);
+        given(departmentRepository.existsById(saveTrainingProgramDTO.getDepartmentId())).willReturn(true);
+
+        // when, then
+        assertThrows(InvalidDataException.class, () -> trainingProgramService.createTrainingProgram(saveTrainingProgramDTO));
+    }
+
+    @Test
+    void updateTrainingProgram_withInactiveTopic_shouldThrowInvalidDataException() {
+        // given
+        Integer trainingProgramId = 1;
+        SaveTrainingProgramDTO saveTrainingProgramDTO = new SaveTrainingProgramDTO();
+        saveTrainingProgramDTO.setCode("TP001");
+        saveTrainingProgramDTO.setTopicIds(List.of(1, 2, 3));
+        saveTrainingProgramDTO.setTechnicalGroupId(1);
+        saveTrainingProgramDTO.setDepartmentId(1);
+
+        TrainingProgram trainingProgram = new TrainingProgram();
+        trainingProgram.setCode("TP001");
+
+        given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.of(trainingProgram));
+        willDoNothing().given(topicTrainingProgramRepository).deleteAll(anyList());
+        given(trainingProgramRepository.save(trainingProgram)).willReturn(trainingProgram);
+
+        Topic topic = new Topic();
+        topic.setStatus(Status.INACTIVE);
+        given(topicRepository.findById(anyInt())).willReturn(Optional.of(topic));
+        given(technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())).willReturn(true);
+        given(departmentRepository.existsById(saveTrainingProgramDTO.getDepartmentId())).willReturn(true);
+
+        // when, then
+        assertThrows(InvalidDataException.class, () -> trainingProgramService.updateTrainingProgram(trainingProgramId, saveTrainingProgramDTO));
+    }
+
+    @Test
+    void toggleTrainingProgramStatus_withExistentTrainingProgram_shouldToggleStatus() {
         // given
         Integer trainingProgramId = 1;
         TrainingProgram trainingProgram = new TrainingProgram();
@@ -253,36 +320,20 @@ class TrainingProgramServiceImplTest {
         given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.of(trainingProgram));
 
         // when
-        trainingProgramService.updateTrainingProgramStatus(trainingProgramId, Status.INACTIVE);
+        Status newStatus = trainingProgramService.toggleTrainingProgramStatus(trainingProgramId);
 
         // then
+        assertEquals(Status.INACTIVE, newStatus);
         then(trainingProgramRepository).should(times(1)).save(trainingProgram);
-        assert trainingProgram.getStatus() == Status.INACTIVE;
     }
 
     @Test
-    void updateTrainingProgramStatus_withInactiveStatus_shouldSetToActive() {
-        // given
-        Integer trainingProgramId = 1;
-        TrainingProgram trainingProgram = new TrainingProgram();
-        trainingProgram.setStatus(Status.INACTIVE);
-        given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.of(trainingProgram));
-
-        // when
-        trainingProgramService.updateTrainingProgramStatus(trainingProgramId, Status.ACTIVE);
-
-        // then
-        then(trainingProgramRepository).should(times(1)).save(trainingProgram);
-        assert trainingProgram.getStatus() == Status.ACTIVE;
-    }
-
-    @Test
-    void updateTrainingProgramStatus_withNonExistentTrainingProgram_shouldThrowResourceNotFoundException() {
+    void toggleTrainingProgramStatus_withNonExistentTrainingProgram_shouldThrowResourceNotFoundException() {
         // given
         Integer trainingProgramId = 1;
         given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.empty());
 
         // when, then
-        assertThrows(ResourceNotFoundException.class, () -> trainingProgramService.updateTrainingProgramStatus(trainingProgramId, Status.ACTIVE));
+        assertThrows(ResourceNotFoundException.class, () -> trainingProgramService.toggleTrainingProgramStatus(trainingProgramId));
     }
 }
