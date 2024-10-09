@@ -2,6 +2,7 @@ package org.fms.training.dto.topicdto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.dto.topicassessmentdto.TopicAssessmentDTO;
 import org.fms.training.dto.unitdto.UnitDTO;
 
@@ -14,7 +15,7 @@ public class TopicDetailDTO {
     private String code;
     private String name;
     private String passCriteria;
-    private String technicalGroupCode;
+    private ListTechnicalGroupDTO technicalGroup;
     private List<UnitDTO> units;
     private List<TopicAssessmentDTO> topicAssessments;
 }
