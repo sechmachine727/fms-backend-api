@@ -15,6 +15,8 @@ public interface TraineeMapper {
     @Mapping(source = "universityGraduationDate", target = "universityGraduationDate", dateFormat = "dd-MMM-YYYY")
     ReadTraineeDTO toReadTraineeDTO(Trainee trainee);
 
+    @Mapping(source = "dob", target = "dob", dateFormat = "dd-MMM-yyyy")
+    @Mapping(source = "universityGraduationDate", target = "universityGraduationDate", dateFormat = "dd-MMM-yyyy")
     Trainee toTraineeEntity(SaveTraineeDTO saveTraineeDTO);
 
     @Mapping(source = "dob", target = "dob", dateFormat = "dd-MMM-YYYY")

@@ -8,6 +8,8 @@ import org.fms.training.dto.groupdto.SaveGroupDTO;
 import org.fms.training.entity.Group;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserGroup;
+import org.fms.training.exception.ResourceNotFoundException;
+import org.fms.training.exception.ValidationException;
 import org.fms.training.enums.GroupStatus;
 import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
@@ -19,6 +21,10 @@ import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +55,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(SaveGroupDTO saveGroupDTO) {
+        validFieldsCheck(saveGroupDTO);
+
         Group group = groupMapper.toGroupEntity(saveGroupDTO);
 
         // Save the group first to get its ID
@@ -58,7 +66,7 @@ public class GroupServiceImpl implements GroupService {
         List<UserGroup> userGroups = saveGroupDTO.getAssignedUserIds().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new RuntimeException("User not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     UserGroup userGroup = new UserGroup();
                     userGroup.setGroup(savedGroup);
                     userGroup.setUser(user);
@@ -103,6 +111,4 @@ public class GroupServiceImpl implements GroupService {
     public Group existsByGroupCode(String code) {
         return groupRepository.findByGroupCode(code).orElse(null);
     }
-
-
 }

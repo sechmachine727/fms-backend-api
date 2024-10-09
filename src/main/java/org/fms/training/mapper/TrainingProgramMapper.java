@@ -24,6 +24,7 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
+
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 

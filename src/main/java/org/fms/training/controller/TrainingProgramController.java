@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,19 +40,17 @@ public class TrainingProgramController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createTrainingProgram(@RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
+    public ResponseEntity<Map<String, String>> createTrainingProgram(@RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
         trainingProgramService.createTrainingProgram(saveTrainingProgramDTO);
-        return ResponseEntity.ok("Create training program success");
+        Map<String, String> responseSuccess = Map.of("success", "Create training program success");
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseSuccess);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTrainingProgram(@PathVariable Integer id, @RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
-        try {
-            trainingProgramService.updateTrainingProgram(id, saveTrainingProgramDTO);
-            return ResponseEntity.ok("Update training program success");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Map<String, String>> updateTrainingProgram(@PathVariable Integer id, @RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
+        trainingProgramService.updateTrainingProgram(id, saveTrainingProgramDTO);
+        Map<String, String> responseSuccess = Map.of("success", "Update training program success");
+        return ResponseEntity.ok(responseSuccess);
     }
 
     @GetMapping("/technical-group/{technicalGroupId}")

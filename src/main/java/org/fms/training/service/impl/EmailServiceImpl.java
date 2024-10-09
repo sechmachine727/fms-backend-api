@@ -22,6 +22,8 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
     private final EmailTemplateRepository emailTemplateRepository;
+    private final SpringTemplateEngine templateEngine;
+    private final EmailTemplateRepository emailTemplateRepository;
 
     @Override
     public void sendEmail(String to, String subject, String text) {

@@ -34,10 +34,10 @@ public class Trainee {
     @Column(name = "gpa", nullable = false)
     private Double gpa;
 
-    @Column(name = "phone", nullable = false, length = 11)
+    @Column(name = "phone", nullable = false, length = 11, unique = true)
     private String phone;
 
-    @Column(name = "national_id", nullable = false, length = 12)
+    @Column(name = "national_id", nullable = false, length = 12, unique = true)
     private String nationalId;
 
     @Column(name = "language", nullable = false, length = 20)
@@ -52,7 +52,7 @@ public class Trainee {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @JsonBackReference
