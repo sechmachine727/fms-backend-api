@@ -9,6 +9,7 @@ import org.fms.training.entity.Role;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
 import org.fms.training.enums.Status;
+import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.TrainerRepository;
@@ -233,13 +234,15 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    @Override
     @Transactional
-    public void updateUserStatus(Integer userId, Status status) {
+    @Override
+    public Status toggleUserStatus(Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setStatus(status);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Status newStatus = user.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
+        user.setStatus(newStatus);
         userRepository.save(user);
+        return newStatus;
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
@@ -248,6 +251,4 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getAccount(), user.getEncryptedPassword(), grantedAuthorities);
     }
-
-
 }

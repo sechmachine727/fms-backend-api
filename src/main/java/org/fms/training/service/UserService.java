@@ -6,6 +6,7 @@ import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -34,5 +35,6 @@ public interface UserService extends UserDetailsService {
 
     List<ClassAdminDTO> getClassAdminUsers();
 
-    void updateUserStatus(Integer userId, Status status);
+    @Transactional
+    Status toggleUserStatus(Integer userId);
 }

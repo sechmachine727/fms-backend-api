@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
-import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
+import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -57,27 +57,18 @@ public class UserController {
     }
 
     @PutMapping("/change-status/{id}")
-    public ResponseEntity<String> updateUserStatus(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, String>> updateUserStatus(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
         try {
-            if (id == null) {
-                return ResponseEntity.badRequest().body("User id is required");
-            }
-            Optional<ReadUserDTO> userOptional = userService.findById(id);
-            if (userOptional.isEmpty()) {
-                return ResponseEntity.badRequest().body("User not found");
-            }
-            User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-            if (user.getStatus().equals(Status.ACTIVE)) {
-                userService.updateUserStatus(id, Status.INACTIVE);
-                return ResponseEntity.ok("Update user status to: " + Status.INACTIVE);
-            } else {
-                userService.updateUserStatus(id, Status.ACTIVE);
-                return ResponseEntity.ok("Update user status to: " + Status.ACTIVE);
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid status value");
+            Status newStatus = userService.toggleUserStatus(id);
+            response.put("success", "User status updated successfully to " + newStatus);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update user status failed");
+            response.put("error", "Update user status failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
