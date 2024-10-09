@@ -10,6 +10,7 @@ import org.fms.training.entity.User;
 import org.fms.training.entity.UserGroup;
 import org.fms.training.enums.GroupStatus;
 import org.fms.training.exception.ResourceNotFoundException;
+import org.fms.training.exception.ValidationException;
 import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
@@ -19,6 +20,10 @@ import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +54,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(SaveGroupDTO saveGroupDTO) {
+        validFieldsCheck(saveGroupDTO);
 
         Group group = groupMapper.toGroupEntity(saveGroupDTO);
 
@@ -92,6 +98,41 @@ public class GroupServiceImpl implements GroupService {
                     throw new RuntimeException("Failed to send group assignment email", e);
                 }
             }
+        }
+    }
+
+    private void validFieldsCheck(SaveGroupDTO saveGroupDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (groupRepository.existsByGroupCode(saveGroupDTO.getGroupCode())) {
+            errors.put("groupCode", "Group code already exists.");
+        }
+
+        // Parse and validate dates
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        try {
+            startDate = LocalDateTime.parse(saveGroupDTO.getExpectedStartDate(), formatter);
+            endDate = LocalDateTime.parse(saveGroupDTO.getExpectedEndDate(), formatter);
+        } catch (DateTimeParseException e) {
+            errors.put("dateFormat", "Invalid date format. Please use yyyy-MM-dd'T'HH:mm:ss.SSS.");
+            throw new ValidationException(errors);
+        }
+
+        // Validate start date is not after end date
+        if (startDate.isAfter(endDate)) {
+            errors.put("dateOrder", "Start date cannot be after end date.");
+        }
+
+        // Validate end date is not in the past
+        if (endDate.isBefore(LocalDateTime.now())) {
+            errors.put("datePast", "End date cannot be in the past.");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
     }
 
