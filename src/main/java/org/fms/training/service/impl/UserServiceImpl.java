@@ -89,7 +89,6 @@ public class UserServiceImpl implements UserService {
             throw new MessagingException("Failed to send welcome email", e);
         }
 
-
         return userMapper.toSaveUserDTO(savedUser);
     }
 
