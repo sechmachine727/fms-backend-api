@@ -9,6 +9,7 @@ import org.fms.training.entity.Role;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
 import org.fms.training.enums.Status;
+import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.UserMapper;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.repository.TrainerRepository;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public SaveUserDTO register(SaveUserDTO saveUserDTO) {
+    public SaveUserDTO register(SaveUserDTO saveUserDTO) throws MessagingException {
         String plainPassword = PasswordUtil.generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(plainPassword);
         User user = userMapper.toUserEntity(saveUserDTO);
@@ -85,7 +86,7 @@ public class UserServiceImpl implements UserService {
         try {
             emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send welcome email", e);
+            throw new MessagingException("Failed to send welcome email", e);
         }
 
         return userMapper.toSaveUserDTO(savedUser);
@@ -201,7 +202,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         //Remove existing roles
         List<UserRole> existingRoles = userRoleRepository.findByUserId(userId);
@@ -214,7 +215,7 @@ public class UserServiceImpl implements UserService {
         List<UserRole> newRoles = saveUserDTO.getRoles().stream()
                 .map(roleId -> {
                     Role role = roleRepository.findById(roleId)
-                            .orElseThrow(() -> new RuntimeException("Role not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
                     UserRole userRole = new UserRole();
                     userRole.setUser(user);
                     userRole.setRole(role);
@@ -237,7 +238,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUserStatus(Integer userId, Status status) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setStatus(status);
         userRepository.save(user);
     }
