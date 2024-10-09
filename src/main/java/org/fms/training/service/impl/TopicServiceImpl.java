@@ -10,13 +10,16 @@ import org.fms.training.dto.unitsectiondto.UnitSectionDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicAssessment;
 import org.fms.training.entity.Unit;
+import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
+import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.TopicMapper;
 import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
 import org.fms.training.repository.UnitRepository;
 import org.fms.training.service.TopicService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -128,6 +131,17 @@ public class TopicServiceImpl implements TopicService {
         return activeTopics.stream()
                 .map(topicMapper::toListDTO)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public Status toggleTopicStatus(Integer topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+        Status newStatus = topic.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
+        topic.setStatus(newStatus);
+        topicRepository.save(topic);
+        return newStatus;
     }
 
 
