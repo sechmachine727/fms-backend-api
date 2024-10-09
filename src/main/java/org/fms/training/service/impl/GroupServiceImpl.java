@@ -8,23 +8,17 @@ import org.fms.training.dto.groupdto.SaveGroupDTO;
 import org.fms.training.entity.Group;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserGroup;
-import org.fms.training.exception.ResourceNotFoundException;
-import org.fms.training.exception.ValidationException;
 import org.fms.training.enums.GroupStatus;
+import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.EmailService;
-import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,7 +49,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(SaveGroupDTO saveGroupDTO) {
-        validFieldsCheck(saveGroupDTO);
 
         Group group = groupMapper.toGroupEntity(saveGroupDTO);
 

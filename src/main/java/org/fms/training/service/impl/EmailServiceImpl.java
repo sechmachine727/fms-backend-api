@@ -3,6 +3,7 @@ package org.fms.training.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringSubstitutor;
 import org.fms.training.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
 import org.fms.training.service.EmailService;
@@ -11,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.apache.commons.text.StringSubstitutor;
 
 import java.util.Map;
 
