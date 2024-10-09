@@ -12,8 +12,7 @@ public interface TopicMapper {
     @Mapping(source = "topicName", target = "name")
     @Mapping(source = "topicCode", target = "code")
     @Mapping(source = "version", target = "version")
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
+    @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "lastModifiedBy", target = "lastModifiedBy")
     @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
     ListTopicDTO toListDTO(Topic topic);
@@ -22,7 +21,7 @@ public interface TopicMapper {
     @Mapping(source = "topicCode", target = "code")
     @Mapping(source = "topicName", target = "name")
     @Mapping(source = "passCriteria", target = "passCriteria")
-    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
+    @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "units", target = "units")
     TopicDetailDTO toDetailDTO(Topic topic);
 }
