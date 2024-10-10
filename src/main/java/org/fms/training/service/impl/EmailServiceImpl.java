@@ -10,6 +10,7 @@ import org.fms.training.service.EmailService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -31,37 +32,49 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
+    @Async
     @Override
-    public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables) throws MessagingException {
-        // Debug: Log template name and variables
-        System.out.println("Template name: " + templateName);
-        System.out.println("Variables: " + variables);
+    public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables) {
+        try {
+            // Debug: Log template name and variables
+            System.out.println("Template name: " + templateName);
+            System.out.println("Variables: " + variables);
 
-        // Fetch the template from the database using the template name
-        EmailTemplate template = emailTemplateRepository.findByName(templateName)
-                .orElseThrow(() -> new IllegalArgumentException("Email template not found with name: " + templateName));
-        System.out.println("Template content length: " + template.getContent().length());
+            // Fetch the template from the database using the template name
+            EmailTemplate template = emailTemplateRepository.findByName(templateName)
+                    .orElseThrow(() -> new IllegalArgumentException("Email template not found with name: " + templateName));
+            System.out.println("Template content length: " + template.getContent().length());
 
-        // Debug: Log content
-        System.out.println("Template content: " + template.getContent());
-        StringSubstitutor sub = new StringSubstitutor(variables);
-        // Use the fetched template content (HTML stored in DB)
-        String templateContent = template.getContent();
-        String htmlContent = sub.replace(templateContent);
+            // Debug: Log content
+            System.out.println("Template content: " + template.getContent());
 
-        // Debug: Log final HTML content after substitution
-        System.out.println("HTML Content after substitution: " + htmlContent);
+            // Use StringSubstitutor to replace variables in template content
+            StringSubstitutor sub = new StringSubstitutor(variables);
+            String htmlContent = sub.replace(template.getContent());
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("datvip1938@gmail.com");
+            // Debug: Log final HTML content after substitution
+            System.out.println("HTML Content after substitution: " + htmlContent);
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(htmlContent, true); // Enable HTML
+            // Create and send the email
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("datvip1938@gmail.com");
 
-        mailSender.send(message);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true); // Enable HTML
+
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+            // Log the exception instead of throwing
+            System.err.println("Failed to send email to " + to + ": " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Log template-related errors
+            System.err.println("Email template error: " + e.getMessage());
+        }
     }
+
 
 
 }
