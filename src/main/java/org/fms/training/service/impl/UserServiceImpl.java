@@ -82,16 +82,12 @@ public class UserServiceImpl implements UserService {
                 "roles", rolesString
         );
 
-        // Send email using the welcome-email template
-        try {
-            emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send welcome email", e);
-        }
-
+        // Send email asynchronously
+        emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
 
         return userMapper.toSaveUserDTO(savedUser);
     }
+
 
 
     @Override
