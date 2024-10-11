@@ -89,8 +89,7 @@ public class GroupServiceImpl implements GroupService {
             assignedUserEmails.forEach(email -> {
                 Map<String, Object> emailVariables = Map.of(
                         "groupName", group.getGroupName(),
-                        "startDate", saveGroupDTO.getExpectedStartDate(),
-                        "endDate", saveGroupDTO.getExpectedEndDate()
+                        "groupCode", group.getGroupCode()
                 );
 
                 // Call the async email service (no try-catch needed, exceptions handled in async method)
