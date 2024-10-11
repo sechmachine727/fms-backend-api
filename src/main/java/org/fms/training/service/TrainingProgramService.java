@@ -4,7 +4,7 @@ import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.enums.TrainingProgramStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,5 +24,11 @@ public interface TrainingProgramService {
     List<ListByTechnicalGroupDTO> findByTechnicalGroupId(Integer technicalGroupId);
 
     @Transactional
-    Status toggleTrainingProgramStatus(Integer id);
+    TrainingProgramStatus toggleTrainingProgramStatusToActiveAndInactive(Integer id);
+
+    @Transactional
+    TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id);
+
+    @Transactional
+    TrainingProgramStatus toggleTrainingProgramStatusFromReviewingOrDeclinedToActive(Integer id);
 }

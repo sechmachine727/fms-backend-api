@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.dto.departmentdto.DepartmentDTO;
 import org.fms.training.dto.technicalgroupdto.ListTechnicalGroupDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.enums.TrainingProgramStatus;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class ReadTrainingProgramDTO {
     private DepartmentDTO department;
     private String version;
     private String description;
-    private Status status;
+    private TrainingProgramStatus status;
     private ListTechnicalGroupDTO technicalGroup;
     private String createdDate;
     private String lastModifiedBy;

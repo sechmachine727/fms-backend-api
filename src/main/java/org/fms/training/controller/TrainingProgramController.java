@@ -5,7 +5,7 @@ import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
 import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
 import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.enums.TrainingProgramStatus;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.TrainingProgramRepository;
 import org.fms.training.service.TrainingProgramService;
@@ -61,11 +61,43 @@ public class TrainingProgramController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/change-status/{id}")
+    @PutMapping("/toggle-activate/{id}")
     public ResponseEntity<Map<String, String>> updateTrainingProgramStatus(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
         try {
-            Status newStatus = trainingProgramService.toggleTrainingProgramStatus(id);
+            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusToActiveAndInactive(id);
+            response.put("success", "Training program status updated successfully to " + newStatus);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("error", "Update training program status failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PutMapping("/toggle-reviewing-to-declined/{id}")
+    public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(id);
+            response.put("success", "Training program status updated successfully to " + newStatus);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("error", "Update training program status failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PutMapping("/toggle-to-active/{id}")
+    public ResponseEntity<Map<String, String>> toggleReviewingToActive(@PathVariable Integer id) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingOrDeclinedToActive(id);
             response.put("success", "Training program status updated successfully to " + newStatus);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
