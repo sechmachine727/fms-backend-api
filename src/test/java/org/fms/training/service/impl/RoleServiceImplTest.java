@@ -32,8 +32,14 @@ class RoleServiceImplTest {
     @Test
     void getAllRoles_shouldReturnRoleDTOs_whenRolesExist() {
         // given
-        Role role1 = new Role(1L, "ADMIN");
-        Role role2 = new Role(2L, "USER");
+        Role role1 = new Role();
+        role1.setId(1);
+        role1.setRoleName("ADMIN");
+
+        Role role2 = new Role();
+        role2.setId(2);
+        role2.setRoleName("USER");
+
         List<Role> roles = List.of(role1, role2);
         given(roleRepository.findAll()).willReturn(roles);
 
@@ -42,8 +48,8 @@ class RoleServiceImplTest {
 
         // then
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getRoleName()).isEqualTo("ADMIN");
-        assertThat(result.get(1).getRoleName()).isEqualTo("USER");
+        assertThat(result.get(0).getName()).isEqualTo("ADMIN");
+        assertThat(result.get(1).getName()).isEqualTo("USER");
 
         verify(roleRepository, times(1)).findAll();
     }
