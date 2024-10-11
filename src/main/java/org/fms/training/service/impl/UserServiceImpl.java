@@ -82,15 +82,12 @@ public class UserServiceImpl implements UserService {
                 "roles", rolesString
         );
 
-        // Send email using the welcome-email template
-        try {
-            emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
-        } catch (MessagingException e) {
-            throw new MessagingException("Failed to send welcome email", e);
-        }
+        // Send email asynchronously
+        emailService.sendHtmlEmail(savedUser.getEmail(), "Welcome to FMS", "welcome-email", emailVariables);
 
         return userMapper.toSaveUserDTO(savedUser);
     }
+
 
 
     @Override
@@ -204,14 +201,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        //Remove existing roles
         List<UserRole> existingRoles = userRoleRepository.findByUserId(userId);
         userRoleRepository.deleteAll(existingRoles);
 
-        //Update user
+        String plainPassword = null;
+        if (!user.getAccount().equals(saveUserDTO.getAccount()) || !user.getEmail().equals(saveUserDTO.getEmail())) {
+            plainPassword = PasswordUtil.generateRandomPassword();
+            String encodedPassword = passwordEncoder.encode(plainPassword);
+            user.setEncryptedPassword(encodedPassword);
+        }
+
         userMapper.updateUserFromDTO(saveUserDTO, user);
 
-        //Add new roles
         List<UserRole> newRoles = saveUserDTO.getRoles().stream()
                 .map(roleId -> {
                     Role role = roleRepository.findById(roleId)
@@ -223,7 +224,24 @@ public class UserServiceImpl implements UserService {
                 })
                 .toList();
         userRoleRepository.saveAll(newRoles);
+
+        userRepository.save(user);
+
+        String rolesString = newRoles.stream()
+                .map(userRole -> userRole.getRole().getRoleName())
+                .collect(Collectors.joining(", "));
+
+        if (plainPassword != null) {
+            Map<String, Object> emailVariables = Map.of(
+                    "account", user.getAccount(),
+                    "password", plainPassword,
+                    "roles", rolesString
+            );
+
+            emailService.sendHtmlEmail(user.getEmail(), "Your account has been updated", "welcome-email", emailVariables);
+        }
     }
+
 
     @Override
     @Transactional(readOnly = true)
