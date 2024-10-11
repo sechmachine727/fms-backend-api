@@ -73,7 +73,8 @@ public class GroupServiceImpl implements GroupService {
                 })
                 .toList();
         userGroupRepository.saveAll(userGroups);
-        // Get all user's mail
+
+        // If the group's status is "ASSIGNED", notify the users
         if (group.getStatus() == GroupStatus.ASSIGNED) {
             // Get all user's email addresses
             List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
@@ -84,22 +85,20 @@ public class GroupServiceImpl implements GroupService {
                     })
                     .toList();
 
-            // Send email notification to each user
-            for (String email : assignedUserEmails) {
+            // Send email notification to each user asynchronously
+            assignedUserEmails.forEach(email -> {
                 Map<String, Object> emailVariables = Map.of(
                         "groupName", group.getGroupName(),
                         "startDate", saveGroupDTO.getExpectedStartDate(),
                         "endDate", saveGroupDTO.getExpectedEndDate()
                 );
 
-                try {
-                    emailService.sendHtmlEmail(email, "You have been assigned to a new group", "group-assigned-email", emailVariables);
-                } catch (MessagingException e) {
-                    throw new RuntimeException("Failed to send group assignment email", e);
-                }
-            }
+                // Call the async email service (no try-catch needed, exceptions handled in async method)
+                emailService.sendHtmlEmail(email, "You have been assigned to a new group", "group-assigned-email", emailVariables);
+            });
         }
     }
+
 
     private void validFieldsCheck(SaveGroupDTO saveGroupDTO) {
         Map<String, String> errors = new HashMap<>();
