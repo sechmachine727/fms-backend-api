@@ -18,7 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/**",
+//            "/api/**",
             "/api/login",
             "/api/register",
             "/swagger-ui/index.html",
