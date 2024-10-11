@@ -9,6 +9,7 @@ import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicTrainingProgram;
 import org.fms.training.entity.TrainingProgram;
 import org.fms.training.enums.Status;
+import org.fms.training.enums.TrainingProgramStatus;
 import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
@@ -50,6 +51,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         validFieldsCheck(saveTrainingProgramDTO);
 
         TrainingProgram trainingProgram = trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO);
+        trainingProgram.setStatus(TrainingProgramStatus.REVIEWING);
 
         TrainingProgram savedTrainingProgram = trainingProgramRepository.save(trainingProgram);
 
@@ -84,6 +86,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
             existingTrainingProgram.setTopicTrainingPrograms(new ArrayList<>());
         }
         existingTrainingProgram.getTopicTrainingPrograms().addAll(newTopics);
+
+        existingTrainingProgram.setStatus(TrainingProgramStatus.REVIEWING);
 
         trainingProgramRepository.save(existingTrainingProgram);
 
@@ -132,10 +136,31 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     @Transactional
     @Override
-    public Status toggleTrainingProgramStatus(Integer id) {
+    public TrainingProgramStatus toggleTrainingProgramStatusToActiveAndInactive(Integer id) {
+        return toggleStatus(id, TrainingProgramStatus.ACTIVE, TrainingProgramStatus.INACTIVE);
+    }
+
+    @Transactional
+    @Override
+    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id) {
+        return toggleStatus(id, TrainingProgramStatus.REVIEWING, TrainingProgramStatus.DECLINED);
+    }
+
+    @Transactional
+    @Override
+    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingOrDeclinedToActive(Integer id) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Training Program not found"));
-        Status newStatus = trainingProgram.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
+        TrainingProgramStatus newStatus = (trainingProgram.getStatus() == TrainingProgramStatus.REVIEWING || trainingProgram.getStatus() == TrainingProgramStatus.DECLINED) ? TrainingProgramStatus.ACTIVE : TrainingProgramStatus.REVIEWING;
+        trainingProgram.setStatus(newStatus);
+        trainingProgramRepository.save(trainingProgram);
+        return newStatus;
+    }
+
+    private TrainingProgramStatus toggleStatus(Integer id, TrainingProgramStatus fromStatus, TrainingProgramStatus toStatus) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Training Program not found"));
+        TrainingProgramStatus newStatus = trainingProgram.getStatus() == fromStatus ? toStatus : fromStatus;
         trainingProgram.setStatus(newStatus);
         trainingProgramRepository.save(trainingProgram);
         return newStatus;

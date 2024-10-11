@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fms.training.converter.StatusConverter;
-import org.fms.training.enums.Status;
+import org.fms.training.converter.TrainingProgramStatusConverter;
+import org.fms.training.enums.TrainingProgramStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -38,9 +38,9 @@ public class TrainingProgram {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Convert(converter = StatusConverter.class)
+    @Convert(converter = TrainingProgramStatusConverter.class)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private TrainingProgramStatus status;
 
     @CreatedDate
     @Column(name = "created_date", nullable = false)

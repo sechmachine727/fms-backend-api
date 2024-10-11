@@ -6,6 +6,9 @@ WORKDIR /app
 # Copy the jar file into the container
 COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
 
+# Copy the templates folder into the container
+COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/Template_Import_Syllabus.xlsx
+
 # Expose the port your app runs on
 EXPOSE 8080
 
