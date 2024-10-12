@@ -49,7 +49,7 @@ public class ExcelImportService implements ImportService {
         }
     }
 
-    private Topic importSyllabusSheet(Sheet sheet) {
+    protected Topic importSyllabusSheet(Sheet sheet) {
         // Reading the Topic data from the excel
         Row row = sheet.getRow(1); // Row 1 for Technical Group
         String technicalGroupCode = row.getCell(2).getStringCellValue();
@@ -152,7 +152,7 @@ public class ExcelImportService implements ImportService {
         return savedTopic;
     }
 
-    private void importScheduleDetailSheet(Sheet sheet, Topic topic) {
+    protected void importScheduleDetailSheet(Sheet sheet, Topic topic) {
         int unitNumber = 1; // Start unit number from 1
         Unit currentUnit = null;
 
@@ -219,7 +219,7 @@ public class ExcelImportService implements ImportService {
     }
 
 
-    private String getCellValueAsString(Cell cell) {
+    protected String getCellValueAsString(Cell cell) {
         if (cell == null) return null;
         if (cell.getCellType() == CellType.STRING) {
             return cell.getStringCellValue();
@@ -229,7 +229,7 @@ public class ExcelImportService implements ImportService {
         return null;
     }
 
-    private Double getCellValueAsDouble(Cell cell) {
+    protected Double getCellValueAsDouble(Cell cell) {
         if (cell == null) {
             return null;
         }

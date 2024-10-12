@@ -66,12 +66,9 @@ public class EmailServiceImpl implements EmailService {
 
             mailSender.send(message);
 
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             // Log the exception instead of throwing
             System.err.println("Failed to send email to " + to + ": " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            // Log template-related errors
-            System.err.println("Email template error: " + e.getMessage());
         }
     }
 
