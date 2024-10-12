@@ -1,6 +1,5 @@
 package org.fms.training.service.impl;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.dto.groupdto.ListGroupDTO;
 import org.fms.training.dto.groupdto.ReadGroupDTO;
@@ -80,7 +79,7 @@ public class GroupServiceImpl implements GroupService {
             List<String> assignedUserEmails = saveGroupDTO.getAssignedUserIds().stream()
                     .map(userId -> {
                         User user = userRepository.findById(userId)
-                                .orElseThrow(() -> new RuntimeException("User not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                         return user.getEmail();
                     })
                     .toList();

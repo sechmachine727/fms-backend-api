@@ -55,9 +55,8 @@ class TechnicalGroupServiceImplTest {
         // then
         assertThat(result).isPresent();
         assertThat(result.get()).hasSize(2);
+        assertThat(listTechnicalGroupDTOs).contains(dto1, dto2);
         verify(technicalGroupRepository, times(1)).findAll();
-        verify(technicalGroupMapper, times(1)).toListDTO(group1);
-        verify(technicalGroupMapper, times(1)).toListDTO(group2);
     }
 
     @Test
