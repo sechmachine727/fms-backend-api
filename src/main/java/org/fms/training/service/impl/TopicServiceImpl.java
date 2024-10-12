@@ -64,10 +64,14 @@ public class TopicServiceImpl implements TopicService {
         dto.setCode(topic.getTopicCode());
         dto.setName(topic.getTopicName());
         dto.setPassCriteria(topic.getPassCriteria());
-        ListTechnicalGroupDTO technicalGroupDTO = new ListTechnicalGroupDTO();
-        technicalGroupDTO.setId(topic.getTechnicalGroup().getId());
-        technicalGroupDTO.setCode(topic.getTechnicalGroup().getCode());
-        dto.setTechnicalGroup(technicalGroupDTO);
+        if (topic.getTechnicalGroup() != null) {
+            ListTechnicalGroupDTO technicalGroupDTO = new ListTechnicalGroupDTO();
+            technicalGroupDTO.setId(topic.getTechnicalGroup().getId());
+            technicalGroupDTO.setCode(topic.getTechnicalGroup().getCode());
+            dto.setTechnicalGroup(technicalGroupDTO);
+        } else {
+            dto.setTechnicalGroup(null);
+        }
 
         List<UnitDTO> unitDTOs = units.stream().map(unit -> {
             UnitDTO unitDTO = new UnitDTO();
