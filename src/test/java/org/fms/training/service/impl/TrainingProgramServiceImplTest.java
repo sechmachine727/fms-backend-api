@@ -16,12 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 class TrainingProgramServiceImplTest {
@@ -405,4 +405,67 @@ class TrainingProgramServiceImplTest {
         // when, then
         assertThrows(ResourceNotFoundException.class, () -> trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(trainingProgramId));
     }
+
+    @Test
+    void createTrainingProgram_withNotNullTopicTrainingPrograms_shouldSkipInitialization() {
+        // given
+        SaveTrainingProgramDTO saveTrainingProgramDTO = new SaveTrainingProgramDTO();
+        saveTrainingProgramDTO.setCode("TP001");
+        saveTrainingProgramDTO.setTopicIds(List.of(1, 2, 3));
+        saveTrainingProgramDTO.setTechnicalGroupId(1);
+        saveTrainingProgramDTO.setDepartmentId(1);
+
+        TrainingProgram trainingProgram = new TrainingProgram();
+        trainingProgram.setTopicTrainingPrograms(new ArrayList<>());
+        given(trainingProgramMapper.toTrainingProgramEntity(saveTrainingProgramDTO)).willReturn(trainingProgram);
+        given(trainingProgramRepository.save(trainingProgram)).willReturn(trainingProgram);
+
+        Topic topic = new Topic();
+        topic.setStatus(Status.ACTIVE);
+        given(topicRepository.findById(anyInt())).willReturn(Optional.of(topic));
+        given(technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())).willReturn(true);
+        given(departmentRepository.existsById(saveTrainingProgramDTO.getDepartmentId())).willReturn(true);
+
+        // when
+        trainingProgramService.createTrainingProgram(saveTrainingProgramDTO);
+
+        // then
+        then(trainingProgramRepository).should(times(1)).save(trainingProgram);
+        then(topicTrainingProgramRepository).should(times(1)).saveAll(anyList());
+        assertNotNull(trainingProgram.getTopicTrainingPrograms());
+    }
+
+    @Test
+    void updateTrainingProgram_withNullTopicTrainingPrograms_shouldSkipInitialization() {
+        // given
+        Integer trainingProgramId = 1;
+        SaveTrainingProgramDTO saveTrainingProgramDTO = new SaveTrainingProgramDTO();
+        saveTrainingProgramDTO.setCode("TP001");
+        saveTrainingProgramDTO.setTopicIds(List.of(1, 2, 3));
+        saveTrainingProgramDTO.setTechnicalGroupId(1);
+        saveTrainingProgramDTO.setDepartmentId(1);
+
+        TrainingProgram trainingProgram = new TrainingProgram();
+        trainingProgram.setCode("TP001");
+        trainingProgram.setTopicTrainingPrograms(new ArrayList<>()); // Set to null to hit the condition
+
+        given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.of(trainingProgram));
+        willDoNothing().given(topicTrainingProgramRepository).deleteAll(anyList());
+        given(trainingProgramRepository.save(trainingProgram)).willReturn(trainingProgram);
+
+        Topic topic = new Topic();
+        topic.setStatus(Status.ACTIVE);
+        given(topicRepository.findById(anyInt())).willReturn(Optional.of(topic));
+        given(technicalGroupRepository.existsById(saveTrainingProgramDTO.getTechnicalGroupId())).willReturn(true);
+        given(departmentRepository.existsById(saveTrainingProgramDTO.getDepartmentId())).willReturn(true);
+
+        // when
+        trainingProgramService.updateTrainingProgram(trainingProgramId, saveTrainingProgramDTO);
+
+        // then
+        then(trainingProgramRepository).should(times(1)).save(trainingProgram);
+        then(topicTrainingProgramRepository).should(times(1)).saveAll(anyList());
+        assertNotNull(trainingProgram.getTopicTrainingPrograms());
+    }
+
 }
