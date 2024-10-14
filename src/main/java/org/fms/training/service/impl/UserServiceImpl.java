@@ -2,10 +2,12 @@ package org.fms.training.service.impl;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.userdto.ChangePasswordDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
 import org.fms.training.entity.Role;
+import org.fms.training.entity.TrainingProgram;
 import org.fms.training.entity.User;
 import org.fms.training.entity.UserRole;
 import org.fms.training.enums.Status;
@@ -163,6 +165,22 @@ public class UserServiceImpl implements UserService {
                 errors.isEmpty();
     }
 
+    @Override
+    public boolean isValidUserForChangePassword(String account, ChangePasswordDTO data, Map<String, String> errors) {
+        User user = userRepository.findByAccount(account).orElse(null);
+        if(null == user) {
+            errors.put("account", "User not found");
+        }
+        if(!passwordEncoder.matches(data.getOldPassword(), user.getEncryptedPassword())) {
+            errors.put("oldPassword", "The old password you entered is incorrect");
+
+        }
+        if(data.getNewPassword().length() < 8) {
+            errors.put("newPassword", "Password must be at least 8 characters long");
+        }
+        return errors.isEmpty();
+    }
+
 
     @Override
     public Optional<List<ReadUserDTO>> findAll(String search) {
@@ -257,6 +275,16 @@ public class UserServiceImpl implements UserService {
         user.setStatus(newStatus);
         userRepository.save(user);
         return newStatus;
+    }
+
+    @Override
+    public void changePassword(String account, ChangePasswordDTO data) {
+        User user = userRepository.findByAccount(account).orElse(null);
+        if(user != null) {
+            String encodedPassword = passwordEncoder.encode(data.getNewPassword());
+            user.setEncryptedPassword(encodedPassword);
+            userRepository.save(user);
+        }
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {

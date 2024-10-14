@@ -1,9 +1,11 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.dto.userdto.ChangePasswordDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
+import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.UserRepository;
@@ -92,5 +94,21 @@ public class UserController {
     @GetMapping("/class-admins")
     public List<ClassAdminDTO> getClassAdmins() {
         return userService.getClassAdminUsers();
+    }
+
+    @PutMapping("/change-password/{account}")
+    public ResponseEntity<Map<String, String>> changePassWord(@PathVariable String account, @RequestBody ChangePasswordDTO changePasswordDTO) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            if(!userService.isValidUserForChangePassword(account, changePasswordDTO, response)) {
+                return ResponseEntity.badRequest().body(response);
+            }
+            userService.changePassword(account, changePasswordDTO);
+            response.put("success", "Password changed successfully");
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 }
