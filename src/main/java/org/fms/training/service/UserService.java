@@ -1,6 +1,7 @@
 package org.fms.training.service;
 
 import jakarta.mail.MessagingException;
+import org.fms.training.dto.userdto.ChangePasswordDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
@@ -28,6 +29,8 @@ public interface UserService extends UserDetailsService {
 
     boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors);
 
+    boolean isValidUserForChangePassword(String account, ChangePasswordDTO data, Map<String, String> errors);
+
     Optional<List<ReadUserDTO>> findAll(String search);
 
     Optional<ReadUserDTO> findById(Integer id);
@@ -38,4 +41,7 @@ public interface UserService extends UserDetailsService {
 
     @Transactional
     Status toggleUserStatus(Integer userId);
+
+    void changePassword(String account, ChangePasswordDTO data);
+
 }
