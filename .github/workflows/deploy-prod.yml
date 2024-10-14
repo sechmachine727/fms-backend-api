@@ -43,3 +43,8 @@ jobs:
           context: .
           push: true
           tags: sechmachine/fms:production
+
+      - name: Recreate container with Portainer webhook
+        run: |
+          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/a4b903f9-2175-46c8-be07-51b14aa2975b
+          echo "Container recreated"
