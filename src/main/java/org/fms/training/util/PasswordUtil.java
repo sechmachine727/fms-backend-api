@@ -8,6 +8,10 @@ public class PasswordUtil {
     private static final int PASSWORD_LENGTH = 8;
     private static final SecureRandom random = new SecureRandom();
 
+    private PasswordUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String generateRandomPassword() {
         StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
 

@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +45,7 @@ class ExcelImportServiceTest {
 
     @Test
     @Transactional
-    void importDataFromStream_shouldImportDataSuccessfully() throws Exception {
+    void importDataFromStream_shouldImportDataSuccessfully() {
         // Arrange
         InputStream excelStream = getClass().getResourceAsStream("/Template_Import_Syllabus.xlsx"); // A sample Excel file should be placed under the test resources
         TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
@@ -79,7 +80,7 @@ class ExcelImportServiceTest {
     }
 
     @Test
-    void importDataFromStream_shouldThrowExceptionWhenTopicAlreadyExists() throws Exception {
+    void importDataFromStream_shouldThrowExceptionWhenTopicAlreadyExists() {
         // Arrange
         InputStream excelStream = getClass().getResourceAsStream("/Template_Import_Syllabus.xlsx");
         TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
@@ -99,9 +100,9 @@ class ExcelImportServiceTest {
     }
 
     @Test
-    void importSyllabusSheet_shouldThrowExceptionWhenTechnicalGroupNotFound() throws Exception{
+    void importSyllabusSheet_shouldThrowExceptionWhenTechnicalGroupNotFound() throws Exception {
         // Arrange
-        Workbook workbook = WorkbookFactory.create(getClass().getResourceAsStream("/TechnicalGroupNotFound.xlsx"));
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/TechnicalGroupNotFound.xlsx")));
         Sheet syllabusSheet = workbook.getSheet("Syllabus");
 
         when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.empty());
@@ -117,7 +118,7 @@ class ExcelImportServiceTest {
     @Test
     void importScheduleDetailSheet_shouldHandleScheduleDataCorrectly() throws Exception {
         // Arrange
-        Workbook workbook = WorkbookFactory.create(getClass().getResourceAsStream("/Template_Import_Syllabus.xlsx"));
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/Template_Import_Syllabus.xlsx")));
         Sheet scheduleSheet = workbook.getSheet("ScheduleDetail");
 
         Topic mockTopic = new Topic();

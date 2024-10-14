@@ -1,7 +1,5 @@
 package org.fms.training.service;
 
-import jakarta.mail.MessagingException;
-
 import java.util.Map;
 
 public interface EmailService {

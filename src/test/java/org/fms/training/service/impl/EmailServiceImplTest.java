@@ -1,5 +1,7 @@
 package org.fms.training.service.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.fms.training.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -67,7 +66,6 @@ class EmailServiceImplTest {
 
         MimeMessage mimeMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
         // when
         emailService.sendHtmlEmail(to, subject, templateName, variables);

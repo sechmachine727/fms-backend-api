@@ -27,10 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,7 +86,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public User findByAccount(String account) {
         return userRepository.findByAccount(account).orElse(null);
@@ -144,9 +140,9 @@ public class UserServiceImpl implements UserService {
         if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
             return false;
         }
-        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null && existsByAccount(saveUserDTO.getAccount()).getId() != userId;
-        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null && existsByEmail(saveUserDTO.getEmail()).getId() != userId;
-        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null && existsByEmployeeId(saveUserDTO.getEmployeeId()).getId() != userId;
+        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null && !Objects.equals(existsByAccount(saveUserDTO.getAccount()).getId(), userId);
+        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null && !Objects.equals(existsByEmail(saveUserDTO.getEmail()).getId(), userId);
+        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null && !Objects.equals(existsByEmployeeId(saveUserDTO.getEmployeeId()).getId(), userId);
 
         if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
             if (checkExistingAccount) {

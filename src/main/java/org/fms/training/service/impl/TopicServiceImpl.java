@@ -10,7 +10,6 @@ import org.fms.training.dto.unitsectiondto.UnitSectionDTO;
 import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicAssessment;
 import org.fms.training.entity.Unit;
-import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.TopicMapper;

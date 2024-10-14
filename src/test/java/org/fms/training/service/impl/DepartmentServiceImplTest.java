@@ -8,10 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
-
-import java.util.List;
 
 class DepartmentServiceImplTest {
 
