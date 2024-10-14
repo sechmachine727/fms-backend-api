@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.converter.GroupStatusConverter;
 import org.fms.training.enums.GroupStatus;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,10 @@ public class Group {
 
     @Column(name = "trainee_number", nullable = false)
     private Integer traineeNumber;
+
+    @CreatedBy
+    @Column(name = "createdBy")
+    private String createdBy;
 
     @Column(name = "expected_start_date", nullable = false)
     private LocalDateTime expectedStartDate;
