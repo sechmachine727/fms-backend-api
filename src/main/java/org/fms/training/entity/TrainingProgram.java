@@ -54,6 +54,9 @@ public class TrainingProgram {
     @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
+
     @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "technical_group_id", nullable = false)
