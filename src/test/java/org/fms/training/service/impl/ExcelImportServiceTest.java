@@ -7,9 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Optional;
@@ -96,7 +98,7 @@ class ExcelImportServiceTest {
             excelImportService.importDataFromStream(excelStream);
         });
 
-        assertEquals("Failed to import Excel file: Topic with code TEEST and version 4.1 already exists. Please change the version or topic code.", exception.getMessage());
+        assertEquals("Failed to import Excel file: Topic with code TEEST and version 4.1 already exists.", exception.getMessage());
     }
 
     @Test
@@ -163,4 +165,156 @@ class ExcelImportServiceTest {
         // Assert
         assertNull(result);
     }
+
+    @Test
+    void importDataFromStream_shouldThrowExceptionWhenScheduleDetailSheetMissing() {
+        // Arrange
+        InputStream excelStream = getClass().getResourceAsStream("/SyllabusSheetOnly.xlsx"); // A file without the "ScheduleDetail" sheet
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+        // Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            excelImportService.importDataFromStream(excelStream);
+        });
+
+        assertEquals("Failed to import Excel file: Sheet 'ScheduleDetail' not found", exception.getMessage());
+    }
+
+    @Test
+    void importSyllabusSheet_shouldThrowExceptionWhenTechnicalGroupCodeMissing() throws Exception {
+        // Arrange
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/TechnicalGroupCodeMissing.xlsx")));
+        Sheet syllabusSheet = workbook.getSheet("Syllabus");
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            excelImportService.importSyllabusSheet(syllabusSheet);
+        });
+
+        assertEquals("Technical Group Code is missing.", exception.getMessage());
+    }
+
+    @Test
+    void importSyllabusSheet_shouldThrowExceptionWhenTopicCodeMissing() throws Exception {
+        // Arrange
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/TopicCodeMissing.xlsx")));
+        Sheet syllabusSheet = workbook.getSheet("Syllabus");
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            excelImportService.importSyllabusSheet(syllabusSheet);
+        });
+
+        assertEquals("Topic Code is missing.", exception.getMessage());
+    }
+
+    @Test
+    void importSyllabusSheet_shouldThrowExceptionWhenPassCriteriaMissing() throws Exception {
+        // Arrange
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/PassCriteriaMissing.xlsx")));
+        Sheet syllabusSheet = workbook.getSheet("Syllabus");
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            excelImportService.importSyllabusSheet(syllabusSheet);
+        });
+
+        assertEquals("Pass Criteria is missing.", exception.getMessage());
+    }
+
+    @Test
+    void importSyllabusSheet_shouldThrowExceptionWhenVersionMissing() throws Exception {
+        // Arrange
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/VersionMissing.xlsx")));
+        Sheet syllabusSheet = workbook.getSheet("Syllabus");
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            excelImportService.importSyllabusSheet(syllabusSheet);
+        });
+
+        assertEquals("Version is missing.", exception.getMessage());
+    }
+
+    @Test
+    void importSyllabusSheet_shouldThrowExceptionWhenTopicNameMissing() throws Exception {
+        // Arrange
+        Workbook workbook = WorkbookFactory.create(Objects.requireNonNull(getClass().getResourceAsStream("/TopicNameMissing.xlsx")));
+        Sheet syllabusSheet = workbook.getSheet("Syllabus");
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            excelImportService.importSyllabusSheet(syllabusSheet);
+        });
+
+        assertEquals("Topic Name is missing.", exception.getMessage());
+    }
+
+    @Test
+    void importDataFromStream_shouldImportSuccessfully() throws Exception {
+        // Arrange
+        InputStream excelStream = getClass().getResourceAsStream("/Template_Import_Syllabus.xlsx");  // Valid file with both sheets
+        TechnicalGroup mockTechnicalGroup = new TechnicalGroup();
+        mockTechnicalGroup.setId(1);
+        mockTechnicalGroup.setCode("TG001");
+
+        when(technicalGroupRepository.findByCode(anyString())).thenReturn(Optional.of(mockTechnicalGroup));
+        when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
+        // Act
+        excelImportService.importDataFromStream(excelStream);
+
+        // Assert
+        // Verify the appropriate methods are called to process the sheets
+        verify(topicRepository, times(1)).save(any(Topic.class));
+        verify(unitRepository, atLeastOnce()).save(any(Unit.class));
+        verify(unitSectionRepository, atLeastOnce()).save(any(UnitSection.class));
+    }
+
+    @Test
+    void importDataFromStream_shouldThrowRuntimeExceptionWhenErrorOccurs() {
+        // Arrange
+        InputStream excelStream = getClass().getResourceAsStream("/InvalidExcelFile.xlsx");  // Simulate an invalid file
+
+        // Mock the WorkbookFactory to throw an exception
+        try (MockedStatic<WorkbookFactory> mockedWorkbookFactory = mockStatic(WorkbookFactory.class)) {
+            mockedWorkbookFactory.when(() -> WorkbookFactory.create(excelStream))
+                    .thenThrow(new IOException("Failed to create workbook"));
+
+            // Act & Assert
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+                excelImportService.importDataFromStream(excelStream);
+            });
+
+            assertEquals("Failed to import Excel file: Failed to create workbook", exception.getMessage());
+        }
+    }
+
 }
