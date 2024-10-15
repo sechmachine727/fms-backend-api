@@ -1,5 +1,6 @@
 package org.fms.training.repository;
 
+import org.fms.training.entity.Topic;
 import org.fms.training.entity.TopicAssessment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,4 +12,5 @@ public interface TopicAssessmentRepository extends JpaRepository<TopicAssessment
 
     @Query("SELECT ta FROM TopicAssessment ta WHERE ta.topic.id = :topicId")
     List<TopicAssessment> findTopicAssessmentsByTopicId(@Param("topicId") Integer topicId);
+    void deleteByTopic(Topic topic);
 }
