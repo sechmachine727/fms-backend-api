@@ -83,10 +83,8 @@ public class ExcelImportService implements ImportService {
         }
 
         // Check if Topic Code with the same version already exists
-        Optional<Topic> existingTopic = topicRepository.findByTopicCodeAndVersion(topicCode, version);
-        if (existingTopic.isPresent()) {
-            throw new IllegalArgumentException("Topic with code " + topicCode + " and version " + version + " already exists. Please change the version or topic code.");
-        }
+        Topic topic = topicRepository.findByTopicCodeAndVersion(topicCode, version)
+                .orElseGet(() -> new Topic());
 
         // Validate and get Pass Criteria (Row 9, Column 3)
         Cell passCriteriaCell = sheet.getRow(9).getCell(3);
@@ -96,7 +94,6 @@ public class ExcelImportService implements ImportService {
         }
 
         // Create and save the Topic entity
-        Topic topic = new Topic();
         topic.setTechnicalGroup(technicalGroup);
         topic.setTopicName(topicName);
         topic.setTopicCode(topicCode);
@@ -108,6 +105,10 @@ public class ExcelImportService implements ImportService {
         topic.setLastModifiedBy("admin");
 
         Topic savedTopic = topicRepository.save(topic);
+
+        if (topic.getId() != null) {
+            topicAssessmentRepository.deleteByTopic(topic);
+        }
 
         // Importing Topic Assessments
         for (int rowIndex = 5; rowIndex <= 8; rowIndex++) {

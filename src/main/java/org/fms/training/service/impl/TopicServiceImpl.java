@@ -13,9 +13,7 @@ import org.fms.training.entity.Unit;
 import org.fms.training.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.TopicMapper;
-import org.fms.training.repository.TopicAssessmentRepository;
-import org.fms.training.repository.TopicRepository;
-import org.fms.training.repository.UnitRepository;
+import org.fms.training.repository.*;
 import org.fms.training.service.TopicService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +28,7 @@ public class TopicServiceImpl implements TopicService {
     private final UnitRepository unitRepository;
     private final TopicAssessmentRepository topicAssessmentRepository;
     private final TopicMapper topicMapper;
+    private final TopicTrainingProgramRepository topicTrainingProgramRepository;
 
     @Override
     public Optional<List<ListTopicDTO>> searchByCodeOrName(String search) {
@@ -141,6 +140,10 @@ public class TopicServiceImpl implements TopicService {
     public Status toggleTopicStatus(Integer topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
+        boolean isUsedInTrainingProgram = topicTrainingProgramRepository.existsByTopic(topic);
+        if (isUsedInTrainingProgram) {
+            throw new IllegalStateException("Cannot change status. Topic is used in a training program.");
+        }
         Status newStatus = topic.getStatus() == Status.ACTIVE ? Status.INACTIVE : Status.ACTIVE;
         topic.setStatus(newStatus);
         topicRepository.save(topic);
