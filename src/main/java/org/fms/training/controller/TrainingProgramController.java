@@ -78,11 +78,11 @@ public class TrainingProgramController {
         }
     }
     @RolesAllowed({Authorization.FA_MANAGER})
-    @PutMapping("/decline/{id}")
-    public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id) {
+    @PutMapping("/decline/{id}/{reason}")
+    public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id, @PathVariable String reason) {
         Map<String, String> response = new HashMap<>();
         try {
-            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(id);
+            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(id, reason);
             response.put("success", "Training program status updated successfully to " + newStatus);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
