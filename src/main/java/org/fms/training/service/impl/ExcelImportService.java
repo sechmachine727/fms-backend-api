@@ -167,7 +167,6 @@ public class ExcelImportService implements ImportService {
 
         // Danh sách các Units và Unit Sections mới từ file Excel
         List<Unit> unitsToSave = new ArrayList<>();
-        Set<Integer> unitSectionIdsToKeep = new HashSet<>(); // Để theo dõi UnitSection không bị xóa
 
         int unitNumber = 1;
         Unit currentUnit = null;
@@ -225,12 +224,12 @@ public class ExcelImportService implements ImportService {
             }
         }
 
-// Lưu Unit cuối cùng nếu có
+        // Lưu Unit cuối cùng nếu có
         if (currentUnit != null) {
             unitsToSave.add(currentUnit);
         }
 
-// Lưu tất cả các Units với các UnitSections mới
+        // Lưu tất cả các Units với các UnitSections mới
         unitRepository.saveAll(unitsToSave);
 
     }

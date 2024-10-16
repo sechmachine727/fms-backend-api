@@ -10,6 +10,7 @@ import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.mapper.TopicMapper;
 import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
+import org.fms.training.repository.TopicTrainingProgramRepository;
 import org.fms.training.repository.UnitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class TopicServiceImplTest {
 
     @Mock
     private TopicAssessmentRepository topicAssessmentRepository;
+
+    @Mock
+    private TopicTrainingProgramRepository topicTrainingProgramRepository;
 
     @Mock
     private TopicMapper topicMapper;
@@ -135,69 +139,18 @@ class TopicServiceImplTest {
     }
 
     @Test
-    void toggleTopicStatus_shouldToggleStatusAndReturnNewStatus_whenTopicExists() {
-        // given
-        Integer topicId = 1;
-        Topic topic = new Topic();
-        topic.setStatus(Status.ACTIVE);
-
-        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
-
-        // when
-        Status newStatus = topicService.toggleTopicStatus(topicId);
-
-        // then
-        assertThat(newStatus).isEqualTo(Status.INACTIVE);
-        verify(topicRepository, times(1)).findById(topicId);
-        verify(topicRepository, times(1)).save(topic);
-    }
-
-    @Test
     void toggleTopicStatus_shouldThrowException_whenTopicNotFound() {
         // given
         Integer topicId = 1;
-        given(topicRepository.findById(topicId)).willReturn(Optional.empty());
+
+        given(topicRepository.findById(topicId)).willReturn(Optional.empty()); // Topic not found
 
         // when & then
         assertThatThrownBy(() -> topicService.toggleTopicStatus(topicId))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Topic not found");
-    }
+                .hasMessage("Topic not found");
 
-    @Test
-    void toggleTopicStatus_shouldSetInactiveWhenCurrentlyActive() {
-        // given
-        Integer topicId = 1;
-        Topic topic = new Topic();
-        topic.setId(topicId);
-        topic.setStatus(Status.ACTIVE);
-
-        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
-
-        // when
-        Status newStatus = topicService.toggleTopicStatus(topicId);
-
-        // then
-        assertThat(newStatus).isEqualTo(Status.INACTIVE);
-        verify(topicRepository, times(1)).save(topic);
-    }
-
-    @Test
-    void toggleTopicStatus_shouldSetActiveWhenCurrentlyInactive() {
-        // given
-        Integer topicId = 1;
-        Topic topic = new Topic();
-        topic.setId(topicId);
-        topic.setStatus(Status.INACTIVE);
-
-        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
-
-        // when
-        Status newStatus = topicService.toggleTopicStatus(topicId);
-
-        // then
-        assertThat(newStatus).isEqualTo(Status.ACTIVE);
-        verify(topicRepository, times(1)).save(topic);
+        verify(topicRepository, never()).save(any(Topic.class)); // Topic should not be saved
     }
 
     @Test
@@ -317,7 +270,7 @@ class TopicServiceImplTest {
         List<Unit> units = List.of(unit);
 
         // when
-        TopicServiceImpl topicService = new TopicServiceImpl(null, null, null, null);
+        TopicServiceImpl topicService = new TopicServiceImpl(null, null, null, null,null);
         TopicDetailDTO result = topicService.mapToTopicDetailDTO(topic, units, List.of());
 
         // then
@@ -353,4 +306,63 @@ class TopicServiceImplTest {
         assertThat(unitDTO.getTotalDurationProductIncrement()).isEqualTo(3.0);
         assertThat(unitDTO.getTotalDuration()).isEqualTo(6.5);
     }
+
+    @Test
+    void toggleTopicStatus_shouldSetInactiveWhenCurrentlyActive() {
+        // given
+        Integer topicId = 1;
+        Topic topic = new Topic();
+        topic.setId(topicId);
+        topic.setStatus(Status.ACTIVE);
+
+        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
+        given(topicTrainingProgramRepository.existsByTopic(topic)).willReturn(false);
+
+        // when
+        Status newStatus = topicService.toggleTopicStatus(topicId);
+
+        // then
+        assertThat(newStatus).isEqualTo(Status.INACTIVE);
+        verify(topicRepository, times(1)).save(topic);
+    }
+
+    @Test
+    void toggleTopicStatus_shouldSetActiveWhenCurrentlyInactive() {
+        // given
+        Integer topicId = 1;
+        Topic topic = new Topic();
+        topic.setId(topicId);
+        topic.setStatus(Status.INACTIVE);
+
+        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
+        given(topicTrainingProgramRepository.existsByTopic(topic)).willReturn(false); // No related training programs
+
+        // when
+        Status newStatus = topicService.toggleTopicStatus(topicId);
+
+        // then
+        assertThat(newStatus).isEqualTo(Status.ACTIVE);
+        verify(topicRepository, times(1)).save(topic);
+    }
+
+    @Test
+    void toggleTopicStatus_shouldThrowException_whenTopicIsUsedInTrainingProgram() {
+        // given
+        Integer topicId = 1;
+        Topic topic = new Topic();
+        topic.setId(topicId);
+        topic.setStatus(Status.ACTIVE);
+
+        given(topicRepository.findById(topicId)).willReturn(Optional.of(topic));
+        given(topicTrainingProgramRepository.existsByTopic(topic)).willReturn(true); // Used in a training program
+
+        // when & then
+        assertThatThrownBy(() -> topicService.toggleTopicStatus(topicId))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Cannot change status. Topic is used in a training program.");
+
+        verify(topicRepository, never()).save(any(Topic.class)); // Topic should not be saved
+    }
+
+
 }
