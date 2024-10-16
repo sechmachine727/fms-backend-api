@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.entity.TraineeType;
+import org.fms.training.common.entity.TraineeType;
 import org.fms.training.repository.TraineeTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

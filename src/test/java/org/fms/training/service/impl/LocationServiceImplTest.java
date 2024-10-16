@@ -1,8 +1,8 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.dto.locationdto.LocationDTO;
-import org.fms.training.entity.Location;
-import org.fms.training.mapper.LocationMapper;
+import org.fms.training.common.dto.locationdto.LocationDTO;
+import org.fms.training.common.entity.Location;
+import org.fms.training.common.mapper.LocationMapper;
 import org.fms.training.repository.LocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

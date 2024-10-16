@@ -1,7 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.entity.EmailTemplate;
+import org.fms.training.common.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
 import org.fms.training.service.EmailTemplateService;
 import org.springframework.stereotype.Service;

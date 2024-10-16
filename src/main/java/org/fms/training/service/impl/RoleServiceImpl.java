@@ -1,8 +1,8 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.userdto.RoleDTO;
-import org.fms.training.entity.Role;
+import org.fms.training.common.dto.userdto.RoleDTO;
+import org.fms.training.common.entity.Role;
 import org.fms.training.repository.RoleRepository;
 import org.fms.training.service.RoleService;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,7 @@ package org.fms.training.service.impl;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
-import org.fms.training.entity.EmailTemplate;
+import org.fms.training.common.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
 import org.fms.training.service.EmailService;
 import org.slf4j.Logger;

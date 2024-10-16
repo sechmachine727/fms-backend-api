@@ -2,10 +2,10 @@ package org.fms.training.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.config.Authorization;
-import org.fms.training.dto.topicdto.ListTopicDTO;
-import org.fms.training.dto.topicdto.TopicDetailDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.common.constant.Authorization;
+import org.fms.training.common.dto.topicdto.ListTopicDTO;
+import org.fms.training.common.dto.topicdto.TopicDetailDTO;
+import org.fms.training.common.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.service.TopicService;
 import org.springframework.http.HttpStatus;

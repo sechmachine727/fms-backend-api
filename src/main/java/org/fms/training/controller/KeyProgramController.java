@@ -1,7 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.entity.KeyProgram;
+import org.fms.training.common.entity.KeyProgram;
 import org.fms.training.service.KeyProgramService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.entity.KeyProgram;
+import org.fms.training.common.entity.KeyProgram;
 import org.fms.training.repository.KeyProgramRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

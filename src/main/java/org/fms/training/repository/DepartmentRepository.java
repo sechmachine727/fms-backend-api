@@ -1,6 +1,6 @@
 package org.fms.training.repository;
 
-import org.fms.training.entity.Department;
+import org.fms.training.common.entity.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

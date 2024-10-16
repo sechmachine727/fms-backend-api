@@ -1,8 +1,8 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.traineedto.ListTraineeDTO;
-import org.fms.training.dto.traineedto.ReadTraineeDTO;
-import org.fms.training.dto.traineedto.SaveTraineeDTO;
+import org.fms.training.common.dto.traineedto.ListTraineeDTO;
+import org.fms.training.common.dto.traineedto.ReadTraineeDTO;
+import org.fms.training.common.dto.traineedto.SaveTraineeDTO;
 
 import java.util.List;
 import java.util.Optional;

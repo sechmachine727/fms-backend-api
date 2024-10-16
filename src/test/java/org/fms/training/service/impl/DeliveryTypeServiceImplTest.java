@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.mapper.DeliveryTypeMapper;
+import org.fms.training.common.mapper.DeliveryTypeMapper;
 import org.fms.training.repository.DeliveryTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
