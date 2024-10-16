@@ -25,7 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
-    private final TrainingProgramRepository trainingProgramRepository;
     @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN})
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
