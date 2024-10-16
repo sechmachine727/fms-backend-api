@@ -79,7 +79,7 @@ public class TrainingProgramController {
         }
     }
     @RolesAllowed({Authorization.FA_MANAGER})
-    @PutMapping("/toggle-reviewing-to-declined/{id}")
+    @PutMapping("/decline/{id}")
     public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
         try {
@@ -95,7 +95,7 @@ public class TrainingProgramController {
         }
     }
     @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER})
-    @PutMapping("/toggle-to-active/{id}")
+    @PutMapping("/approve/{id}")
     public ResponseEntity<Map<String, String>> toggleReviewingToActive(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
         try {
