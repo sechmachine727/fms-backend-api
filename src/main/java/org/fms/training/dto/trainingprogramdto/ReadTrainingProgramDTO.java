@@ -20,6 +20,7 @@ public class ReadTrainingProgramDTO {
     private TrainingProgramStatus status;
     private ListTechnicalGroupDTO technicalGroup;
     private String createdDate;
+    private String note;
     private String lastModifiedBy;
     private String lastModifiedDate;
     private List<TopicInfoDTO> topicInfoList;

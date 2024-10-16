@@ -19,6 +19,7 @@ public class ListTrainingProgramDTO {
     private String description;
     private TrainingProgramStatus status;
     private ListTechnicalGroupDTO technicalGroup;
+    private String note;
     private String lastModifiedBy;
     private String modifiedDate;
     private List<TopicInfoDTO> topicInfoList;
