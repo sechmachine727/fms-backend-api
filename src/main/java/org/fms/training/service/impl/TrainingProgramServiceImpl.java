@@ -137,13 +137,13 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public TrainingProgramStatus toggleTrainingProgramStatusToActiveAndInactive(Integer id) {
-        return toggleStatus(id, TrainingProgramStatus.ACTIVE, TrainingProgramStatus.INACTIVE);
+        return toggleStatus(id, TrainingProgramStatus.ACTIVE, TrainingProgramStatus.INACTIVE, "");
     }
 
     @Transactional
     @Override
-    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id) {
-        return toggleStatus(id, TrainingProgramStatus.REVIEWING, TrainingProgramStatus.DECLINED);
+    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id, String reason) {
+        return toggleStatus(id, TrainingProgramStatus.REVIEWING, TrainingProgramStatus.DECLINED, reason);
     }
 
     @Transactional
@@ -157,11 +157,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         return newStatus;
     }
 
-    private TrainingProgramStatus toggleStatus(Integer id, TrainingProgramStatus fromStatus, TrainingProgramStatus toStatus) {
+    private TrainingProgramStatus toggleStatus(Integer id, TrainingProgramStatus fromStatus, TrainingProgramStatus toStatus, String reason) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Training Program not found"));
         TrainingProgramStatus newStatus = trainingProgram.getStatus() == fromStatus ? toStatus : fromStatus;
         trainingProgram.setStatus(newStatus);
+        trainingProgram.setNote(reason.trim());
         trainingProgramRepository.save(trainingProgram);
         return newStatus;
     }

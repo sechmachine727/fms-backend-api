@@ -27,7 +27,7 @@ public interface TrainingProgramService {
     TrainingProgramStatus toggleTrainingProgramStatusToActiveAndInactive(Integer id);
 
     @Transactional
-    TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id);
+    TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id, String reason);
 
     @Transactional
     TrainingProgramStatus toggleTrainingProgramStatusFromReviewingOrDeclinedToActive(Integer id);
