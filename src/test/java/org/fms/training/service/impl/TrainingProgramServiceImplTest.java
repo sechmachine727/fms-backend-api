@@ -345,9 +345,9 @@ class TrainingProgramServiceImplTest {
         TrainingProgram trainingProgram = new TrainingProgram();
         trainingProgram.setStatus(TrainingProgramStatus.REVIEWING);
         given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.of(trainingProgram));
-
+        String note = "Update content";
         // when
-        TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(trainingProgramId);
+        TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(trainingProgramId, note);
 
         // then
         assertEquals(TrainingProgramStatus.DECLINED, newStatus);
@@ -401,9 +401,9 @@ class TrainingProgramServiceImplTest {
         // given
         Integer trainingProgramId = 1;
         given(trainingProgramRepository.findById(trainingProgramId)).willReturn(Optional.empty());
-
+        String note = "Update new content";
         // when, then
-        assertThrows(ResourceNotFoundException.class, () -> trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(trainingProgramId));
+        assertThrows(ResourceNotFoundException.class, () -> trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(trainingProgramId, note));
     }
 
     @Test
