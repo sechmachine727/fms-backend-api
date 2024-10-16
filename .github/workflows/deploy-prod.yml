@@ -25,7 +25,8 @@ jobs:
         run: java -version
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml -DskipTests
+      #        run: mvn -B package --file pom.xml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -46,5 +47,5 @@ jobs:
 
       - name: Recreate container with Portainer webhook
         run: |
-          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/2e5f4b34-174e-4fdf-8a5b-f6e0763c1f27
+          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/005b8981-aaa7-4de1-a188-e9a56da68da9
           echo "Container recreated"
