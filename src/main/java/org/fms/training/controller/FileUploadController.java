@@ -1,6 +1,8 @@
 package org.fms.training.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.fms.training.config.Authorization;
 import org.fms.training.service.ImportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@RolesAllowed({Authorization.CONTENT_MANAGER})
 @RequestMapping("/api/import")
 public class FileUploadController {
 
