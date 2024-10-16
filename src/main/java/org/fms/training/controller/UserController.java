@@ -1,11 +1,13 @@
 package org.fms.training.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.fms.training.config.PermitAll;
+import org.fms.training.config.Authorization;
 import org.fms.training.dto.userdto.ChangePasswordDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
-import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.UserRepository;
@@ -25,7 +27,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
-
+    @RolesAllowed({ Authorization.FMS_ADMIN})
     @GetMapping
     public ResponseEntity<List<ReadUserDTO>> findAll(
             @RequestParam(required = false) String search
@@ -34,7 +36,7 @@ public class UserController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({ Authorization.FMS_ADMIN})
     @GetMapping("/{id}")
     public ResponseEntity<ReadUserDTO> findById(@PathVariable Integer id) {
         Optional<ReadUserDTO> result = userService.findById(id);
@@ -42,6 +44,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @RolesAllowed({Authorization.FMS_ADMIN})
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
         Map<String, String> errors = new HashMap<>();
@@ -57,7 +60,7 @@ public class UserController {
             return ResponseEntity.internalServerError().body(errors);
         }
     }
-
+    @RolesAllowed({ Authorization.FMS_ADMIN})
     @PutMapping("/change-status/{id}")
     public ResponseEntity<Map<String, String>> updateUserStatus(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
@@ -73,7 +76,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
+    @RolesAllowed({Authorization.FMS_ADMIN})
     @PostMapping()
     public ResponseEntity<Map<String, String>> register(@RequestBody SaveUserDTO saveUserDTO) {
         Map<String, String> errors = new HashMap<>();
@@ -90,12 +93,13 @@ public class UserController {
         }
     }
 
-
+    @RolesAllowed({Authorization.FMS_ADMIN, Authorization.DELIVERABLES_MANAGER, Authorization.FA_MANAGER})
     @GetMapping("/class-admins")
     public List<ClassAdminDTO> getClassAdmins() {
         return userService.getClassAdminUsers();
     }
 
+    @PermitAll
     @PutMapping("/change-password/{account}")
     public ResponseEntity<Map<String, String>> changePassWord(@PathVariable String account, @RequestBody ChangePasswordDTO changePasswordDTO) {
         Map<String, String> response = new HashMap<>();

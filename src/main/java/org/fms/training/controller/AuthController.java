@@ -27,7 +27,6 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
         try {

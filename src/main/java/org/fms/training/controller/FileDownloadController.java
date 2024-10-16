@@ -1,5 +1,7 @@
 package org.fms.training.controller;
 
+import jakarta.annotation.security.RolesAllowed;
+import org.fms.training.config.Authorization;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@RolesAllowed({Authorization.CONTENT_MANAGER})
 @RequestMapping("/api/files")
 public class FileDownloadController {
 
