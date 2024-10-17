@@ -8,6 +8,7 @@ import org.fms.training.common.dto.groupdto.ReadGroupDTO;
 import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.service.GroupService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +42,21 @@ public class GroupController {
     public ResponseEntity<String> createGroup(@RequestBody SaveGroupDTO saveGroupDTO) {
         groupService.createGroup(saveGroupDTO);
         return ResponseEntity.ok("Create group success");
+    }
+
+    @RolesAllowed({Authorization.GROUP_ADMIN})
+    @GetMapping("/group-admin")
+    public ResponseEntity<List<ListGroupDTO>> getAllGroupsByAuthenticatedGroupAdmin() {
+        return groupService.getAllGroupsByAuthenticatedGroupAdmin(SecurityContextHolder.getContext().getAuthentication())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @RolesAllowed({Authorization.DELIVERABLES_MANAGER, Authorization.FA_MANAGER})
+    @GetMapping("/creator")
+    public ResponseEntity<List<ListGroupDTO>> getAllGroupsByAuthenticatedCreator() {
+        return groupService.getAllGroupsByAuthenticatedCreator(SecurityContextHolder.getContext().getAuthentication())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

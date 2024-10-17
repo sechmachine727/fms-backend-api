@@ -32,7 +32,7 @@ public class Group {
     private Integer traineeNumber;
 
     @CreatedBy
-    @Column(name = "createdBy")
+    @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "expected_start_date", nullable = false)

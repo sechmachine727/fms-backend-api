@@ -16,6 +16,7 @@ import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.EmailService;
 import org.fms.training.service.GroupService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +98,32 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    @Override
+    public Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedGroupAdmin(Authentication authentication) {
+        Optional<User> user = userRepository.findByAccount(authentication.getName());
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        if (user.get().getUserRoles().stream().noneMatch(userRole -> userRole.getRole().getRoleName().equals("GROUP_ADMIN"))) {
+            throw new ResourceNotFoundException("User is not a group admin");
+        }
+        List<UserGroup> userGroups = userGroupRepository.findByUserId(user.get().getId());
+        return Optional.of(userGroups.stream()
+                .map(userGroup -> groupMapper.toListGroupDTO(userGroup.getGroup()))
+                .toList());
+    }
+
+    @Override
+    public Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedCreator(Authentication authentication) {
+        Optional<User> user = userRepository.findByAccount(authentication.getName());
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        List<Group> groups = groupRepository.findByCreatedBy(user.get().getAccount());
+        return Optional.of(groups.stream()
+                .map(groupMapper::toListGroupDTO)
+                .toList());
+    }
 
     private void validFieldsCheck(SaveGroupDTO saveGroupDTO) {
         Map<String, String> errors = new HashMap<>();

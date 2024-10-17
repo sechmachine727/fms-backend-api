@@ -25,6 +25,4 @@ public class ListGroupDTO {
     private String actualStartDate;
     private String actualEndDate;
     private GroupStatus status;
-
-    //TODO: Make display classAdminEmployeeId work
 }

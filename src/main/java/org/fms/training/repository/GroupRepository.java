@@ -22,4 +22,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Optional<Group> findByGroupCode(String code);
 
     boolean existsByGroupCode(String groupCode);
+
+    List<Group> findByCreatedBy(String createdBy);
 }
