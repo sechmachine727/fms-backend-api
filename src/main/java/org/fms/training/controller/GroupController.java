@@ -27,6 +27,7 @@ public class GroupController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RolesAllowed({Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN, Authorization.TRAINER})
     @GetMapping("/{id}")
     public ResponseEntity<ReadGroupDTO> getGroupById(@PathVariable Integer id) {
@@ -34,6 +35,7 @@ public class GroupController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RolesAllowed({Authorization.DELIVERABLES_MANAGER})
     @PostMapping
     public ResponseEntity<String> createGroup(@RequestBody SaveGroupDTO saveGroupDTO) {

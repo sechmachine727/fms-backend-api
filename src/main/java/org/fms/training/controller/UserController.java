@@ -30,7 +30,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @RolesAllowed({ Authorization.FMS_ADMIN})
+    @RolesAllowed({Authorization.FMS_ADMIN})
     @GetMapping
     public ResponseEntity<List<ReadUserDTO>> findAll(
             @RequestParam(required = false) String search
@@ -40,7 +40,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RolesAllowed({ Authorization.FMS_ADMIN})
+    @RolesAllowed({Authorization.FMS_ADMIN})
     @GetMapping("/{id}")
     public ResponseEntity<ReadUserDTO> findById(@PathVariable Integer id) {
         Optional<ReadUserDTO> result = userService.findById(id);
@@ -67,7 +67,7 @@ public class UserController {
         }
     }
 
-    @RolesAllowed({ Authorization.FMS_ADMIN})
+    @RolesAllowed({Authorization.FMS_ADMIN})
     @PutMapping("/change-status/{id}")
     public ResponseEntity<Map<String, String>> updateUserStatus(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();

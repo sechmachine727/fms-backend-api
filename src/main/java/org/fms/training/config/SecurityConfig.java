@@ -37,6 +37,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
     private final CorsFilter corsFilter;
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity

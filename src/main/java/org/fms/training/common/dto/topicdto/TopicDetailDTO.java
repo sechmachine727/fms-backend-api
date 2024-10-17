@@ -2,9 +2,9 @@ package org.fms.training.common.dto.topicdto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fms.training.common.dto.unitdto.UnitDTO;
 import org.fms.training.common.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.common.dto.topicassessmentdto.TopicAssessmentDTO;
+import org.fms.training.common.dto.unitdto.UnitDTO;
 
 import java.util.List;
 
