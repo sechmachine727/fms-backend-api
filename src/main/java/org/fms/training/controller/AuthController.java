@@ -1,11 +1,11 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.config.TokenProvider;
-import org.fms.training.dto.userdto.AuthenticationResponse;
-import org.fms.training.dto.userdto.UserLoginDTO;
-import org.fms.training.entity.User;
-import org.fms.training.enums.Status;
+import org.fms.training.security.TokenProvider;
+import org.fms.training.common.dto.userdto.AuthenticationResponse;
+import org.fms.training.common.dto.userdto.UserLoginDTO;
+import org.fms.training.common.entity.User;
+import org.fms.training.common.enums.Status;
 import org.fms.training.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.deliverytypedto.DeliveryTypeDTO;
+import org.fms.training.common.dto.deliverytypedto.DeliveryTypeDTO;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.sitedto.SiteDTO;
-import org.fms.training.mapper.SiteMapper;
+import org.fms.training.common.dto.sitedto.SiteDTO;
+import org.fms.training.common.mapper.SiteMapper;
 import org.fms.training.repository.SiteRepository;
 import org.fms.training.service.SiteService;
 import org.springframework.stereotype.Service;

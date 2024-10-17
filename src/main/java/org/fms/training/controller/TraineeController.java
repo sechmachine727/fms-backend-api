@@ -1,9 +1,9 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.traineedto.ListTraineeDTO;
-import org.fms.training.dto.traineedto.ReadTraineeDTO;
-import org.fms.training.dto.traineedto.SaveTraineeDTO;
+import org.fms.training.common.dto.traineedto.ListTraineeDTO;
+import org.fms.training.common.dto.traineedto.ReadTraineeDTO;
+import org.fms.training.common.dto.traineedto.SaveTraineeDTO;
 import org.fms.training.service.TraineeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

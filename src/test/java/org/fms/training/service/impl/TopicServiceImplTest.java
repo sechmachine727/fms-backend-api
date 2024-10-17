@@ -1,14 +1,14 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.dto.topicdto.ListTopicDTO;
-import org.fms.training.dto.topicdto.TopicDetailDTO;
-import org.fms.training.entity.TechnicalGroup;
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TopicAssessment;
-import org.fms.training.entity.Unit;
-import org.fms.training.enums.Status;
+import org.fms.training.common.dto.topicdto.ListTopicDTO;
+import org.fms.training.common.dto.topicdto.TopicDetailDTO;
+import org.fms.training.common.entity.TechnicalGroup;
+import org.fms.training.common.entity.Topic;
+import org.fms.training.common.entity.TopicAssessment;
+import org.fms.training.common.entity.Unit;
+import org.fms.training.common.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
-import org.fms.training.mapper.TopicMapper;
+import org.fms.training.common.mapper.TopicMapper;
 import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
 import org.fms.training.repository.UnitRepository;

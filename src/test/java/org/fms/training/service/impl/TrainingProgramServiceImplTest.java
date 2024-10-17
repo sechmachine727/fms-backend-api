@@ -1,14 +1,14 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TrainingProgram;
-import org.fms.training.enums.Status;
-import org.fms.training.enums.TrainingProgramStatus;
+import org.fms.training.common.dto.trainingprogramdto.SaveTrainingProgramDTO;
+import org.fms.training.common.entity.Topic;
+import org.fms.training.common.entity.TrainingProgram;
+import org.fms.training.common.enums.Status;
+import org.fms.training.common.enums.TrainingProgramStatus;
 import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
-import org.fms.training.mapper.TrainingProgramMapper;
+import org.fms.training.common.mapper.TrainingProgramMapper;
 import org.fms.training.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,10 +2,10 @@ package org.fms.training.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.config.Authorization;
-import org.fms.training.dto.groupdto.ListGroupDTO;
-import org.fms.training.dto.groupdto.ReadGroupDTO;
-import org.fms.training.dto.groupdto.SaveGroupDTO;
+import org.fms.training.common.constant.Authorization;
+import org.fms.training.common.dto.groupdto.ListGroupDTO;
+import org.fms.training.common.dto.groupdto.ReadGroupDTO;
+import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.service.GroupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

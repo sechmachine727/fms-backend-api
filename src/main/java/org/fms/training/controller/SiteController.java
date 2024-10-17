@@ -1,7 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.sitedto.SiteDTO;
+import org.fms.training.common.dto.sitedto.SiteDTO;
 import org.fms.training.service.SiteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

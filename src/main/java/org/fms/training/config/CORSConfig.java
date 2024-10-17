@@ -19,7 +19,6 @@ public class CORSConfig {
         config.addAllowedOriginPattern("*"); // Allow all origins (use specific origins if possible)
         config.addAllowedHeader("*"); // Allow all headers
         config.addAllowedMethod("*"); // Allow all methods (GET, POST, etc.)
-
         source.registerCorsConfiguration("/**", config); // Apply configuration to all endpoints
 
         return new CorsFilter(source);

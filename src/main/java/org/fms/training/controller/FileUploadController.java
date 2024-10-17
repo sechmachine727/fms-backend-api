@@ -2,7 +2,7 @@ package org.fms.training.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.config.Authorization;
+import org.fms.training.common.constant.Authorization;
 import org.fms.training.service.ImportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

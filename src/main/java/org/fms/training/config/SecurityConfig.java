@@ -1,6 +1,9 @@
 package org.fms.training.config;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.security.JwtAuthenticationEntryPoint;
+import org.fms.training.security.JwtFilter;
+import org.fms.training.security.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

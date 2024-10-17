@@ -1,6 +1,7 @@
 package org.fms.training.service.impl;
 
 import org.apache.poi.ss.usermodel.*;
+import org.fms.training.common.entity.*;
 import org.fms.training.entity.*;
 import org.fms.training.repository.*;
 import org.junit.jupiter.api.BeforeEach;

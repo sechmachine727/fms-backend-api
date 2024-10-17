@@ -1,7 +1,7 @@
 package org.fms.training.repository;
 
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TopicAssessment;
+import org.fms.training.common.entity.Topic;
+import org.fms.training.common.entity.TopicAssessment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

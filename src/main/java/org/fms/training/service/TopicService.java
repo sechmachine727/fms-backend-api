@@ -1,8 +1,8 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.topicdto.ListTopicDTO;
-import org.fms.training.dto.topicdto.TopicDetailDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.common.dto.topicdto.ListTopicDTO;
+import org.fms.training.common.dto.topicdto.TopicDetailDTO;
+import org.fms.training.common.enums.Status;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

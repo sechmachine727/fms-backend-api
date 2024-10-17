@@ -1,13 +1,13 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.traineedto.ListTraineeDTO;
-import org.fms.training.dto.traineedto.ReadTraineeDTO;
-import org.fms.training.dto.traineedto.SaveTraineeDTO;
-import org.fms.training.entity.Trainee;
+import org.fms.training.common.dto.traineedto.ListTraineeDTO;
+import org.fms.training.common.dto.traineedto.ReadTraineeDTO;
+import org.fms.training.common.dto.traineedto.SaveTraineeDTO;
+import org.fms.training.common.entity.Trainee;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
-import org.fms.training.mapper.TraineeMapper;
+import org.fms.training.common.mapper.TraineeMapper;
 import org.fms.training.repository.TraineeRepository;
 import org.fms.training.service.TraineeService;
 import org.springframework.stereotype.Service;

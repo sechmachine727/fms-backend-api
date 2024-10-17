@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.locationdto.LocationDTO;
+import org.fms.training.common.dto.locationdto.LocationDTO;
 
 import java.util.List;
 
