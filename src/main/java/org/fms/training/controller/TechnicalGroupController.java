@@ -1,7 +1,7 @@
 package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.technicalgroupdto.ListTechnicalGroupDTO;
+import org.fms.training.common.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.service.TechnicalGroupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,8 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.departmentdto.DepartmentDTO;
-import org.fms.training.mapper.DepartmentMapper;
+import org.fms.training.common.dto.departmentdto.DepartmentDTO;
+import org.fms.training.common.mapper.DepartmentMapper;
 import org.fms.training.repository.DepartmentRepository;
 import org.fms.training.service.DepartmentService;
 import org.springframework.stereotype.Service;

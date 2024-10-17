@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.entity.Scope;
+import org.fms.training.common.entity.Scope;
 import org.fms.training.repository.ScopeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

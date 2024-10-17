@@ -1,7 +1,7 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.entity.Scope;
+import org.fms.training.common.entity.Scope;
 import org.fms.training.repository.ScopeRepository;
 import org.fms.training.service.ScopeService;
 import org.springframework.stereotype.Service;

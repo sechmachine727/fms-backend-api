@@ -1,4 +1,4 @@
-name: Deploy Test Environment
+name: Deploy Prod Environment
 
 on:
   push:

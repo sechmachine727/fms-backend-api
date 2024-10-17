@@ -1,7 +1,7 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.dto.userdto.RoleDTO;
-import org.fms.training.entity.Role;
+import org.fms.training.common.dto.userdto.RoleDTO;
+import org.fms.training.common.entity.Role;
 import org.fms.training.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

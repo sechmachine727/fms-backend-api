@@ -1,13 +1,14 @@
 package org.fms.training.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
-import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.enums.TrainingProgramStatus;
+import org.fms.training.common.constant.Authorization;
+import org.fms.training.common.dto.trainingprogramdto.ListByTechnicalGroupDTO;
+import org.fms.training.common.dto.trainingprogramdto.ListTrainingProgramDTO;
+import org.fms.training.common.dto.trainingprogramdto.ReadTrainingProgramDTO;
+import org.fms.training.common.dto.trainingprogramdto.SaveTrainingProgramDTO;
+import org.fms.training.common.enums.TrainingProgramStatus;
 import org.fms.training.exception.ResourceNotFoundException;
-import org.fms.training.repository.TrainingProgramRepository;
 import org.fms.training.service.TrainingProgramService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
-    private final TrainingProgramRepository trainingProgramRepository;
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN})
     @GetMapping
     public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
             @RequestParam(required = false) String search) {
@@ -32,21 +32,21 @@ public class TrainingProgramController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN, Authorization.TRAINER})
     @GetMapping("/{id}")
     public ResponseEntity<ReadTrainingProgramDTO> getByTrainingProgramId(@PathVariable Integer id) {
         Optional<ReadTrainingProgramDTO> result = trainingProgramService.getTrainingProgramById(id);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER})
     @PostMapping
     public ResponseEntity<Map<String, String>> createTrainingProgram(@RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
         trainingProgramService.createTrainingProgram(saveTrainingProgramDTO);
         Map<String, String> responseSuccess = Map.of("success", "Create training program success");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseSuccess);
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER})
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateTrainingProgram(@PathVariable Integer id, @RequestBody SaveTrainingProgramDTO saveTrainingProgramDTO) {
         trainingProgramService.updateTrainingProgram(id, saveTrainingProgramDTO);
@@ -60,7 +60,7 @@ public class TrainingProgramController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER})
     @PutMapping("/toggle-activate/{id}")
     public ResponseEntity<Map<String, String>> updateTrainingProgramStatus(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
@@ -76,12 +76,12 @@ public class TrainingProgramController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-    @PutMapping("/toggle-reviewing-to-declined/{id}")
-    public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id) {
+    @RolesAllowed({Authorization.FA_MANAGER})
+    @PutMapping("/decline/{id}/{reason}")
+    public ResponseEntity<Map<String, String>> toggleReviewingToDeclined(@PathVariable Integer id, @PathVariable String reason) {
         Map<String, String> response = new HashMap<>();
         try {
-            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(id);
+            TrainingProgramStatus newStatus = trainingProgramService.toggleTrainingProgramStatusFromReviewingToDeclined(id, reason);
             response.put("success", "Training program status updated successfully to " + newStatus);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
@@ -92,8 +92,8 @@ public class TrainingProgramController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-    @PutMapping("/toggle-to-active/{id}")
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER})
+    @PutMapping("/approve/{id}")
     public ResponseEntity<Map<String, String>> toggleReviewingToActive(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
         try {

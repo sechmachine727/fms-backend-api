@@ -1,9 +1,14 @@
 package org.fms.training.config;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.security.JwtAuthenticationEntryPoint;
+import org.fms.training.security.JwtFilter;
+import org.fms.training.security.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,12 +20,14 @@ import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig extends GlobalMethodSecurityConfiguration {
     private static final String[] PUBLIC_ENDPOINTS = {
-//            "/api/**",
             "/api/login",
-            "/api/register",
             "/swagger-ui/index.html",
             "/swagger-ui/**",       // Thêm endpoint cho Swagger UI
             "/v3/api-docs/**",      // Thêm endpoint cho API Docs
@@ -30,7 +37,6 @@ public class SecurityConfig {
     private final CorsFilter corsFilter;
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -45,9 +51,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                                /*.requestMatchers("/api/trainees/**").hasAnyRole("TRAINER")
-                                .requestMatchers("/api/roles/**").hasAnyRole("TRAINER", "FAMANAGER")
-                                .requestMatchers("/api/training-programs/**").hasAnyRole("CONTENTMANAGER", "FAMANAGER")*/
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

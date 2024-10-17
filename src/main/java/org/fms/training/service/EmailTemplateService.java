@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.entity.EmailTemplate;
+import org.fms.training.common.entity.EmailTemplate;
 
 import java.util.List;
 

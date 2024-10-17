@@ -1,14 +1,8 @@
 package org.fms.training.service.impl;
 
 import org.apache.poi.ss.usermodel.*;
-import org.fms.training.entity.TechnicalGroup;
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TopicAssessment;
-import org.fms.training.entity.Unit;
-import org.fms.training.repository.TechnicalGroupRepository;
-import org.fms.training.repository.TopicAssessmentRepository;
-import org.fms.training.repository.TopicRepository;
-import org.fms.training.repository.UnitRepository;
+import org.fms.training.common.entity.*;
+import org.fms.training.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

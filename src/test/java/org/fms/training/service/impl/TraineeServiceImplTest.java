@@ -1,10 +1,10 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.dto.traineedto.SaveTraineeDTO;
-import org.fms.training.entity.Trainee;
+import org.fms.training.common.dto.traineedto.SaveTraineeDTO;
+import org.fms.training.common.entity.Trainee;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
-import org.fms.training.mapper.TraineeMapper;
+import org.fms.training.common.mapper.TraineeMapper;
 import org.fms.training.repository.TraineeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

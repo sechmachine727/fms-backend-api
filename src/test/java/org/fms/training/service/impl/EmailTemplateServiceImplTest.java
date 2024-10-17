@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.entity.EmailTemplate;
+import org.fms.training.common.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

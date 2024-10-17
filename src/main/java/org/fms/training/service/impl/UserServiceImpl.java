@@ -2,20 +2,18 @@ package org.fms.training.service.impl;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.userdto.ChangePasswordDTO;
-import org.fms.training.dto.userdto.ClassAdminDTO;
-import org.fms.training.dto.userdto.ReadUserDTO;
-import org.fms.training.dto.userdto.SaveUserDTO;
-import org.fms.training.entity.Role;
-import org.fms.training.entity.User;
-import org.fms.training.entity.UserRole;
-import org.fms.training.enums.Status;
+import org.fms.training.common.dto.userdto.ChangePasswordDTO;
+import org.fms.training.common.dto.userdto.ClassAdminDTO;
+import org.fms.training.common.dto.userdto.ReadUserDTO;
+import org.fms.training.common.dto.userdto.SaveUserDTO;
+import org.fms.training.common.entity.Role;
+import org.fms.training.common.entity.User;
+import org.fms.training.common.entity.UserRole;
+import org.fms.training.common.enums.Status;
+import org.fms.training.common.mapper.UserMapper;
 import org.fms.training.exception.ResourceNotFoundException;
-import org.fms.training.mapper.UserMapper;
-import org.fms.training.repository.RoleRepository;
-import org.fms.training.repository.TrainerRepository;
-import org.fms.training.repository.UserRepository;
-import org.fms.training.repository.UserRoleRepository;
+import org.fms.training.exception.ValidationException;
+import org.fms.training.repository.*;
 import org.fms.training.service.EmailService;
 import org.fms.training.service.UserService;
 import org.fms.training.util.PasswordUtil;
@@ -41,10 +39,13 @@ public class UserServiceImpl implements UserService {
     private final TrainerRepository trainerRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
+    private final DepartmentRepository departmentRepository;
 
     @Transactional
     @Override
     public SaveUserDTO register(SaveUserDTO saveUserDTO) throws MessagingException {
+        validFieldsCheck(saveUserDTO);
+
         String plainPassword = PasswordUtil.generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(plainPassword);
         User user = userMapper.toUserEntity(saveUserDTO);
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
             List<UserRole> userRoles = saveUserDTO.getRoles().stream()
                     .map(roleId -> {
                         Role role = roleRepository.findById(roleId)
-                                .orElseThrow(() -> new RuntimeException("Role does not exist " + roleId));
+                                .orElseThrow(() -> new ResourceNotFoundException("Role does not exist " + roleId));
                         assignedRoles.add(role);
                         UserRole userRole = new UserRole();
                         userRole.setUser(savedUser);
@@ -86,7 +87,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toSaveUserDTO(savedUser);
     }
 
-
     @Override
     public User findByAccount(String account) {
         return userRepository.findByAccount(account).orElse(null);
@@ -107,79 +107,78 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmployeeId(employeeId).orElse(null);
     }
 
-    @Override
-    public boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors) {
-        if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
-            return false;
+    private void validFieldsCheck(SaveUserDTO saveUserDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (existsByAccount(saveUserDTO.getAccount()) != null) {
+            errors.put("account", "User already exists in the system");
+        }
+        if (existsByEmail(saveUserDTO.getEmail()) != null) {
+            errors.put("email", "Email already exists in the system");
+        }
+        if (existsByEmployeeId(saveUserDTO.getEmployeeId()) != null) {
+            errors.put("employeeId", "EmployeeId already exists in the system");
         }
 
-        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null;
-        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null;
-        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null;
-
-        if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
-            if (checkExistingAccount) {
-                errors.put("account", "User already exists in the system");
-            }
-            if (checkExistingEmail) {
-                errors.put("email", "Email already exists in the system");
-            }
-            if (checkExistingEmployeeId) {
-                errors.put("employeeId", "EmployeeId already exists in the system");
-            }
-            return false;
+        if (saveUserDTO.getAccount().isBlank() || saveUserDTO.getEmail().isBlank() || !Validation.isEmailValid(saveUserDTO.getEmail())) {
+            errors.put("validation", "Invalid account or email");
         }
 
-        return !saveUserDTO.getAccount().isBlank() &&
-                !saveUserDTO.getEmail().isBlank() &&
-                Validation.isEmailValid(saveUserDTO.getEmail()) &&
-                errors.isEmpty();
+        validateRoleIds(saveUserDTO.getRoles(), errors);
+
+        validateDepartmentId(saveUserDTO.getDepartmentId(), errors);
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 
-    @Override
-    public boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors) {
-        if (saveUserDTO == null || saveUserDTO.getAccount() == null || saveUserDTO.getEmail() == null) {
-            return false;
-        }
-        boolean checkExistingAccount = existsByAccount(saveUserDTO.getAccount()) != null && !Objects.equals(existsByAccount(saveUserDTO.getAccount()).getId(), userId);
-        boolean checkExistingEmail = existsByEmail(saveUserDTO.getEmail()) != null && !Objects.equals(existsByEmail(saveUserDTO.getEmail()).getId(), userId);
-        boolean checkExistingEmployeeId = existsByEmployeeId(saveUserDTO.getEmployeeId()) != null && !Objects.equals(existsByEmployeeId(saveUserDTO.getEmployeeId()).getId(), userId);
+    private void validFieldsCheckForUpdate(Integer userId, SaveUserDTO saveUserDTO) {
+        Map<String, String> errors = new HashMap<>();
 
-        if (checkExistingAccount || checkExistingEmail || checkExistingEmployeeId) {
-            if (checkExistingAccount) {
-                errors.put("account", "User already exists in the system");
-            }
-            if (checkExistingEmail) {
-                errors.put("email", "Email already exists in the system");
-            }
-            if (checkExistingEmployeeId) {
-                errors.put("employeeId", "EmployeeId already exists in the system");
-            }
-            return false;
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!existingUser.getAccount().equals(saveUserDTO.getAccount()) && existsByAccount(saveUserDTO.getAccount()) != null) {
+            errors.put("account", "Account already exists");
         }
 
-        return !saveUserDTO.getAccount().isBlank() &&
-                !saveUserDTO.getEmail().isBlank() &&
-                Validation.isEmailValid(saveUserDTO.getEmail()) &&
-                errors.isEmpty();
+        if (!existingUser.getEmail().equals(saveUserDTO.getEmail()) && existsByEmail(saveUserDTO.getEmail()) != null) {
+            errors.put("email", "Email already exists");
+        }
+
+        if (!existingUser.getEmployeeId().equals(saveUserDTO.getEmployeeId()) && existsByEmployeeId(saveUserDTO.getEmployeeId()) != null) {
+            errors.put("employeeId", "Employee ID already exists");
+        }
+
+        if (saveUserDTO.getAccount().isBlank() || saveUserDTO.getEmail().isBlank() || !Validation.isEmailValid(saveUserDTO.getEmail())) {
+            errors.put("validation", "Invalid account or email");
+        }
+
+        validateRoleIds(saveUserDTO.getRoles(), errors);
+        validateDepartmentId(saveUserDTO.getDepartmentId(), errors);
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 
-    @Override
-    public boolean isValidUserForChangePassword(String account, ChangePasswordDTO data, Map<String, String> errors) {
-        User user = userRepository.findByAccount(account).orElse(null);
-        if (null == user) {
-            errors.put("account", "User not found");
-        }
-        if (!passwordEncoder.matches(data.getOldPassword(), user.getEncryptedPassword())) {
-            errors.put("oldPassword", "The old password you entered is incorrect");
 
+    private void validateRoleIds(List<Integer> roleIds, Map<String, String> errors) {
+        List<Integer> invalidRoleIds = roleIds.stream()
+                .filter(roleId -> !roleRepository.existsById(roleId))
+                .toList();
+
+        if (!invalidRoleIds.isEmpty()) {
+            errors.put("roleIds", "Invalid role IDs: " + invalidRoleIds);
         }
-        if (data.getNewPassword().length() < 8) {
-            errors.put("newPassword", "Password must be at least 8 characters long");
-        }
-        return errors.isEmpty();
     }
 
+    private void validateDepartmentId(Integer departmentId, Map<String, String> errors) {
+        if (!departmentRepository.existsById(departmentId)) {
+            errors.put("departmentId", "Invalid department ID: " + departmentId);
+        }
+    }
 
     @Override
     public Optional<List<ReadUserDTO>> findAll(String search) {
@@ -211,6 +210,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateUserInfo(Integer userId, SaveUserDTO saveUserDTO) {
+        validFieldsCheckForUpdate(userId, saveUserDTO);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -254,7 +255,6 @@ public class UserServiceImpl implements UserService {
             emailService.sendHtmlEmail(user.getEmail(), "Your account has been updated", "welcome-email", emailVariables);
         }
     }
-
 
     @Override
     @Transactional(readOnly = true)

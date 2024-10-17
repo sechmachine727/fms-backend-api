@@ -2,8 +2,8 @@ package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
-import org.fms.training.entity.*;
-import org.fms.training.enums.Status;
+import org.fms.training.common.entity.*;
+import org.fms.training.common.enums.Status;
 import org.fms.training.repository.*;
 import org.fms.training.service.ImportService;
 import org.springframework.stereotype.Service;

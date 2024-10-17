@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.entity.Scope;
+import org.fms.training.common.entity.Scope;
 
 import java.util.List;
 import java.util.Optional;

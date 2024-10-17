@@ -1,19 +1,19 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.trainingprogramdto.ListByTechnicalGroupDTO;
-import org.fms.training.dto.trainingprogramdto.ListTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.ReadTrainingProgramDTO;
-import org.fms.training.dto.trainingprogramdto.SaveTrainingProgramDTO;
-import org.fms.training.entity.Topic;
-import org.fms.training.entity.TopicTrainingProgram;
-import org.fms.training.entity.TrainingProgram;
-import org.fms.training.enums.Status;
-import org.fms.training.enums.TrainingProgramStatus;
+import org.fms.training.common.dto.trainingprogramdto.ListByTechnicalGroupDTO;
+import org.fms.training.common.dto.trainingprogramdto.ListTrainingProgramDTO;
+import org.fms.training.common.dto.trainingprogramdto.ReadTrainingProgramDTO;
+import org.fms.training.common.dto.trainingprogramdto.SaveTrainingProgramDTO;
+import org.fms.training.common.entity.Topic;
+import org.fms.training.common.entity.TopicTrainingProgram;
+import org.fms.training.common.entity.TrainingProgram;
+import org.fms.training.common.enums.Status;
+import org.fms.training.common.enums.TrainingProgramStatus;
 import org.fms.training.exception.InvalidDataException;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
-import org.fms.training.mapper.TrainingProgramMapper;
+import org.fms.training.common.mapper.TrainingProgramMapper;
 import org.fms.training.repository.*;
 import org.fms.training.service.TrainingProgramService;
 import org.springframework.stereotype.Service;
@@ -137,13 +137,13 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public TrainingProgramStatus toggleTrainingProgramStatusToActiveAndInactive(Integer id) {
-        return toggleStatus(id, TrainingProgramStatus.ACTIVE, TrainingProgramStatus.INACTIVE);
+        return toggleStatus(id, TrainingProgramStatus.ACTIVE, TrainingProgramStatus.INACTIVE, "");
     }
 
     @Transactional
     @Override
-    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id) {
-        return toggleStatus(id, TrainingProgramStatus.REVIEWING, TrainingProgramStatus.DECLINED);
+    public TrainingProgramStatus toggleTrainingProgramStatusFromReviewingToDeclined(Integer id, String reason) {
+        return toggleStatus(id, TrainingProgramStatus.REVIEWING, TrainingProgramStatus.DECLINED, reason);
     }
 
     @Transactional
@@ -157,11 +157,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         return newStatus;
     }
 
-    private TrainingProgramStatus toggleStatus(Integer id, TrainingProgramStatus fromStatus, TrainingProgramStatus toStatus) {
+    private TrainingProgramStatus toggleStatus(Integer id, TrainingProgramStatus fromStatus, TrainingProgramStatus toStatus, String reason) {
         TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Training Program not found"));
         TrainingProgramStatus newStatus = trainingProgram.getStatus() == fromStatus ? toStatus : fromStatus;
         trainingProgram.setStatus(newStatus);
+        trainingProgram.setNote(reason.trim());
         trainingProgramRepository.save(trainingProgram);
         return newStatus;
     }

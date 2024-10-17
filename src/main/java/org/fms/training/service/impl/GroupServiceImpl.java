@@ -1,16 +1,16 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.groupdto.ListGroupDTO;
-import org.fms.training.dto.groupdto.ReadGroupDTO;
-import org.fms.training.dto.groupdto.SaveGroupDTO;
-import org.fms.training.entity.Group;
-import org.fms.training.entity.User;
-import org.fms.training.entity.UserGroup;
-import org.fms.training.enums.GroupStatus;
+import org.fms.training.common.dto.groupdto.ListGroupDTO;
+import org.fms.training.common.dto.groupdto.ReadGroupDTO;
+import org.fms.training.common.dto.groupdto.SaveGroupDTO;
+import org.fms.training.common.entity.Group;
+import org.fms.training.common.entity.User;
+import org.fms.training.common.entity.UserGroup;
+import org.fms.training.common.enums.GroupStatus;
+import org.fms.training.common.mapper.GroupMapper;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
-import org.fms.training.mapper.GroupMapper;
 import org.fms.training.repository.GroupRepository;
 import org.fms.training.repository.UserGroupRepository;
 import org.fms.training.repository.UserRepository;
@@ -134,12 +134,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group existsByGroupName(String name) {
-        return groupRepository.findByGroupName(name).orElse(null);
+    public void existsByGroupName(String name) {
+        groupRepository.findByGroupName(name);
     }
 
     @Override
-    public Group existsByGroupCode(String code) {
-        return groupRepository.findByGroupCode(code).orElse(null);
+    public void existsByGroupCode(String code) {
+        groupRepository.findByGroupCode(code);
     }
 }

@@ -1,6 +1,6 @@
 package org.fms.training.service;
 
-import org.fms.training.dto.sitedto.SiteDTO;
+import org.fms.training.common.dto.sitedto.SiteDTO;
 
 import java.util.List;
 

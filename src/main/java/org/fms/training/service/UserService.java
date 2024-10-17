@@ -1,17 +1,16 @@
 package org.fms.training.service;
 
 import jakarta.mail.MessagingException;
-import org.fms.training.dto.userdto.ChangePasswordDTO;
-import org.fms.training.dto.userdto.ClassAdminDTO;
-import org.fms.training.dto.userdto.ReadUserDTO;
-import org.fms.training.dto.userdto.SaveUserDTO;
-import org.fms.training.entity.User;
-import org.fms.training.enums.Status;
+import org.fms.training.common.dto.userdto.ChangePasswordDTO;
+import org.fms.training.common.dto.userdto.ClassAdminDTO;
+import org.fms.training.common.dto.userdto.ReadUserDTO;
+import org.fms.training.common.dto.userdto.SaveUserDTO;
+import org.fms.training.common.entity.User;
+import org.fms.training.common.enums.Status;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
@@ -24,12 +23,6 @@ public interface UserService extends UserDetailsService {
     User existsByAccount(String account);
 
     User existsByEmployeeId(String employeeId);
-
-    boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors);
-
-    boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors);
-
-    boolean isValidUserForChangePassword(String account, ChangePasswordDTO data, Map<String, String> errors);
 
     Optional<List<ReadUserDTO>> findAll(String search);
 

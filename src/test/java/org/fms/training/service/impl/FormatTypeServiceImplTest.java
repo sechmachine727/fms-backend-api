@@ -1,6 +1,6 @@
 package org.fms.training.service.impl;
 
-import org.fms.training.entity.FormatType;
+import org.fms.training.common.entity.FormatType;
 import org.fms.training.repository.FormatTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

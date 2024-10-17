@@ -1,9 +1,11 @@
 package org.fms.training.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.dto.topicdto.ListTopicDTO;
-import org.fms.training.dto.topicdto.TopicDetailDTO;
-import org.fms.training.enums.Status;
+import org.fms.training.common.constant.Authorization;
+import org.fms.training.common.dto.topicdto.ListTopicDTO;
+import org.fms.training.common.dto.topicdto.TopicDetailDTO;
+import org.fms.training.common.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.service.TopicService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class TopicController {
     private final TopicService topicService;
 
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER})
     @GetMapping
     public ResponseEntity<List<ListTopicDTO>> getAllTopics(
             @RequestParam(required = false) String search
@@ -28,20 +31,20 @@ public class TopicController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN, Authorization.TRAINER})
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailDTO> getTopicDetail(@PathVariable Integer id) {
         return topicService.getTopicDetail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    @RolesAllowed({Authorization.CONTENT_MANAGER})
     @GetMapping("/active")
     public ResponseEntity<List<ListTopicDTO>> getActiveTopics() {
         List<ListTopicDTO> activeTopics = topicService.getActiveTopics();
         return ResponseEntity.ok(activeTopics);
     }
-
+    @RolesAllowed({Authorization.FA_MANAGER, Authorization.CONTENT_MANAGER})
     @PutMapping("/change-status/{id}")
     public ResponseEntity<Map<String, String>> updateTopicStatus(@PathVariable Integer id) {
         Map<String, String> response = new HashMap<>();
