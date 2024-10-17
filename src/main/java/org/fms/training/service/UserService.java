@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
@@ -24,12 +23,6 @@ public interface UserService extends UserDetailsService {
     User existsByAccount(String account);
 
     User existsByEmployeeId(String employeeId);
-
-    boolean isValidUser(SaveUserDTO saveUserDTO, Map<String, String> errors);
-
-    boolean isValidUserForUpdate(Integer userId, SaveUserDTO saveUserDTO, Map<String, String> errors);
-
-    boolean isValidUserForChangePassword(String account, ChangePasswordDTO data, Map<String, String> errors);
 
     Optional<List<ReadUserDTO>> findAll(String search);
 

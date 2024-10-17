@@ -1,15 +1,17 @@
+// src/main/java/org/fms/training/controller/UserController.java
 package org.fms.training.controller;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.fms.training.common.constant.PermitAll;
 import org.fms.training.common.constant.Authorization;
+import org.fms.training.common.constant.PermitAll;
 import org.fms.training.common.dto.userdto.ChangePasswordDTO;
 import org.fms.training.common.dto.userdto.ClassAdminDTO;
 import org.fms.training.common.dto.userdto.ReadUserDTO;
 import org.fms.training.common.dto.userdto.SaveUserDTO;
 import org.fms.training.common.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
+import org.fms.training.exception.ValidationException;
 import org.fms.training.repository.UserRepository;
 import org.fms.training.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
+
     @RolesAllowed({ Authorization.FMS_ADMIN})
     @GetMapping
     public ResponseEntity<List<ReadUserDTO>> findAll(
@@ -36,6 +39,7 @@ public class UserController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RolesAllowed({ Authorization.FMS_ADMIN})
     @GetMapping("/{id}")
     public ResponseEntity<ReadUserDTO> findById(@PathVariable Integer id) {
@@ -47,19 +51,22 @@ public class UserController {
     @RolesAllowed({Authorization.FMS_ADMIN})
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateUserInfo(@PathVariable Integer id, @RequestBody SaveUserDTO saveUserDTO) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         try {
-            if (!userService.isValidUserForUpdate(id, saveUserDTO, errors))
-                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             userService.updateUserInfo(id, saveUserDTO);
-            Map<String, String> responseSuccess = new HashMap<>();
-            responseSuccess.put("success", "Update user info success");
-            return ResponseEntity.ok(responseSuccess);
+            response.put("success", "Update user info success");
+            return ResponseEntity.ok(response);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(e.getErrors());
+        } catch (ResourceNotFoundException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            errors.put("error", e.getMessage());
-            return ResponseEntity.internalServerError().body(errors);
+            response.put("error", "Update user info failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     @RolesAllowed({ Authorization.FMS_ADMIN})
     @PutMapping("/change-status/{id}")
     public ResponseEntity<Map<String, String>> updateUserStatus(@PathVariable Integer id) {
@@ -76,20 +83,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     @RolesAllowed({Authorization.FMS_ADMIN})
     @PostMapping()
     public ResponseEntity<Map<String, String>> register(@RequestBody SaveUserDTO saveUserDTO) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         try {
-            if (!userService.isValidUser(saveUserDTO, errors))
-                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
             SaveUserDTO result = userService.register(saveUserDTO);
-            Map<String, String> responseSuccess = new HashMap<>();
-            responseSuccess.put("success", "Save user success: " + result.getAccount());
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseSuccess);
+            response.put("success", "Save user success: " + result.getAccount());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(e.getErrors());
         } catch (Exception e) {
-            errors.put("error", e.getMessage());
-            return ResponseEntity.internalServerError().body(errors);
+            response.put("error", e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 
@@ -104,9 +111,6 @@ public class UserController {
     public ResponseEntity<Map<String, String>> changePassWord(@PathVariable String account, @RequestBody ChangePasswordDTO changePasswordDTO) {
         Map<String, String> response = new HashMap<>();
         try {
-            if(!userService.isValidUserForChangePassword(account, changePasswordDTO, response)) {
-                return ResponseEntity.badRequest().body(response);
-            }
             userService.changePassword(account, changePasswordDTO);
             response.put("success", "Password changed successfully");
             return ResponseEntity.ok(response);
