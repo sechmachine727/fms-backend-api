@@ -1,10 +1,9 @@
 package org.fms.training.common.mapper;
 
-import org.fms.training.common.entity.*;
 import org.fms.training.common.dto.groupdto.ListGroupDTO;
 import org.fms.training.common.dto.groupdto.ReadGroupDTO;
 import org.fms.training.common.dto.groupdto.SaveGroupDTO;
-import org.fms.training.entity.*;
+import org.fms.training.common.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
