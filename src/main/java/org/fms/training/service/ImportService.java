@@ -5,5 +5,5 @@ import java.io.InputStream;
 
 public interface ImportService {
 
-    void importDataFromStream(InputStream inputStream) throws IOException;
+    void importDataFromStream(InputStream inputStream, boolean confirmUpdate) throws IOException;
 }

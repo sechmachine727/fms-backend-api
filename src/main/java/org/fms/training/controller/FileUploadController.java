@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -20,13 +22,14 @@ public class FileUploadController {
     private final ImportService importService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            importService.importDataFromStream(file.getInputStream());
-            return ResponseEntity.ok("File imported successfully!");
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("confirm") boolean confirmUpdate) {
+        try (InputStream inputStream = file.getInputStream()) {
+            importService.importDataFromStream(inputStream, confirmUpdate);
+            return ResponseEntity.ok("File imported successfully.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to import file: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to import file: " + e.getMessage());
         }
     }
 

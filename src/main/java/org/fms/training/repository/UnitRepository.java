@@ -13,6 +13,10 @@ public interface UnitRepository extends JpaRepository<Unit, Integer> {
 
     @Query("SELECT u FROM Unit u WHERE u.topic.id = :topicId")
     List<Unit> findUnitsByTopicId(@Param("topicId") Integer topicId);
+
     List<Unit> findByTopic(Topic topic);
+
     Optional<Unit> findByUnitNameAndTopic(String unitName, Topic topic);
+
+    void deleteByTopic(Topic topic);
 }

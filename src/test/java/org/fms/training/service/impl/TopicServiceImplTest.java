@@ -270,7 +270,7 @@ class TopicServiceImplTest {
         List<Unit> units = List.of(unit);
 
         // when
-        TopicServiceImpl topicService = new TopicServiceImpl(null, null, null, null,null);
+        TopicServiceImpl topicService = new TopicServiceImpl(null, null, null, null, null);
         TopicDetailDTO result = topicService.mapToTopicDetailDTO(topic, units, List.of());
 
         // then

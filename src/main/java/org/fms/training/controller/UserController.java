@@ -5,7 +5,6 @@ import org.fms.training.dto.userdto.ChangePasswordDTO;
 import org.fms.training.dto.userdto.ClassAdminDTO;
 import org.fms.training.dto.userdto.ReadUserDTO;
 import org.fms.training.dto.userdto.SaveUserDTO;
-import org.fms.training.entity.User;
 import org.fms.training.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.UserRepository;
@@ -100,7 +99,7 @@ public class UserController {
     public ResponseEntity<Map<String, String>> changePassWord(@PathVariable String account, @RequestBody ChangePasswordDTO changePasswordDTO) {
         Map<String, String> response = new HashMap<>();
         try {
-            if(!userService.isValidUserForChangePassword(account, changePasswordDTO, response)) {
+            if (!userService.isValidUserForChangePassword(account, changePasswordDTO, response)) {
                 return ResponseEntity.badRequest().body(response);
             }
             userService.changePassword(account, changePasswordDTO);
