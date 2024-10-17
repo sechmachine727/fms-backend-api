@@ -1,5 +1,6 @@
 package org.fms.training.repository;
 
+import org.fms.training.common.entity.Topic;
 import org.fms.training.common.entity.Unit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +15,4 @@ public interface UnitRepository extends JpaRepository<Unit, Integer> {
     List<Unit> findUnitsByTopicId(@Param("topicId") Integer topicId);
 
     List<Unit> findByTopic(Topic topic);
-
-    Optional<Unit> findByUnitNameAndTopic(String unitName, Topic topic);
-
-    void deleteByTopic(Topic topic);
 }

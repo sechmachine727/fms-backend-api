@@ -2,10 +2,9 @@ package org.fms.training.service.impl;
 
 import org.fms.training.common.dto.topicdto.ListTopicDTO;
 import org.fms.training.common.dto.topicdto.TopicDetailDTO;
-import org.fms.training.common.entity.TechnicalGroup;
-import org.fms.training.common.entity.Topic;
-import org.fms.training.common.entity.TopicAssessment;
-import org.fms.training.common.entity.Unit;
+import org.fms.training.common.dto.unitdto.UnitDTO;
+import org.fms.training.common.dto.unitsectiondto.UnitSectionDTO;
+import org.fms.training.common.entity.*;
 import org.fms.training.common.enums.Status;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.common.mapper.TopicMapper;
