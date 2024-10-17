@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,76 +25,80 @@ public class ExcelImportService implements ImportService {
     private final UnitRepository unitRepository;
     private final UnitSectionRepository unitSectionRepository;
 
+    /**
+     * Import data from Excel InputStream with optional confirmation for updates.
+     *
+     * @param inputStream   Input stream of the Excel file.
+     * @param confirmUpdate Boolean indicating if update is confirmed by the user.
+     */
     @Transactional
-    public void importDataFromStream(InputStream inputStream) {
+    public void importDataFromStream(InputStream inputStream, boolean confirmUpdate) {
         try (Workbook workbook = WorkbookFactory.create(inputStream)) {
 
-            // Import data from the "Syllabus" sheet
+            // Import Syllabus sheet
             Sheet syllabusSheet = workbook.getSheet("Syllabus");
             if (syllabusSheet == null) {
-                throw new IllegalArgumentException("Sheet 'Syllabus' not found");
+                throw new IllegalArgumentException("Sheet 'Syllabus' not found.");
             }
 
-            Topic savedTopic = importSyllabusSheet(syllabusSheet);
+            Topic savedTopic = importSyllabusSheet(syllabusSheet, confirmUpdate);
 
-            // Import data from the "ScheduleDetail" sheet
+            // Import ScheduleDetail sheet
             Sheet scheduleDetailSheet = workbook.getSheet("ScheduleDetail");
             if (scheduleDetailSheet == null) {
-                throw new IllegalArgumentException("Sheet 'ScheduleDetail' not found");
+                throw new IllegalArgumentException("Sheet 'ScheduleDetail' not found.");
             }
 
+            // Proceed to import only if topic update is confirmed
             importScheduleDetailSheet(scheduleDetailSheet, savedTopic);
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to import Excel file: " + e.getMessage());
+            System.err.println("Error while importing Excel data: " + e.getMessage());
+            throw new RuntimeException("Failed to import Excel file: " + e.getMessage(), e);
         }
     }
 
-    protected Topic importSyllabusSheet(Sheet sheet) {
-        // Reading the Topic data from the excel
-        Row row = sheet.getRow(1); // Row 1 for Technical Group
+    /**
+     * Import data from the Syllabus sheet. If the topic exists and update is not confirmed, throw an error.
+     */
+    protected Topic importSyllabusSheet(Sheet sheet, boolean confirmUpdate) {
+        Row row = sheet.getRow(1);
         String technicalGroupCode = row.getCell(2).getStringCellValue();
 
-        // Validate technicalGroupCode
-        if (technicalGroupCode == null || technicalGroupCode.isEmpty()) {
-            throw new IllegalArgumentException("Technical Group Code is missing.");
-        }
-
-        // Fetch or Create Technical Group
         TechnicalGroup technicalGroup = technicalGroupRepository.findByCode(technicalGroupCode)
                 .orElseThrow(() -> new IllegalArgumentException("Technical group not found with code: " + technicalGroupCode));
 
-        // Validate and get Topic Name (Row 2, Column 2)
         String topicName = sheet.getRow(2).getCell(2).getStringCellValue();
         if (topicName == null || topicName.isEmpty()) {
             throw new IllegalArgumentException("Topic Name is missing.");
         }
-
-        // Validate and get Topic Code (Row 3, Column 2)
         String topicCode = sheet.getRow(3).getCell(2).getStringCellValue();
         if (topicCode == null || topicCode.isEmpty()) {
             throw new IllegalArgumentException("Topic Code is missing.");
         }
-
-        // Handling version (Row 4, Column 2) and validate
-        Cell versionCell = sheet.getRow(4).getCell(2);
-        String version = getCellValueAsString(versionCell);
+        String version = getCellValueAsString(sheet.getRow(4).getCell(2));
         if (version == null || version.isEmpty()) {
             throw new IllegalArgumentException("Version is missing.");
         }
-
-        // Check if Topic Code with the same version already exists
-        Topic topic = topicRepository.findByTopicCodeAndVersion(topicCode, version)
-                .orElseGet(() -> new Topic());
-
-        // Validate and get Pass Criteria (Row 9, Column 3)
-        Cell passCriteriaCell = sheet.getRow(9).getCell(3);
-        String passCriteria = getCellValueAsString(passCriteriaCell);
+        String passCriteria = getCellValueAsString(sheet.getRow(9).getCell(3));
         if (passCriteria == null || passCriteria.isEmpty()) {
             throw new IllegalArgumentException("Pass Criteria is missing.");
         }
 
-        // Create and save the Topic entity
+        Optional<Topic> existingTopicOpt = topicRepository.findByTopicCodeAndVersion(topicCode, version);
+
+        Topic topic;
+        if (existingTopicOpt.isPresent()) {
+            if (!confirmUpdate) {
+                throw new IllegalStateException("Topic with the same code and version already exists. Please confirm to update.");
+            }
+            // If confirmed, delete related data to prevent stale entity issues
+            deleteTopicData(existingTopicOpt.get());
+            topicRepository.delete(existingTopicOpt.get());
+        }
+
+        // Create new Topic or use the existing topic if found
+        topic = new Topic();
         topic.setTechnicalGroup(technicalGroup);
         topic.setTopicName(topicName);
         topic.setTopicCode(topicCode);
@@ -105,148 +111,153 @@ public class ExcelImportService implements ImportService {
 
         Topic savedTopic = topicRepository.save(topic);
 
-        if (topic.getId() != null) {
-            topicAssessmentRepository.deleteByTopic(topic);
-        }
-
-        // Importing Topic Assessments
+        // Import Topic Assessments
         for (int rowIndex = 5; rowIndex <= 8; rowIndex++) {
             row = sheet.getRow(rowIndex);
-
             if (row != null) {
-                Cell assessmentNameCell = row.getCell(2);
-                Cell quantityCell = row.getCell(3);
-                Cell weightedNumberCell = row.getCell(4);
-                Cell noteCell = row.getCell(5);
-
-                if (assessmentNameCell != null && assessmentNameCell.getCellType() == CellType.STRING) {
-                    String assessmentName = assessmentNameCell.getStringCellValue();
-
-                    if (!assessmentName.isEmpty()) {
-                        TopicAssessment topicAssessment = new TopicAssessment();
-                        topicAssessment.setAssessmentName(assessmentName);
-
-                        // Set quantity
-                        if (quantityCell != null && quantityCell.getCellType() == CellType.NUMERIC) {
-                            topicAssessment.setQuantity((int) quantityCell.getNumericCellValue());
-                        }
-
-                        // Set weighted number
-                        if (weightedNumberCell != null && weightedNumberCell.getCellType() == CellType.NUMERIC) {
-                            double weightedNumber = weightedNumberCell.getNumericCellValue();
-                            topicAssessment.setWeightedNumber((int) weightedNumber);
-                        }
-
-                        // Set note
-                        if (noteCell != null && noteCell.getCellType() == CellType.STRING) {
-                            topicAssessment.setNote(noteCell.getStringCellValue());
-                        }
-
-                        // Associate the Topic and save TopicAssessment
-                        topicAssessment.setTopic(savedTopic);
-                        topicAssessmentRepository.save(topicAssessment);
-                    }
-                }
+                importTopicAssessment(row, savedTopic);
             }
         }
+
         return savedTopic;
     }
 
+    /**
+     * Delete all related data of a topic to avoid stale entity issues.
+     */
+    @Transactional
+    protected void deleteTopicData(Topic topic) {
+        // Delete units and their sections
+        List<Unit> units = unitRepository.findByTopic(topic);
+        for (Unit unit : units) {
+            unitSectionRepository.deleteByUnit(unit);
+        }
+        unitRepository.deleteAll(units);
+
+        // Delete topic assessments
+        topicAssessmentRepository.deleteByTopic(topic);
+    }
+
+    /**
+     * Import a TopicAssessment from a row and save it to the database.
+     */
+    private void importTopicAssessment(Row row, Topic topic) {
+        String assessmentName = getCellValueAsString(row.getCell(2));
+        if (assessmentName == null || assessmentName.isEmpty()) {
+            return;
+        }
+
+        TopicAssessment topicAssessment = new TopicAssessment();
+        topicAssessment.setAssessmentName(assessmentName);
+
+        Cell quantityCell = row.getCell(3);
+        if (quantityCell != null && quantityCell.getCellType() == CellType.NUMERIC) {
+            topicAssessment.setQuantity((int) quantityCell.getNumericCellValue());
+        }
+
+        Cell weightedNumberCell = row.getCell(4);
+        if (weightedNumberCell != null && weightedNumberCell.getCellType() == CellType.NUMERIC) {
+            topicAssessment.setWeightedNumber((int) weightedNumberCell.getNumericCellValue());
+        }
+
+        topicAssessment.setNote(getCellValueAsString(row.getCell(5)));
+        topicAssessment.setTopic(topic);
+
+        topicAssessmentRepository.save(topicAssessment);
+    }
+
+    /**
+     * Import data from the ScheduleDetail sheet and save units and sections.
+     */
     protected void importScheduleDetailSheet(Sheet sheet, Topic topic) {
-        int unitNumber = 1; // Start unit number from 1
+        List<Unit> unitsToSave = new ArrayList<>();
+        int unitNumber = 1;
         Unit currentUnit = null;
+        int sectionNumberCounter = 1;
 
         for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
             Row row = sheet.getRow(rowIndex);
-
             if (row != null) {
-                // Extract the Unit name from column 1 (Training Unit/Chapter)
-                Cell unitNameCell = row.getCell(1);
-                String unitName = getCellValueAsString(unitNameCell);
-
-                // Kiểm tra xem Unit Name có khác rỗng và không trùng với Unit hiện tại
+                String unitName = getCellValueAsString(row.getCell(1));
                 if (unitName != null && !unitName.trim().isEmpty()) {
-                    // Nếu có Unit hiện tại thì lưu lại trước khi tạo Unit mới
                     if (currentUnit != null) {
-                        unitRepository.save(currentUnit); // Save the current unit
+                        unitsToSave.add(currentUnit);
                     }
+                    sectionNumberCounter = 1;
 
-                    // Tạo Unit mới
                     currentUnit = new Unit();
                     currentUnit.setUnitName(unitName);
                     currentUnit.setUnitNumber(unitNumber++);
-                    currentUnit.setTopic(topic); // Associate the Unit with the Topic
-
-                    // Khởi tạo danh sách UnitSections để tránh null pointer exception
+                    currentUnit.setTopic(topic);
                     currentUnit.setUnitSections(new ArrayList<>());
-
-                    unitRepository.save(currentUnit);
                 }
 
-                // Đảm bảo rằng currentUnit không null trước khi thêm UnitSection
                 if (currentUnit != null) {
-                    // Tạo và set UnitSection data
-                    UnitSection unitSection = new UnitSection();
-                    unitSection.setTitle(getCellValueAsString(row.getCell(3)));         // Learning Objectives
-                    unitSection.setDescription(getCellValueAsString(row.getCell(2)));   // Content
-                    unitSection.setDeliveryType(getCellValueAsString(row.getCell(4)));  // Delivery Type
-                    Double durationValue = getCellValueAsDouble(row.getCell(5));        // Duration
-                    if (durationValue != null) {
-                        unitSection.setDuration(durationValue);  // Set giá trị Duration nếu hợp lệ
-                    } else {
-                        throw new IllegalArgumentException("Duration value is missing or invalid at row: " + rowIndex);
-                    }
-                    unitSection.setTrainingFormat(getCellValueAsString(row.getCell(6))); // Training Format
-                    unitSection.setNote(getCellValueAsString(row.getCell(7)));          // Notes
-                    unitSection.setSectionNumber(1);  // Default Section Number
-
-                    // Liên kết UnitSection với Unit hiện tại
-                    unitSection.setUnit(currentUnit);
-
-                    // Thêm UnitSection vào danh sách của Unit
+                    UnitSection unitSection = createUnitSection(row, currentUnit, sectionNumberCounter++);
                     currentUnit.getUnitSections().add(unitSection);
-
-                    // Lưu UnitSection vào cơ sở dữ liệu
-                    unitSectionRepository.save(unitSection);
                 }
             }
         }
 
-        // Lưu lại Unit cuối cùng nếu có
         if (currentUnit != null) {
-            unitRepository.save(currentUnit);
+            unitsToSave.add(currentUnit);
         }
+
+        unitRepository.saveAll(unitsToSave);
     }
 
+    /**
+     * Create a new UnitSection from a row.
+     */
+    private UnitSection createUnitSection(Row row, Unit unit, int sectionNumber) {
+        UnitSection unitSection = new UnitSection();
+        unitSection.setUnit(unit);
+        unitSection.setTitle(getCellValueAsString(row.getCell(3)));
+        unitSection.setDescription(getCellValueAsString(row.getCell(2)));
+        unitSection.setDeliveryType(getCellValueAsString(row.getCell(4)));
 
-    protected String getCellValueAsString(Cell cell) {
-        if (cell == null) return null;
-        if (cell.getCellType() == CellType.STRING) {
-            return cell.getStringCellValue();
-        } else if (cell.getCellType() == CellType.NUMERIC) {
-            return String.valueOf(cell.getNumericCellValue());
+        Double duration = getCellValueAsDouble(row.getCell(5));
+        if (duration == null) {
+            throw new IllegalArgumentException("Duration is missing or invalid at row: " + row.getRowNum());
         }
-        return null;
+        unitSection.setDuration(duration);
+
+        unitSection.setTrainingFormat(getCellValueAsString(row.getCell(6)));
+        unitSection.setNote(getCellValueAsString(row.getCell(7)));
+        unitSection.setSectionNumber(sectionNumber);
+
+        return unitSection;
     }
 
-    protected Double getCellValueAsDouble(Cell cell) {
+    public String getCellValueAsString(Cell cell) {
         if (cell == null) {
             return null;
         }
-
-        // Kiểm tra loại dữ liệu của ô
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return cell.getNumericCellValue();
-        } else if (cell.getCellType() == CellType.STRING) {
-            try {
-                return Double.parseDouble(cell.getStringCellValue());
-            } catch (NumberFormatException e) {
-                System.err.println("Cannot parse double from string: " + cell.getStringCellValue());
-                return null;
-            }
-        } else {
-            return null;
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    return cell.getDateCellValue().toString();
+                } else {
+                    return String.valueOf(cell.getNumericCellValue());
+                }
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            default:
+                return "";
         }
     }
 
+    protected Double getCellValueAsDouble(Cell cell) {
+        if (cell == null) return null;
+        try {
+            return cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : Double.parseDouble(cell.getStringCellValue());
+        } catch (NumberFormatException e) {
+            System.err.println("Cannot parse double from: " + cell);
+            return null;
+        }
+    }
 }

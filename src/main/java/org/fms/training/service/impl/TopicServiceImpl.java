@@ -56,7 +56,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
 
-    private TopicDetailDTO mapToTopicDetailDTO(Topic topic, List<Unit> units, List<TopicAssessment> topicAssessments) {
+    protected TopicDetailDTO mapToTopicDetailDTO(Topic topic, List<Unit> units, List<TopicAssessment> topicAssessments) {
         TopicDetailDTO dto = new TopicDetailDTO();
         dto.setId(topic.getId());
         dto.setCode(topic.getTopicCode());
