@@ -278,11 +278,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(String account, ChangePasswordDTO data) {
+        isValidUserForChangePassword(account, data);
+        User user = userRepository.findByAccount(account).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String encodedPassword = passwordEncoder.encode(data.getNewPassword());
+        user.setEncryptedPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
+    private void isValidUserForChangePassword(String account, ChangePasswordDTO data) {
+        Map<String, String> errors = new HashMap<>();
         User user = userRepository.findByAccount(account).orElse(null);
-        if (user != null) {
-            String encodedPassword = passwordEncoder.encode(data.getNewPassword());
-            user.setEncryptedPassword(encodedPassword);
-            userRepository.save(user);
+
+        if (user == null) {
+            errors.put("account", "User not found");
+        } else {
+            if (!passwordEncoder.matches(data.getOldPassword(), user.getEncryptedPassword())) {
+                errors.put("oldPassword", "The old password you entered is incorrect");
+            }
+        }
+
+        if (data.getNewPassword().length() < 8) {
+            errors.put("newPassword", "Password must be at least 8 characters long");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
     }
 
