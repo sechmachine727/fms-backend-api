@@ -34,8 +34,8 @@ public class TopicServiceImpl implements TopicService {
     private final TopicTrainingProgramRepository topicTrainingProgramRepository;
 
     @Override
-    public Optional<List<ListTopicDTO>> searchByCodeOrName(String search) {
-        List<Topic> topics = topicRepository.findByTopicCodeContainingOrTopicNameContaining(search);
+    public Optional<List<ListTopicDTO>> getAllTopics() {
+        List<Topic> topics = topicRepository.getAllByOrderByLastModifiedDateDesc();
         return Optional.of(topics.stream()
                 .map(topicMapper::toListDTO)
                 .toList());

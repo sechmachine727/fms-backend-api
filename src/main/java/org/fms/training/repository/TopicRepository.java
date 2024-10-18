@@ -12,11 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Integer> {
-    @Query("SELECT t FROM Topic t WHERE " +
-            "(:search IS NULL OR :search = '' OR LOWER(t.topicCode) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
-            "(:search IS NULL OR :search = '' OR LOWER(t.topicName) LIKE LOWER(CONCAT('%', :search, '%')))")
-    List<Topic> findByTopicCodeContainingOrTopicNameContaining(
-            @Param("search") String search);
+    List<Topic> getAllByOrderByLastModifiedDateDesc();
 
     @Query("SELECT t FROM Topic t WHERE t.id = :id")
     Optional<Topic> findTopicById(@Param("id") Integer id);

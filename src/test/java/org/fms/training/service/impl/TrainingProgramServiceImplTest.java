@@ -71,10 +71,10 @@ class TrainingProgramServiceImplTest {
     @Test
     void getAllTrainingPrograms_shouldReturnListOfTrainingPrograms() {
         // when
-        trainingProgramService.getAllTrainingPrograms(null);
+        trainingProgramService.getAllTrainingPrograms();
 
         // then
-        then(trainingProgramRepository).should(times(1)).findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(null);
+        then(trainingProgramRepository).should(times(1)).getAllByOrderByLastModifiedDateDesc();
     }
 
     @Test
@@ -245,21 +245,6 @@ class TrainingProgramServiceImplTest {
 
         // when, then
         assertThrows(ValidationException.class, () -> trainingProgramService.updateTrainingProgram(trainingProgramId, saveTrainingProgramDTO));
-    }
-
-    @Test
-    void getAllTrainingPrograms_withSearchString_shouldReturnListOfTrainingPrograms() {
-        // given
-        String search = "Java";
-        given(trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search))
-                .willReturn(Collections.emptyList());
-
-        // when
-        trainingProgramService.getAllTrainingPrograms(search);
-
-        // then
-        then(trainingProgramRepository).should(times(1))
-                .findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
     }
 
     @Test

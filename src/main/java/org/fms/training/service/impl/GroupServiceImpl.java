@@ -38,8 +38,8 @@ public class GroupServiceImpl implements GroupService {
     private final EmailService emailService;
 
     @Override
-    public Optional<List<ListGroupDTO>> getAllGroups(String search) {
-        List<Group> groups = groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(search);
+    public Optional<List<ListGroupDTO>> getAllGroups() {
+        List<Group> groups = groupRepository.getAllByOrderByLastModifiedDateDesc();
         return Optional.of(groups.stream()
                 .map(groupMapper::toListGroupDTO)
                 .toList());
@@ -107,7 +107,7 @@ public class GroupServiceImpl implements GroupService {
         if (user.get().getUserRoles().stream().noneMatch(userRole -> userRole.getRole().getRoleName().equals("GROUP_ADMIN"))) {
             throw new ResourceNotFoundException("User is not a group admin");
         }
-        List<UserGroup> userGroups = userGroupRepository.findByUserId(user.get().getId());
+        List<UserGroup> userGroups = userGroupRepository.findByUserIdOrderByGroupLastModifiedDateDesc(user.get().getId());
         return Optional.of(userGroups.stream()
                 .map(userGroup -> groupMapper.toListGroupDTO(userGroup.getGroup()))
                 .toList());
@@ -119,7 +119,7 @@ public class GroupServiceImpl implements GroupService {
         if (user.isEmpty()) {
             throw new ResourceNotFoundException("User not found");
         }
-        List<Group> groups = groupRepository.findByCreatedBy(user.get().getAccount());
+        List<Group> groups = groupRepository.findByCreatedByOrderByLastModifiedDateDesc(user.get().getAccount());
         return Optional.of(groups.stream()
                 .map(groupMapper::toListGroupDTO)
                 .toList());

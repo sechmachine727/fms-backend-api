@@ -24,7 +24,7 @@ public interface UserService extends UserDetailsService {
 
     User existsByEmployeeId(String employeeId);
 
-    Optional<List<ReadUserDTO>> findAll(String search);
+    Optional<List<ReadUserDTO>> findAll();
 
     Optional<ReadUserDTO> findById(Integer id);
 

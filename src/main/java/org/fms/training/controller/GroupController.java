@@ -21,10 +21,8 @@ public class GroupController {
 
     @RolesAllowed({Authorization.FA_MANAGER})
     @GetMapping
-    public ResponseEntity<List<ListGroupDTO>> getAllGroups(
-            @RequestParam(required = false) String search
-    ) {
-        return groupService.getAllGroups(search)
+    public ResponseEntity<List<ListGroupDTO>> getAllGroups() {
+        return groupService.getAllGroups()
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

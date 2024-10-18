@@ -53,16 +53,15 @@ class GroupServiceImplTest {
     @Test
     void getAllGroups_shouldReturnListOfGroups() {
         // given
-        String search = "Java";
-        given(groupRepository.findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(search))
+        given(groupRepository.getAllByOrderByLastModifiedDateDesc())
                 .willReturn(Collections.emptyList());
 
         // when
-        groupService.getAllGroups(search);
+        groupService.getAllGroups();
 
         // then
         then(groupRepository).should(times(1))
-                .findByGroupNameContainingIgnoreCaseAndGroupCodeContainingIgnoreCase(search);
+                .getAllByOrderByLastModifiedDateDesc();
     }
 
     @Test

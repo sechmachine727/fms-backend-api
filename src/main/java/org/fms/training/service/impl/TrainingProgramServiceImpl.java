@@ -32,8 +32,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final DepartmentRepository departmentRepository;
 
     @Override
-    public Optional<List<ListTrainingProgramDTO>> getAllTrainingPrograms(String search) {
-        List<TrainingProgram> trainingPrograms = trainingProgramRepository.findByTrainingProgramNameContainingIgnoreCaseOrCodeContainingIgnoreCase(search);
+    public Optional<List<ListTrainingProgramDTO>> getAllTrainingPrograms() {
+        List<TrainingProgram> trainingPrograms = trainingProgramRepository.getAllByOrderByLastModifiedDateDesc();
         return Optional.of(trainingPrograms.stream()
                 .map(trainingProgramMapper::toListTrainingProgramDTO)
                 .toList());

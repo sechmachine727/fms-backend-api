@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TopicService {
-    Optional<List<ListTopicDTO>> searchByCodeOrName(String search);
+    Optional<List<ListTopicDTO>> getAllTopics();
 
     List<ListTopicDTO> getActiveTopics();
 

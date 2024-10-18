@@ -53,23 +53,23 @@ class TopicServiceImplTest {
     }
 
     @Test
-    void searchByCodeOrName_shouldReturnTopics() {
+    void getAllTopics_shouldReturnTopics() {
         // given
         String search = "Java";
         Topic topic = new Topic();
         ListTopicDTO listTopicDTO = new ListTopicDTO();
         List<Topic> topics = List.of(topic);
 
-        given(topicRepository.findByTopicCodeContainingOrTopicNameContaining(search)).willReturn(topics);
+        given(topicRepository.getAllByOrderByLastModifiedDateDesc()).willReturn(topics);
         given(topicMapper.toListDTO(topic)).willReturn(listTopicDTO);
 
         // when
-        Optional<List<ListTopicDTO>> result = topicService.searchByCodeOrName(search);
+        Optional<List<ListTopicDTO>> result = topicService.getAllTopics();
 
         // then
         assertThat(result).isPresent();
         assertThat(result.get()).hasSize(1);
-        verify(topicRepository, times(1)).findByTopicCodeContainingOrTopicNameContaining(search);
+        verify(topicRepository, times(1)).getAllByOrderByLastModifiedDateDesc();
     }
 
     @Test
@@ -217,21 +217,6 @@ class TopicServiceImplTest {
         // then
         assertThat(result).isEmpty();
         verify(topicRepository, times(1)).findTopicById(topicId);
-    }
-
-    @Test
-    void searchByCodeOrName_shouldReturnEmpty_whenNoTopicsFound() {
-        // given
-        String search = "NonExistentTopic";
-        given(topicRepository.findByTopicCodeContainingOrTopicNameContaining(search)).willReturn(List.of());
-
-        // when
-        Optional<List<ListTopicDTO>> result = topicService.searchByCodeOrName(search);
-
-        // then
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEmpty();
-        verify(topicRepository, times(1)).findByTopicCodeContainingOrTopicNameContaining(search);
     }
 
     @Test

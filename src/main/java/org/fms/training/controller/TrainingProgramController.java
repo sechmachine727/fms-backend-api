@@ -27,9 +27,8 @@ public class TrainingProgramController {
 
     @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN})
     @GetMapping
-    public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms(
-            @RequestParam(required = false) String search) {
-        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.getAllTrainingPrograms(search);
+    public ResponseEntity<List<ListTrainingProgramDTO>> getAllTrainingPrograms() {
+        Optional<List<ListTrainingProgramDTO>> result = trainingProgramService.getAllTrainingPrograms();
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

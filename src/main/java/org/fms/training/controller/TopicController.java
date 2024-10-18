@@ -27,7 +27,7 @@ public class TopicController {
     public ResponseEntity<List<ListTopicDTO>> getAllTopics(
             @RequestParam(required = false) String search
     ) {
-        return topicService.searchByCodeOrName(search)
+        return topicService.getAllTopics()
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

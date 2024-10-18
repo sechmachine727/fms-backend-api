@@ -32,10 +32,8 @@ public class UserController {
 
     @RolesAllowed({Authorization.FMS_ADMIN})
     @GetMapping
-    public ResponseEntity<List<ReadUserDTO>> findAll(
-            @RequestParam(required = false) String search
-    ) {
-        Optional<List<ReadUserDTO>> result = userService.findAll(search);
+    public ResponseEntity<List<ReadUserDTO>> findAll() {
+        Optional<List<ReadUserDTO>> result = userService.findAll();
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

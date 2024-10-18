@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.fms.training.common.converter.GroupStatusConverter;
 import org.fms.training.common.enums.GroupStatus;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -36,6 +38,14 @@ public class Group {
     @CreatedBy
     @Column(name = "created_by")
     private String createdBy;
+
+    @LastModifiedBy
+    @Column(name = "last_modified_by")
+    private String lastModifiedBy;
+
+    @LastModifiedDate
+    @Column(name = "last_modified_date")
+    private LocalDateTime lastModifiedDate;
 
     @Column(name = "expected_start_date", nullable = false)
     private LocalDateTime expectedStartDate;
