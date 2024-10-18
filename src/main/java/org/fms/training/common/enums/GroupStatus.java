@@ -11,6 +11,7 @@ public enum GroupStatus {
     ASSIGNED("Assigned"),
     REVIEWING("Reviewing"),
     DECLINED("Declined"),
+    CANCELLED("Cancelled"),
     IN_PROGRESS("In Progress"),
     PENDING_CLOSE("Pending Close"),
     CLOSED("Closed");
