@@ -7,7 +7,6 @@ spring:
     url: jdbc:postgresql://100.100.112.9:5432/fms_dev
     password: skibididopdopyesyes
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: none
   web:
