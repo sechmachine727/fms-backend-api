@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.fms.training.common.converter.GroupStatusConverter;
 import org.fms.training.common.enums.GroupStatus;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "fms_group")
 public class Group {
     @Id
@@ -32,7 +34,7 @@ public class Group {
     private Integer traineeNumber;
 
     @CreatedBy
-    @Column(name = "createdBy")
+    @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "expected_start_date", nullable = false)

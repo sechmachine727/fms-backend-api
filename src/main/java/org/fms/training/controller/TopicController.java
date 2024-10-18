@@ -31,6 +31,7 @@ public class TopicController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RolesAllowed({Authorization.CONTENT_MANAGER, Authorization.FA_MANAGER, Authorization.DELIVERABLES_MANAGER, Authorization.GROUP_ADMIN, Authorization.TRAINER})
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailDTO> getTopicDetail(@PathVariable Integer id) {
@@ -38,12 +39,14 @@ public class TopicController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @RolesAllowed({Authorization.CONTENT_MANAGER})
     @GetMapping("/active")
     public ResponseEntity<List<ListTopicDTO>> getActiveTopics() {
         List<ListTopicDTO> activeTopics = topicService.getActiveTopics();
         return ResponseEntity.ok(activeTopics);
     }
+
     @RolesAllowed({Authorization.FA_MANAGER, Authorization.CONTENT_MANAGER})
     @PutMapping("/change-status/{id}")
     public ResponseEntity<Map<String, String>> updateTopicStatus(@PathVariable Integer id) {

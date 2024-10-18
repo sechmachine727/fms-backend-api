@@ -31,6 +31,7 @@ public class ReadGroupDTO {
     private Integer traineeTypeId;
     private String traineeTypeName;
     private Integer scopeId;
+    private String createdBy;
     private String scopeName;
     private Integer formatTypeId;
     private String formatTypeName;

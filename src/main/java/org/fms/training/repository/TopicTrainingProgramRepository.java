@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface TopicTrainingProgramRepository extends JpaRepository<TopicTrainingProgram, Integer> {
     List<TopicTrainingProgram> findByTrainingProgramId(Integer trainingProgramId);
+
     boolean existsByTopic(Topic topic);
 }

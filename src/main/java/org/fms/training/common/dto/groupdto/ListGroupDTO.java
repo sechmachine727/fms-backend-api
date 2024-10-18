@@ -19,12 +19,11 @@ public class ListGroupDTO {
     private String traineeTypeName;
     private String siteName;
     private String locationName;
+    private String note;
     private List<String> classAdminAccount;
     private String expectedStartDate;
     private String expectedEndDate;
     private String actualStartDate;
     private String actualEndDate;
     private GroupStatus status;
-
-    //TODO: Make display classAdminEmployeeId work
 }
