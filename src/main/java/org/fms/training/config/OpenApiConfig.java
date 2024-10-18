@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 @Server(
                         description = "Prod",
-                        url = "https://archlinux.tailcfca2c.ts.net:8443/"
+                        url = "https://archlinux.tailcfca2c.ts.net/"
                 ),
                 @Server(
                         description = "Local",
