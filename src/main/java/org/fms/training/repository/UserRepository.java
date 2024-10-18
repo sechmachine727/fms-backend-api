@@ -14,5 +14,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmployeeId(String employeeId);
 
-    List<User> getAllByOrderByAccountDesc();
+    List<User> getAllByOrderByAccountAsc();
 }

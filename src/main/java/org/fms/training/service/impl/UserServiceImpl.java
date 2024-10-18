@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<List<ReadUserDTO>> findAll() {
-        List<User> users = userRepository.getAllByOrderByAccountDesc();
+        List<User> users = userRepository.getAllByOrderByAccountAsc();
         return Optional.of(users.stream()
                 .map(userMapper::toReadUserDTO)
                 .toList());
