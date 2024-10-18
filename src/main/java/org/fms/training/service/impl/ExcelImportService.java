@@ -52,6 +52,8 @@ public class ExcelImportService implements ImportService {
             // Proceed to import only if topic update is confirmed
             importScheduleDetailSheet(scheduleDetailSheet, savedTopic);
 
+        }catch (IllegalStateException e) {
+            throw e;
         } catch (Exception e) {
             System.err.println("Error while importing Excel data: " + e.getMessage());
             throw new RuntimeException("Failed to import Excel file: " + e.getMessage(), e);
