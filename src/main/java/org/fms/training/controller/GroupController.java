@@ -52,7 +52,7 @@ public class GroupController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RolesAllowed({Authorization.DELIVERABLES_MANAGER, Authorization.FA_MANAGER})
+    @RolesAllowed({Authorization.DELIVERABLES_MANAGER})
     @GetMapping("/creator")
     public ResponseEntity<List<ListGroupDTO>> getAllGroupsByAuthenticatedCreator() {
         return groupService.getAllGroupsByAuthenticatedCreator(SecurityContextHolder.getContext().getAuthentication())

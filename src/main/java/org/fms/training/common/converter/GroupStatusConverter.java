@@ -14,6 +14,7 @@ public class GroupStatusConverter implements AttributeConverter<GroupStatus, Str
             case REVIEWING -> "Reviewing";
             case DECLINED -> "Declined";
             case IN_PROGRESS -> "In Progress";
+            case CANCELLED -> "Cancelled";
             case PENDING_CLOSE -> "Pending Close";
             case CLOSED -> "Closed";
         };
@@ -27,6 +28,7 @@ public class GroupStatusConverter implements AttributeConverter<GroupStatus, Str
             case "Reviewing" -> GroupStatus.REVIEWING;
             case "Declined" -> GroupStatus.DECLINED;
             case "In Progress" -> GroupStatus.IN_PROGRESS;
+            case "Cancelled" -> GroupStatus.CANCELLED;
             case "Pending Close" -> GroupStatus.PENDING_CLOSE;
             case "Closed" -> GroupStatus.CLOSED;
             default -> null;
