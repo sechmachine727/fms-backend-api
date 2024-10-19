@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -91,37 +90,36 @@ public class ExcelImportService implements ImportService {
 
         Topic topic;
         if (existingTopicOpt.isPresent()) {
+            topic = existingTopicOpt.get();
             if (!confirmUpdate) {
                 throw new IllegalStateException("Topic with the same code and version already exists. Please confirm to update.");
             }
-            // If confirmed, delete related data to prevent stale entity issues
-            deleteTopicData(existingTopicOpt.get());
-            topicRepository.delete(existingTopicOpt.get());
+
+            // Update existing topic
+            topic.setTechnicalGroup(technicalGroup);
+            topic.setTopicName(topicName);
+            topic.setPassCriteria(passCriteria);
+            topic.setLastModifiedDate(LocalDateTime.now());
+            topic.setLastModifiedBy("admin");
+
+            // Update related Topic Assessments, Units, and Unit Sections
+            updateTopicAssessments(sheet, topic);
+        } else {
+            // Create new topic
+            topic = new Topic();
+            topic.setTechnicalGroup(technicalGroup);
+            topic.setTopicName(topicName);
+            topic.setTopicCode(topicCode);
+            topic.setVersion(version);
+            topic.setPassCriteria(passCriteria);
+            topic.setStatus(Status.ACTIVE);
+            topic.setLastModifiedDate(LocalDateTime.now());
+            topic.setLastModifiedBy("admin");
+
+            topicRepository.save(topic);
         }
 
-        // Create new Topic or use the existing topic if found
-        topic = new Topic();
-        topic.setTechnicalGroup(technicalGroup);
-        topic.setTopicName(topicName);
-        topic.setTopicCode(topicCode);
-        topic.setVersion(version);
-        topic.setPassCriteria(passCriteria);
-        topic.setDescription("description");
-        topic.setStatus(Status.ACTIVE);
-        topic.setLastModifiedDate(LocalDateTime.now());
-        topic.setLastModifiedBy("admin");
-
-        Topic savedTopic = topicRepository.save(topic);
-
-        // Import Topic Assessments
-        for (int rowIndex = 5; rowIndex <= 8; rowIndex++) {
-            row = sheet.getRow(rowIndex);
-            if (row != null) {
-                importTopicAssessment(row, savedTopic);
-            }
-        }
-
-        return savedTopic;
+        return topic;
     }
 
     /**
@@ -143,93 +141,124 @@ public class ExcelImportService implements ImportService {
     /**
      * Import a TopicAssessment from a row and save it to the database.
      */
-    private void importTopicAssessment(Row row, Topic topic) {
-        String assessmentName = getCellValueAsString(row.getCell(2));
-        if (assessmentName == null || assessmentName.isEmpty()) {
-            return;
+    @Transactional
+    protected void updateTopicAssessments(Sheet sheet, Topic topic) {
+        List<TopicAssessment> existingAssessments = topicAssessmentRepository.findByTopic(topic);
+
+        // Iterate through each row for Topic Assessments
+        for (int rowIndex = 5; rowIndex <= 8; rowIndex++) {
+            Row row = sheet.getRow(rowIndex);
+            if (row != null) {
+                String assessmentName = getCellValueAsString(row.getCell(2));
+                if (assessmentName != null && !assessmentName.isEmpty()) {
+                    TopicAssessment existingAssessment = existingAssessments.stream()
+                            .filter(ta -> ta.getAssessmentName().equals(assessmentName))
+                            .findFirst()
+                            .orElse(new TopicAssessment());
+
+                    existingAssessment.setAssessmentName(assessmentName);
+                    existingAssessment.setQuantity((int) row.getCell(3).getNumericCellValue());
+                    existingAssessment.setWeightedNumber((int) row.getCell(4).getNumericCellValue());
+                    existingAssessment.setTopic(topic);
+
+                    topicAssessmentRepository.save(existingAssessment);
+                }
+            }
         }
-
-        TopicAssessment topicAssessment = new TopicAssessment();
-        topicAssessment.setAssessmentName(assessmentName);
-
-        Cell quantityCell = row.getCell(3);
-        if (quantityCell != null && quantityCell.getCellType() == CellType.NUMERIC) {
-            topicAssessment.setQuantity((int) quantityCell.getNumericCellValue());
-        }
-
-        Cell weightedNumberCell = row.getCell(4);
-        if (weightedNumberCell != null && weightedNumberCell.getCellType() == CellType.NUMERIC) {
-            topicAssessment.setWeightedNumber((int) weightedNumberCell.getNumericCellValue());
-        }
-
-        topicAssessment.setNote(getCellValueAsString(row.getCell(5)));
-        topicAssessment.setTopic(topic);
-
-        topicAssessmentRepository.save(topicAssessment);
     }
 
     /**
      * Import data from the ScheduleDetail sheet and save units and sections.
      */
+    @Transactional
     protected void importScheduleDetailSheet(Sheet sheet, Topic topic) {
-        List<Unit> unitsToSave = new ArrayList<>();
-        int unitNumber = 1;
-        Unit currentUnit = null;
-        int sectionNumberCounter = 1;
+        List<Unit> unitsToSave = new ArrayList<>();  // List of Units to save
+        int unitNumber = 1;  // Unit counter
+        Unit currentUnit = null;  // Current Unit being processed
+        int sectionNumberCounter = 1;  // UnitSection counter
 
+        // Iterate through all rows in the sheet
         for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
             Row row = sheet.getRow(rowIndex);
             if (row != null) {
+                // Get the Unit name from column 1
                 String unitName = getCellValueAsString(row.getCell(1));
+
+                // Check if the row indicates a new Unit (non-empty and different from the current one)
                 if (unitName != null && !unitName.trim().isEmpty()) {
+                    // If a previous Unit exists, save it before starting a new one
                     if (currentUnit != null) {
                         unitsToSave.add(currentUnit);
                     }
-                    sectionNumberCounter = 1;
 
+                    // Create a new Unit
                     currentUnit = new Unit();
                     currentUnit.setUnitName(unitName);
                     currentUnit.setUnitNumber(unitNumber++);
                     currentUnit.setTopic(topic);
-                    currentUnit.setUnitSections(new ArrayList<>());
+                    currentUnit.setUnitSections(new ArrayList<>());  // Initialize UnitSections list
+
+                    // Reset the UnitSection counter for the new Unit
+                    sectionNumberCounter = 1;
                 }
 
+                // If there's an active Unit, add a new UnitSection to it
                 if (currentUnit != null) {
-                    UnitSection unitSection = createUnitSection(row, currentUnit, sectionNumberCounter++);
-                    currentUnit.getUnitSections().add(unitSection);
+                    UnitSection unitSection = createOrUpdateUnitSection(row, currentUnit, sectionNumberCounter++);
+                    currentUnit.getUnitSections().add(unitSection);  // Add to the Unit's sections list
                 }
             }
         }
 
+        // Save the last Unit if it exists
         if (currentUnit != null) {
             unitsToSave.add(currentUnit);
         }
 
+        // Save all Units and their UnitSections to the database
         unitRepository.saveAll(unitsToSave);
     }
+
+
+
+
+
 
     /**
      * Create a new UnitSection from a row.
      */
-    private UnitSection createUnitSection(Row row, Unit unit, int sectionNumber) {
-        UnitSection unitSection = new UnitSection();
-        unitSection.setUnit(unit);
-        unitSection.setTitle(getCellValueAsString(row.getCell(3)));
-        unitSection.setDescription(getCellValueAsString(row.getCell(2)));
-        unitSection.setDeliveryType(getCellValueAsString(row.getCell(4)));
-
+    private UnitSection createOrUpdateUnitSection(Row row, Unit unit, int sectionNumber) {
+        String sectionTitle = getCellValueAsString(row.getCell(3));
+        String description = getCellValueAsString(row.getCell(2));
+        String deliveryType = getCellValueAsString(row.getCell(4));
         Double duration = getCellValueAsDouble(row.getCell(5));
-        if (duration == null) {
-            throw new IllegalArgumentException("Duration is missing or invalid at row: " + row.getRowNum());
-        }
-        unitSection.setDuration(duration);
+        String trainingFormat = getCellValueAsString(row.getCell(6));
+        String note = getCellValueAsString(row.getCell(7));
 
-        unitSection.setTrainingFormat(getCellValueAsString(row.getCell(6)));
-        unitSection.setNote(getCellValueAsString(row.getCell(7)));
+        // Find existing section or create a new one
+        UnitSection unitSection = unit.getUnitSections().stream()
+                .filter(us -> us.getTitle().equals(sectionTitle) &&
+                        us.getDescription().equals(description) &&
+                        us.getDeliveryType().equals(deliveryType) &&
+                        us.getDuration().equals(duration) &&
+                        us.getTrainingFormat().equals(trainingFormat) &&
+                        (us.getNote() == null ? note == null : us.getNote().equals(note)) &&
+                        us.getSectionNumber() == sectionNumber)
+                .findFirst()
+                .orElse(new UnitSection());
+
+        unitSection.setUnit(unit);
+        unitSection.setTitle(sectionTitle);
+        unitSection.setDescription(description);
+        unitSection.setDeliveryType(deliveryType);
+        unitSection.setDuration(duration);
+        unitSection.setTrainingFormat(trainingFormat);
+        unitSection.setNote(note);
         unitSection.setSectionNumber(sectionNumber);
 
         return unitSection;
     }
+
 
     public String getCellValueAsString(Cell cell) {
         if (cell == null) {
