@@ -12,6 +12,6 @@ public interface TopicAssessmentRepository extends JpaRepository<TopicAssessment
 
     @Query("SELECT ta FROM TopicAssessment ta WHERE ta.topic.id = :topicId")
     List<TopicAssessment> findTopicAssessmentsByTopicId(@Param("topicId") Integer topicId);
-
+    List<TopicAssessment> findByTopic(Topic topic);
     void deleteByTopic(Topic topic);
 }

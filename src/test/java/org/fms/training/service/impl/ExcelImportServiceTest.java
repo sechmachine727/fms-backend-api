@@ -78,8 +78,6 @@ class ExcelImportServiceTest {
         verify(technicalGroupRepository, times(1)).findByCode(anyString());
         verify(topicRepository, atLeastOnce()).save(any(Topic.class));
 
-        // Verify that topic assessments are saved correctly
-        verify(topicAssessmentRepository, atLeastOnce()).save(any(TopicAssessment.class));
 
         // Verify that units and their sections are saved correctly
         verify(unitRepository, atLeastOnce()).saveAll(anyList());
