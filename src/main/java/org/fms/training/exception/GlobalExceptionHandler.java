@@ -60,18 +60,18 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("timestamp", Instant.now().toString());
         errorResponse.put("status", HttpStatus.FORBIDDEN.value());
-        errorResponse.put("error", "Forbidden");
+        errorResponse.put(ERROR, "Forbidden");
         errorResponse.put("path", request.getDescription(false).replace("uri=", ""));
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex, WebRequest request) {
-        logger.error("Unexpected error occurred: ", ex.getMessage());
+        logger.error("Internal Server Error: {}", ex.getMessage(), ex);
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("timestamp", Instant.now().toString());
         errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorResponse.put("error", "Internal Server Error");
+        errorResponse.put(ERROR, "Internal Server Error");
         errorResponse.put("path", request.getDescription(false).replace("uri=", ""));
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

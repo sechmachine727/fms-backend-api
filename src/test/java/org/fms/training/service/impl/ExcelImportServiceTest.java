@@ -3,7 +3,6 @@ package org.fms.training.service.impl;
 import org.apache.poi.ss.usermodel.*;
 import org.fms.training.common.entity.TechnicalGroup;
 import org.fms.training.common.entity.Topic;
-import org.fms.training.common.entity.TopicAssessment;
 import org.fms.training.common.entity.Unit;
 import org.fms.training.repository.TechnicalGroupRepository;
 import org.fms.training.repository.TopicAssessmentRepository;

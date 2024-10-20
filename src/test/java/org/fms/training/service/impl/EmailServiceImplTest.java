@@ -51,7 +51,7 @@ class EmailServiceImplTest {
     }
 
     @Test
-    void sendHtmlEmail_shouldSendHtmlEmailWithTemplate() throws MessagingException {
+    void sendHtmlEmail_shouldSendHtmlEmailWithTemplate() {
         // given
         String to = "test@example.com";
         String subject = "HTML Subject";

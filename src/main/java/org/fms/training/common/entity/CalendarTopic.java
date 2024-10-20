@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.common.converter.StatusConverter;
+import org.fms.training.common.enums.Status;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "calendar_topic", uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "topic_id"}))
+@Table(name = "calendar_topic")
 public class CalendarTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +26,10 @@ public class CalendarTopic {
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
+
+    @Convert(converter = StatusConverter.class)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
@@ -41,4 +47,9 @@ public class CalendarTopic {
     @JsonBackReference
     @OneToMany(mappedBy = "calendarTopic")
     private List<Lesson> lessons;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "trainer_id", nullable = false)
+    private Trainer trainer;
 }

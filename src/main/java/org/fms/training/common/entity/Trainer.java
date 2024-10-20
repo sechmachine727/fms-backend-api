@@ -1,8 +1,11 @@
 package org.fms.training.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,4 +41,8 @@ public class Trainer {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "trainer")
+    @JsonBackReference
+    private List<CalendarTopic> calendarTopics;
 }

@@ -11,8 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class ExcelImportService implements ImportService {
             // Proceed to import only if topic update is confirmed
             importScheduleDetailSheet(scheduleDetailSheet, savedTopic);
 
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             throw e;
         } catch (Exception e) {
             System.err.println("Error while importing Excel data: " + e.getMessage());
@@ -218,10 +219,6 @@ public class ExcelImportService implements ImportService {
         // Save all Units and their UnitSections to the database
         unitRepository.saveAll(unitsToSave);
     }
-
-
-
-
 
 
     /**
