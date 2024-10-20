@@ -9,6 +9,9 @@ WORKDIR /app
 # Copy the native executable into the container
 COPY target/fms-api fms-api
 
+# Set executable permissions
+RUN chmod +x fms-api
+
 # Copy the templates folder into the container
 COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/Template_Import_Syllabus.xlsx
 
