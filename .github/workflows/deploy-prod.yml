@@ -47,5 +47,5 @@ jobs:
 
       - name: Recreate container with Portainer webhook
         run: |
-          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/005b8981-aaa7-4de1-a188-e9a56da68da9
+          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/8bcfcb79-7e07-4071-a2de-8a4357f70610
           echo "Container recreated"
