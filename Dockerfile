@@ -7,7 +7,7 @@ RUN apk add --no-cache libstdc++ musl zlib
 WORKDIR /app
 
 # Copy the native executable into the container
-COPY target/fms-api .
+COPY target/fms-api fms-api
 
 # Copy the templates folder into the container
 COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/Template_Import_Syllabus.xlsx
