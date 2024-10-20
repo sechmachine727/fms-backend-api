@@ -1,11 +1,13 @@
 package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fms.training.common.dto.trainingcalendardto.CalendarTopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.GenerateCalendarRequest;
 import org.fms.training.common.dto.trainingcalendardto.SlotTimeSettings;
-import org.fms.training.common.dto.trainingcalendardto.TopicTrainer;
+import org.fms.training.common.dto.trainingcalendardto.external.TopicTrainer;
 import org.fms.training.common.entity.*;
 import org.fms.training.common.enums.Status;
+import org.fms.training.common.mapper.trainingcalendarmapper.CalendarTopicMapper;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.repository.*;
 import org.fms.training.service.TrainingCalendarService;
@@ -34,10 +36,10 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     private final TrainerRepository trainerRepository;
     private final TopicRepository topicRepository;
     private final GroupRepository groupRepository;
+    private final CalendarTopicMapper calendarTopicMapper;
 
     @Override
-    public List<CalendarTopic> generateTrainingCalendar(GenerateCalendarRequest request) {
-
+    public List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request) {
         Group group = groupRepository.findById(request.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find any group matching with id provided."));
 
@@ -73,7 +75,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
             calendarTopic.setStatus(Status.ACTIVE);
 
             LocalDate topicStartDate = currentDate;
-            int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1; // Correctly set days per unit
+            int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
 
             for (int i = 0; i < topic.getUnits().size(); i++) {
                 while (!slotTimeSettings.trainingDaysOfWeek().contains(currentDate.getDayOfWeek()) || isHoliday(currentDate, holidays)) {
@@ -87,41 +89,37 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
                 lesson.setStartTime(slotTimeSettings.startTime());
                 lesson.setEndTime(slotTimeSettings.endTime());
 
-
-                LocalDate endDate = currentDate;  // Initialize endDate to the current date.
-                for (int d = 1; d < daysPerUnit; d++) {  // Loops only if part-time.
+                LocalDate endDate = currentDate;
+                for (int d = 1; d < daysPerUnit; d++) {
                     do {
-                        endDate = endDate.plusDays(1); // Keep incrementing until a valid training day.
+                        endDate = endDate.plusDays(1);
                     } while (!slotTimeSettings.trainingDaysOfWeek().contains(endDate.getDayOfWeek()) || isHoliday(endDate, holidays));
-
                 }
-                lesson.setEndDate(endDate); // Set lesson end date including weekends/holiday consideration.
+                lesson.setEndDate(endDate);
 
                 if (calendarTopic.getLessons() == null) {
                     calendarTopic.setLessons(new ArrayList<>());
                 }
                 calendarTopic.getLessons().add(lesson);
 
-                currentDate = endDate.plusDays(1); // Increment currentDate from the calculated endDate
-
+                currentDate = endDate.plusDays(1);
             }
             calendarTopic.setStartDate(topicStartDate);
-            calendarTopic.setEndDate(currentDate.minusDays(1)); //currentDate at this point is already an offset after previous lesson's end date + 1
+            calendarTopic.setEndDate(currentDate.minusDays(1));
 
             calendarTopics.add(calendarTopic);
         }
-
 
         if (!calendarTopics.isEmpty()) {
             CalendarTopic lastCalendarTopic = calendarTopics.get(calendarTopics.size() - 1);
             LocalDate lastEndDate = lastCalendarTopic.getEndDate();
             group.setActualEndDate(lastEndDate.atStartOfDay());
-
         }
-        calendarTopicRepository.saveAll(calendarTopics); // No change here, the lessons are cascaded saved.
+        calendarTopicRepository.saveAll(calendarTopics);
 
-
-        return calendarTopics;
+        return calendarTopics.stream()
+                .map(calendarTopicMapper::toCalendarTopicDTO)
+                .toList();
     }
 
 

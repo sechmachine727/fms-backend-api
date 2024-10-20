@@ -1,6 +1,5 @@
 package org.fms.training.service.impl;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.fms.training.common.entity.EmailTemplate;
 import org.fms.training.repository.EmailTemplateRepository;
