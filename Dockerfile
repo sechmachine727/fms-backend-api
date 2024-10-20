@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 # Install necessary libraries
-RUN apk add --no-cache glibc libstdc++ musl zlib
+RUN apk add --no-cache libstdc++ musl zlib
 
 # Set the working directory
 WORKDIR /app
