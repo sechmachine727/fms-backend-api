@@ -1,10 +1,10 @@
-FROM ibm-semeru-runtimes:open-17.0.12.1_7-jre-jammy
+FROM gcr.io/distroless/base-debian11
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the jar file into the container
-COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
+# Copy the native executable into the container
+COPY target/fms-api .
 
 # Copy the templates folder into the container
 COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/Template_Import_Syllabus.xlsx
@@ -12,5 +12,5 @@ COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/T
 # Expose the port your app runs on
 EXPOSE 8080
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the native executable
+ENTRYPOINT ["./fms-api"]
