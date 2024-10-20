@@ -1,4 +1,7 @@
-FROM gcr.io/distroless/base-debian11
+FROM alpine:latest
+
+# Install necessary libraries
+RUN apk add --no-cache glibc libstdc++ musl zlib
 
 # Set the working directory
 WORKDIR /app
