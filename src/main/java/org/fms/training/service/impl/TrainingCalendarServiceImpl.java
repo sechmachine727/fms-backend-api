@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,6 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
             LocalDateTime parsedStartDate = LocalDateTime.parse(request.actualStartDate());
             group.setActualStartDate(parsedStartDate);
         } catch (DateTimeParseException e) {
-            // Handle invalid date format appropriately (log, throw exception, etc.)
             throw new IllegalArgumentException("Invalid date format. Please use ISO-8601 format.", e);
         }
 
@@ -72,44 +72,55 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
             calendarTopic.setTrainer(trainer);
             calendarTopic.setStatus(Status.ACTIVE);
 
-
             LocalDate topicStartDate = currentDate;
+            int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1; // Correctly set days per unit
 
             for (int i = 0; i < topic.getUnits().size(); i++) {
                 while (!slotTimeSettings.trainingDaysOfWeek().contains(currentDate.getDayOfWeek()) || isHoliday(currentDate, holidays)) {
                     currentDate = currentDate.plusDays(1);
                 }
 
-
                 Lesson lesson = new Lesson();
                 lesson.setCalendarTopic(calendarTopic);
                 lesson.setUnit(topic.getUnits().get(i));
                 lesson.setStartDate(currentDate);
-                lesson.setEndDate(currentDate);
+                lesson.setStartTime(slotTimeSettings.startTime());
+                lesson.setEndTime(slotTimeSettings.endTime());
 
+
+                LocalDate endDate = currentDate;  // Initialize endDate to the current date.
+                for (int d = 1; d < daysPerUnit; d++) {  // Loops only if part-time.
+                    do {
+                        endDate = endDate.plusDays(1); // Keep incrementing until a valid training day.
+                    } while (!slotTimeSettings.trainingDaysOfWeek().contains(endDate.getDayOfWeek()) || isHoliday(endDate, holidays));
+
+                }
+                lesson.setEndDate(endDate); // Set lesson end date including weekends/holiday consideration.
 
                 if (calendarTopic.getLessons() == null) {
                     calendarTopic.setLessons(new ArrayList<>());
                 }
                 calendarTopic.getLessons().add(lesson);
 
-                currentDate = currentDate.plusDays(1);
+                currentDate = endDate.plusDays(1); // Increment currentDate from the calculated endDate
 
             }
             calendarTopic.setStartDate(topicStartDate);
-            calendarTopic.setEndDate(currentDate.minusDays(1));
+            calendarTopic.setEndDate(currentDate.minusDays(1)); //currentDate at this point is already an offset after previous lesson's end date + 1
 
             calendarTopics.add(calendarTopic);
-
         }
+
 
         if (!calendarTopics.isEmpty()) {
             CalendarTopic lastCalendarTopic = calendarTopics.get(calendarTopics.size() - 1);
             LocalDate lastEndDate = lastCalendarTopic.getEndDate();
             group.setActualEndDate(lastEndDate.atStartOfDay());
+
         }
-//        groupRepository.save(group);
-        calendarTopicRepository.saveAll(calendarTopics);
+        calendarTopicRepository.saveAll(calendarTopics); // No change here, the lessons are cascaded saved.
+
+
         return calendarTopics;
     }
 
@@ -139,8 +150,8 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
             if (timeRange.length != 2) {
                 throw new IllegalArgumentException("Invalid time range format. Expected 'StartTime - EndTime'.");
             }
-            String startTime = timeRange[0];
-            String endTime = timeRange[1];
+            LocalTime startTime = LocalTime.parse(timeRange[0]);
+            LocalTime endTime = LocalTime.parse(timeRange[1]);
 
             return new SlotTimeSettings(slotType, trainingDaysOfWeek, startTime, endTime);
 

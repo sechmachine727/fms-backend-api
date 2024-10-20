@@ -63,6 +63,7 @@ public class Topic {
     @OneToMany(mappedBy = "topic")
     private List<TopicAssessment> topicAssessments;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "topic")
     private List<CalendarTopic> calendarTopics;
 
