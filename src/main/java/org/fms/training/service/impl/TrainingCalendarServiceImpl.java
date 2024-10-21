@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.trainingcalendardto.CalendarTopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.GenerateCalendarRequest;
 import org.fms.training.common.dto.trainingcalendardto.SlotTimeSettings;
+import org.fms.training.common.dto.trainingcalendardto.external.TopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.external.TopicTrainer;
+import org.fms.training.common.dto.trainingcalendardto.external.TrainerDTO;
 import org.fms.training.common.entity.*;
 import org.fms.training.common.enums.Status;
 import org.fms.training.common.mapper.trainingcalendarmapper.CalendarTopicMapper;
@@ -36,6 +38,35 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     private final TopicRepository topicRepository;
     private final GroupRepository groupRepository;
     private final CalendarTopicMapper calendarTopicMapper;
+
+    @Override
+    public List<CalendarTopicDTO> displayTrainingCalendar(Integer groupId) {
+        Group group = getGroupById(groupId);
+        List<CalendarTopic> calendarTopics = calendarTopicRepository.findAllByGroup(group);
+        return calendarTopics.stream()
+                .map(calendarTopicMapper::toCalendarTopicDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SlotTimeSuggestion> getSlotTimeSuggestions() {
+        return slotTimeSuggestionRepository.findAll();
+    }
+
+    @Override
+    public List<TrainerDTO> getTrainers() {
+        return trainerRepository.findAll().stream()
+                .map(trainer -> new TrainerDTO(trainer.getId(), trainer.getUser().getName()))
+                .toList();
+    }
+
+    @Override
+    public List<TopicDTO> getTopicsByGroup(Integer groupId) {
+        Group group = getGroupById(groupId);
+        return topicRepository.findTopicsByGroupId(group.getId()).stream()
+                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicCode(), topic.getVersion()))
+                .toList();
+    }
 
     @Override
     public List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request) {
@@ -71,7 +102,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         if (!updatedCalendarTopics.isEmpty()) {
             CalendarTopic lastCalendarTopic = updatedCalendarTopics.get(updatedCalendarTopics.size() - 1);
             LocalDate lastEndDate = lastCalendarTopic.getEndDate();
-            group.setExpectedEndDate(lastEndDate.atStartOfDay());
+            group.setActualEndDate(lastEndDate.atStartOfDay());
         }
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
