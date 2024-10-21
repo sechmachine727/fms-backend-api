@@ -127,8 +127,6 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         }
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
-
-        // Only include updated calendar topics in the response
         updatedCalendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
 
         return updatedCalendarTopics.stream()
