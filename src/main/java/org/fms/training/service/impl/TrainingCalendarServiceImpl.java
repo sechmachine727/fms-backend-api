@@ -64,7 +64,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     public List<TopicDTO> getTopicsByGroup(Integer groupId) {
         Group group = getGroupById(groupId);
         return topicRepository.findTopicsByGroupId(group.getId()).stream()
-                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicCode(), topic.getVersion()))
+                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicName(), topic.getTopicCode(), topic.getVersion()))
                 .toList();
     }
 
