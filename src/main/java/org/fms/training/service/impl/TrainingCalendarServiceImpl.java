@@ -127,6 +127,13 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         }
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
+
+        // Outputs remaining calendar topics
+        List<CalendarTopic> remainingCalendarTopics = existingCalendarTopics.stream()
+                .filter(ct -> requestTopicIds.contains(ct.getTopic().getId()))
+                .toList();
+        updatedCalendarTopics.addAll(remainingCalendarTopics);
+
         updatedCalendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
 
         return updatedCalendarTopics.stream()
