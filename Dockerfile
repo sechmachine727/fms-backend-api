@@ -1,4 +1,4 @@
-FROM ibm-semeru-runtimes:open-17.0.12.1_7-jre-jammy
+FROM eclipse-temurin:23_37-jre-alpine
 
 # Set the working directory
 WORKDIR /app
