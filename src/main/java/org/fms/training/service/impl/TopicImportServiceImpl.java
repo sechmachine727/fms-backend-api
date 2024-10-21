@@ -5,7 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.fms.training.common.entity.*;
 import org.fms.training.common.enums.Status;
 import org.fms.training.repository.*;
-import org.fms.training.service.ImportService;
+import org.fms.training.service.TopicImportService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TopicImportService implements ImportService {
+public class TopicImportServiceImpl implements TopicImportService {
 
     private final TopicRepository topicRepository;
     private final TopicAssessmentRepository topicAssessmentRepository;
