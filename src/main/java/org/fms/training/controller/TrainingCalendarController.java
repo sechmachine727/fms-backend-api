@@ -3,6 +3,7 @@ package org.fms.training.controller;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.trainingcalendardto.CalendarTopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.GenerateCalendarRequest;
+import org.fms.training.common.dto.trainingcalendardto.external.TopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.external.TrainerDTO;
 import org.fms.training.common.entity.SlotTimeSuggestion;
 import org.fms.training.service.TrainingCalendarService;
@@ -39,5 +40,11 @@ public class TrainingCalendarController {
     public ResponseEntity<List<TrainerDTO>> getTrainers() {
         List<TrainerDTO> trainers = trainingCalendarService.getTrainers();
         return ResponseEntity.ok(trainers);
+    }
+
+    @GetMapping("/topics/{groupId}")
+    public ResponseEntity<List<TopicDTO>> getTopicsByGroup(@PathVariable Integer groupId) {
+        List<TopicDTO> topics = trainingCalendarService.getTopicsByGroup(groupId);
+        return ResponseEntity.ok(topics);
     }
 }
