@@ -18,4 +18,6 @@ public interface TrainingCalendarService {
     List<TrainerDTO> getTrainers();
 
     List<TopicDTO> getTopicsByGroup(Integer groupId);
+
+    List<TopicDTO> getAvailableTopics();
 }

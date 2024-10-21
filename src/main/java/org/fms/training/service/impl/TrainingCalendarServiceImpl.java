@@ -70,6 +70,13 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     }
 
     @Override
+    public List<TopicDTO> getAvailableTopics() {
+        return topicRepository.findByStatus(Status.ACTIVE).stream()
+                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicName(), topic.getTopicCode(), topic.getVersion()))
+                .toList();
+    }
+
+    @Override
     public List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request) {
         Group group = getGroupById(request.groupId());
         group.setActualStartDate(parseStartDate(request.actualStartDate()));
@@ -118,6 +125,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     }
 
     private LocalDate updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays, LocalDate currentDate) {
+        //TODO: If a topic object is missing from the request body, then delete the corresponding calendar topic and its lessons
         int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
         List<Lesson> existingLessons = Optional.ofNullable(calendarTopic.getLessons()).orElse(new ArrayList<>());
         Map<Integer, Lesson> existingLessonsMap = existingLessons.stream().collect(Collectors.toMap(lesson -> lesson.getUnit().getId(), lesson -> lesson));

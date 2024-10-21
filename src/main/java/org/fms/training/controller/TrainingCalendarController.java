@@ -47,4 +47,10 @@ public class TrainingCalendarController {
         List<TopicDTO> topics = trainingCalendarService.getTopicsByGroup(groupId);
         return ResponseEntity.ok(topics);
     }
+
+    @GetMapping("/topics")
+    public ResponseEntity<List<TopicDTO>> getAvailableTopics() {
+        List<TopicDTO> topics = trainingCalendarService.getAvailableTopics();
+        return ResponseEntity.ok(topics);
+    }
 }
