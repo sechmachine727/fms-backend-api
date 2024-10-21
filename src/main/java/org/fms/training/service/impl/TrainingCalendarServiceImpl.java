@@ -89,6 +89,18 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         Map<Integer, CalendarTopic> existingCalendarTopicMap = existingCalendarTopics.stream()
                 .collect(Collectors.toMap(ct -> ct.getTopic().getId(), ct -> ct));
 
+        // Identify topics to be removed
+        Set<Integer> requestTopicIds = request.topics().stream()
+                .map(TopicTrainer::topicId)
+                .collect(Collectors.toSet());
+
+        List<CalendarTopic> topicsToRemove = existingCalendarTopics.stream()
+                .filter(ct -> !requestTopicIds.contains(ct.getTopic().getId()))
+                .toList();
+
+        // Remove topics and their lessons
+        calendarTopicRepository.deleteAll(topicsToRemove);
+
         List<CalendarTopic> updatedCalendarTopics = new ArrayList<>();
         LocalDate currentDate = group.getActualStartDate().toLocalDate();
 
@@ -116,7 +128,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
 
-        updatedCalendarTopics.addAll(existingCalendarTopics);
+        // Only include updated calendar topics in the response
         updatedCalendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
 
         return updatedCalendarTopics.stream()
@@ -125,7 +137,6 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     }
 
     private LocalDate updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays, LocalDate currentDate) {
-        //TODO: If a topic object is missing from the request body, then delete the corresponding calendar topic and its lessons
         int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
         List<Lesson> existingLessons = Optional.ofNullable(calendarTopic.getLessons()).orElse(new ArrayList<>());
         Map<Integer, Lesson> existingLessonsMap = existingLessons.stream().collect(Collectors.toMap(lesson -> lesson.getUnit().getId(), lesson -> lesson));
