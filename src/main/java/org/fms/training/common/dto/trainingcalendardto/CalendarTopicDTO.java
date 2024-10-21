@@ -12,7 +12,6 @@ public record CalendarTopicDTO(
         Integer id,
         LocalDate startDate,
         LocalDate endDate,
-        String status,
         GroupDTO group,
         TopicDTO topic,
         TrainerDTO trainer,
