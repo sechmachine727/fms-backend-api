@@ -43,6 +43,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     public List<CalendarTopicDTO> displayTrainingCalendar(Integer groupId) {
         Group group = getGroupById(groupId);
         List<CalendarTopic> calendarTopics = calendarTopicRepository.findAllByGroup(group);
+        calendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
         return calendarTopics.stream()
                 .map(calendarTopicMapper::toCalendarTopicDTO)
                 .toList();
@@ -82,17 +83,19 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
                 .collect(Collectors.toMap(ct -> ct.getTopic().getId(), ct -> ct));
 
         List<CalendarTopic> updatedCalendarTopics = new ArrayList<>();
+        LocalDate currentDate = group.getActualStartDate().toLocalDate();
 
         for (TopicTrainer topicTrainer : request.topics()) {
             Trainer trainer = getTrainerById(topicTrainer.trainerId());
             Topic topic = getTopicById(topicTrainer.topicId());
 
             CalendarTopic calendarTopic = existingCalendarTopicMap.getOrDefault(topic.getId(), new CalendarTopic());
+
             calendarTopic.setGroup(group);
             calendarTopic.setTopic(topic);
             calendarTopic.setTrainer(trainer);
 
-            updateOrCreateLessons(calendarTopic, topic, slotTimeSettings, holidays);
+            currentDate = updateOrCreateLessons(calendarTopic, topic, slotTimeSettings, holidays, currentDate);
 
             if (!existingCalendarTopicMap.containsKey(topic.getId())) {
                 updatedCalendarTopics.add(calendarTopic);
@@ -101,29 +104,25 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
         if (!updatedCalendarTopics.isEmpty()) {
             CalendarTopic lastCalendarTopic = updatedCalendarTopics.get(updatedCalendarTopics.size() - 1);
-            LocalDate lastEndDate = lastCalendarTopic.getEndDate();
-            group.setActualEndDate(lastEndDate.atStartOfDay());
+            group.setActualEndDate(lastCalendarTopic.getEndDate().atStartOfDay());
         }
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
-        existingCalendarTopics.forEach(topic -> {
-            if (!updatedCalendarTopics.contains(topic)) {
-                updatedCalendarTopics.add(topic);
-            }
-        });
+
+        updatedCalendarTopics.addAll(existingCalendarTopics);
+        updatedCalendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
 
         return updatedCalendarTopics.stream()
                 .map(calendarTopicMapper::toCalendarTopicDTO)
                 .toList();
     }
 
-    private void updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays) {
-        LocalDate currentDate = calendarTopic.getGroup().getActualStartDate().toLocalDate();
+    private LocalDate updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays, LocalDate currentDate) {
         int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
-
         List<Lesson> existingLessons = Optional.ofNullable(calendarTopic.getLessons()).orElse(new ArrayList<>());
-        Map<Integer, Lesson> existingLessonsMap = existingLessons.stream()
-                .collect(Collectors.toMap(lesson -> lesson.getUnit().getId(), lesson -> lesson));
+        Map<Integer, Lesson> existingLessonsMap = existingLessons.stream().collect(Collectors.toMap(lesson -> lesson.getUnit().getId(), lesson -> lesson));
+
+        LocalDate topicStartDate = currentDate;
 
         for (int i = 0; i < topic.getUnits().size(); i++) {
             while (!slotTimeSettings.trainingDaysOfWeek().contains(currentDate.getDayOfWeek()) || isHoliday(currentDate, holidays)) {
@@ -143,6 +142,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
                     endDate = endDate.plusDays(1);
                 } while (!slotTimeSettings.trainingDaysOfWeek().contains(endDate.getDayOfWeek()) || isHoliday(endDate, holidays));
             }
+
             lesson.setEndDate(endDate);
 
             if (!existingLessonsMap.containsKey(topic.getUnits().get(i).getId())) {
@@ -154,9 +154,12 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
             currentDate = endDate.plusDays(1);
         }
-
-        calendarTopic.setStartDate(calendarTopic.getGroup().getActualStartDate().toLocalDate());
+        calendarTopic.setStartDate(topicStartDate);
         calendarTopic.setEndDate(currentDate.minusDays(1));
+
+        calendarTopic.getLessons().sort(Comparator.comparing(Lesson::getStartDate)); // Sort lessons by start date
+
+        return currentDate;
     }
 
     private Group getGroupById(Integer groupId) {

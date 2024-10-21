@@ -17,15 +17,15 @@ public interface TrainingProgramMapper {
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
-    @Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "lastModifiedDate", target = "lastModifiedDate", dateFormat = "dd-MM-YYYY")
     ReadTrainingProgramDTO toReadTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "topicTrainingPrograms", target = "topicInfoList")
 
-    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MM-YYYY")
     ListTrainingProgramDTO toListTrainingProgramDTO(TrainingProgram trainingProgram);
 
     @Mapping(source = "technicalGroupId", target = "technicalGroup.id")

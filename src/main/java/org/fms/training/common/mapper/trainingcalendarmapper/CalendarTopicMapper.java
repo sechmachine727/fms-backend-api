@@ -10,5 +10,7 @@ public interface CalendarTopicMapper {
     @Mapping(source = "group.groupName", target = "group.groupName")
     @Mapping(source = "trainer.user.name", target = "trainer.name")
     @Mapping(source = "topic.topicName", target = "topic.topicName")
+    @Mapping(source = "startDate", target = "startDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "endDate", target = "endDate", dateFormat = "dd-MM-YYYY")
     CalendarTopicDTO toCalendarTopicDTO(CalendarTopic calendarTopic);
 }
