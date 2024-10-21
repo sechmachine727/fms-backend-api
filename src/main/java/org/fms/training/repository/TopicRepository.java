@@ -21,6 +21,8 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 
     Optional<Topic> findByTopicCodeAndVersion(String topicCode, String version);
 
-    @Query("SELECT t FROM Topic t JOIN CalendarTopic ct ON t.id = ct.topic.id WHERE ct.group.id = :groupId")
+    @Query("SELECT t FROM Topic t JOIN TopicTrainingProgram ttp ON t.id = ttp.topic.id " +
+            "JOIN TrainingProgram tp ON ttp.trainingProgram.id = tp.id " +
+            "JOIN Group g on g.trainingProgram.id = tp.id WHERE g.id = :groupId")
     List<Topic> findTopicsByGroupId(@Param("groupId") Integer groupId);
 }
