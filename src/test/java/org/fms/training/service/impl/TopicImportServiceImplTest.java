@@ -8,6 +8,7 @@ import org.fms.training.repository.TechnicalGroupRepository;
 import org.fms.training.repository.TopicAssessmentRepository;
 import org.fms.training.repository.TopicRepository;
 import org.fms.training.repository.UnitRepository;
+import org.fms.training.service.TopicImportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,13 +31,10 @@ import static org.mockito.Mockito.*;
 class TopicImportServiceImplTest {
 
     @InjectMocks
-    private TopicTopicImportService topicImportService;
+    private TopicImportServiceImpl topicImportService;
 
     @Mock
     private TopicRepository topicRepository;
-
-    @Mock
-    private TopicAssessmentRepository topicAssessmentRepository;
 
     @Mock
     private TechnicalGroupRepository technicalGroupRepository;
