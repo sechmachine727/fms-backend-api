@@ -47,10 +47,10 @@ public class Group {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @Column(name = "expected_start_date", nullable = false)
+    @Column(name = "expected_start_date")
     private LocalDateTime expectedStartDate;
 
-    @Column(name = "expected_end_date", nullable = false)
+    @Column(name = "expected_end_date")
     private LocalDateTime expectedEndDate;
 
     @Column(name = "actual_start_date")

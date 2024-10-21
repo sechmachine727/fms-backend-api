@@ -139,7 +139,7 @@ public class GroupServiceImpl implements GroupService {
 
         try {
             startDate = LocalDateTime.parse(saveGroupDTO.getExpectedStartDate(), formatter);
-            endDate = LocalDateTime.parse(saveGroupDTO.getExpectedEndDate(), formatter);
+            endDate = LocalDateTime.parse(saveGroupDTO.getActualEndDate(), formatter);
         } catch (DateTimeParseException e) {
             errors.put("dateFormat", "Invalid date format. Please use yyyy-MM-dd'T'HH:mm:ss.SSS.");
             throw new ValidationException(errors);

@@ -97,7 +97,7 @@ class GroupServiceImplTest {
         saveGroupDTO.setStatus(GroupStatus.PLANNING);
         saveGroupDTO.setAssignedUserIds(List.of(1, 2, 3));
         saveGroupDTO.setExpectedStartDate("2024-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2025-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2025-06-12T10:53:47.000");
 
         Group group = new Group();
         given(groupMapper.toGroupEntity(saveGroupDTO)).willReturn(group);
@@ -133,7 +133,7 @@ class GroupServiceImplTest {
         saveGroupDTO.setStatus(GroupStatus.PLANNING);
         saveGroupDTO.setAssignedUserIds(List.of(1, 2, 3));
         saveGroupDTO.setExpectedStartDate("2024-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2025-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2025-06-12T10:53:47.000");
 
         given(groupRepository.existsByGroupCode(saveGroupDTO.getGroupCode())).willReturn(true);
 
@@ -146,7 +146,7 @@ class GroupServiceImplTest {
         // given
         SaveGroupDTO saveGroupDTO = new SaveGroupDTO();
         saveGroupDTO.setExpectedStartDate("23-Oct-2024");
-        saveGroupDTO.setExpectedEndDate("2024-11-22");
+        saveGroupDTO.setActualEndDate("2024-11-22");
 
         // when, then
         assertThrows(ValidationException.class, () -> groupService.createGroup(saveGroupDTO));
@@ -157,7 +157,7 @@ class GroupServiceImplTest {
         // given
         SaveGroupDTO saveGroupDTO = new SaveGroupDTO();
         saveGroupDTO.setExpectedStartDate("2026-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2025-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2025-06-12T10:53:47.000");
 
         // when, then
         assertThrows(ValidationException.class, () -> groupService.createGroup(saveGroupDTO));
@@ -168,7 +168,7 @@ class GroupServiceImplTest {
         // given
         SaveGroupDTO saveGroupDTO = new SaveGroupDTO();
         saveGroupDTO.setExpectedStartDate("2022-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2023-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2023-06-12T10:53:47.000");
 
         // when, then
         assertThrows(ValidationException.class, () -> groupService.createGroup(saveGroupDTO));
@@ -193,7 +193,7 @@ class GroupServiceImplTest {
         saveGroupDTO.setStatus(GroupStatus.PLANNING);
         saveGroupDTO.setAssignedUserIds(List.of(1, 2, 3));
         saveGroupDTO.setExpectedStartDate("2024-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2025-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2025-06-12T10:53:47.000");
 
         given(userRepository.findById(anyInt())).willReturn(Optional.empty());
 
@@ -248,7 +248,7 @@ class GroupServiceImplTest {
         saveGroupDTO.setStatus(GroupStatus.ASSIGNED);
         saveGroupDTO.setAssignedUserIds(List.of(1, 2));
         saveGroupDTO.setExpectedStartDate("2024-10-12T10:53:47.000");
-        saveGroupDTO.setExpectedEndDate("2025-06-12T10:53:47.000");
+        saveGroupDTO.setActualEndDate("2025-06-12T10:53:47.000");
 
         Group group = new Group();
         group.setGroupName("Java Group");
