@@ -56,7 +56,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
     @Override
     public List<TrainerDTO> getTrainers() {
-        return trainerRepository.findAll().stream()
+        return trainerRepository.getTrainers().stream()
                 .map(trainer -> new TrainerDTO(trainer.getId(), trainer.getUser().getName()))
                 .toList();
     }

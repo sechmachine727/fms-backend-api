@@ -35,7 +35,7 @@ public class Topic {
     @Column(name = "version", nullable = false, length = 50)
     private String version;
 
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "pass_criteria", nullable = false, columnDefinition = "TEXT")
@@ -46,11 +46,11 @@ public class Topic {
     private Status status;
 
     @CreatedDate
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(name = "last_modified_date", nullable = false)
+    @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
     @LastModifiedBy
