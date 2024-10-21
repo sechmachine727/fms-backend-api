@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class ExcelImportServiceTest {
+class TopicImportServiceTest {
 
     @InjectMocks
-    private ExcelImportService excelImportService;
+    private TopicImportService topicImportService;
 
     @Mock
     private TopicRepository topicRepository;
@@ -71,7 +71,7 @@ class ExcelImportServiceTest {
         when(unitRepository.findByTopic(any(Topic.class))).thenReturn(mockUnits);
 
         // Act
-        excelImportService.importDataFromStream(excelStream, false);
+        topicImportService.importDataFromStream(excelStream, false);
 
         // Assert
         verify(technicalGroupRepository, times(1)).findByCode(anyString());
@@ -90,7 +90,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            excelImportService.importDataFromStream(invalidExcelStream, false);
+            topicImportService.importDataFromStream(invalidExcelStream, false);
         });
 
         assertEquals("Failed to import Excel file: Sheet 'Syllabus' not found.", exception.getMessage());
@@ -107,7 +107,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            excelImportService.importSyllabusSheet(syllabusSheet, false);
+            topicImportService.importSyllabusSheet(syllabusSheet, false);
         });
 
         assertEquals("Technical group not found with code: React Native", exception.getMessage());
@@ -121,7 +121,7 @@ class ExcelImportServiceTest {
         when(cell.getCellType()).thenReturn(CellType.BLANK);
 
         // Act
-        String result = excelImportService.getCellValueAsString(cell);
+        String result = topicImportService.getCellValueAsString(cell);
 
         // Assert
         assertEquals("", result);
@@ -135,7 +135,7 @@ class ExcelImportServiceTest {
         when(cell.getStringCellValue()).thenReturn("InvalidNumber");
 
         // Act
-        Double result = excelImportService.getCellValueAsDouble(cell);
+        Double result = topicImportService.getCellValueAsDouble(cell);
 
         // Assert
         assertNull(result);
@@ -153,7 +153,7 @@ class ExcelImportServiceTest {
         when(topicRepository.findByTopicCodeAndVersion(anyString(), anyString())).thenReturn(Optional.empty());
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            excelImportService.importDataFromStream(excelStream, false);
+            topicImportService.importDataFromStream(excelStream, false);
         });
 
         assertEquals("Failed to import Excel file: Sheet 'ScheduleDetail' not found.", exception.getMessage());
@@ -174,7 +174,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            excelImportService.importSyllabusSheet(syllabusSheet, false);
+            topicImportService.importSyllabusSheet(syllabusSheet, false);
         });
 
         assertEquals("Topic Code is missing.", exception.getMessage());
@@ -194,7 +194,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            excelImportService.importSyllabusSheet(syllabusSheet, false);
+            topicImportService.importSyllabusSheet(syllabusSheet, false);
         });
 
         assertEquals("Pass Criteria is missing.", exception.getMessage());
@@ -214,7 +214,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            excelImportService.importSyllabusSheet(syllabusSheet, false);
+            topicImportService.importSyllabusSheet(syllabusSheet, false);
         });
 
         assertEquals("Version is missing.", exception.getMessage());
@@ -234,7 +234,7 @@ class ExcelImportServiceTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            excelImportService.importSyllabusSheet(syllabusSheet, false);
+            topicImportService.importSyllabusSheet(syllabusSheet, false);
         });
 
         assertEquals("Topic Name is missing.", exception.getMessage());
@@ -252,7 +252,7 @@ class ExcelImportServiceTest {
 
             // Act & Assert
             RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-                excelImportService.importDataFromStream(excelStream, false);
+                topicImportService.importDataFromStream(excelStream, false);
             });
 
             assertEquals("Failed to import Excel file: Failed to create workbook", exception.getMessage());

@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ExcelImportService implements ImportService {
+public class TopicImportService implements ImportService {
 
     private final TopicRepository topicRepository;
     private final TopicAssessmentRepository topicAssessmentRepository;
