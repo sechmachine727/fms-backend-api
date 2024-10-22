@@ -25,7 +25,6 @@ public class ReadGroupDTO {
     private String actualStartDate;
     private String actualEndDate;
     private String note;
-    private Double planRevenue;
     private Integer deliveryTypeId;
     private String deliveryTypeName;
     private Integer traineeTypeId;

@@ -62,9 +62,6 @@ public class Group {
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 
-    @Column(name = "plan_revenue")
-    private Double planRevenue;
-
     @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "delivery_type_id", nullable = false)
