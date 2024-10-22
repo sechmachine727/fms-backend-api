@@ -77,7 +77,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     }
 
     @Override
-    public List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request) {
+    public void generateTrainingCalendar(GenerateCalendarRequest request) {
         Group group = getGroupById(request.groupId());
         group.setActualStartDate(parseStartDate(request.actualStartDate()));
 
@@ -127,18 +127,6 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         }
 
         calendarTopicRepository.saveAll(updatedCalendarTopics);
-
-        // Outputs remaining calendar topics
-        List<CalendarTopic> remainingCalendarTopics = existingCalendarTopics.stream()
-                .filter(ct -> requestTopicIds.contains(ct.getTopic().getId()))
-                .toList();
-        updatedCalendarTopics.addAll(remainingCalendarTopics);
-
-        updatedCalendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
-
-        return updatedCalendarTopics.stream()
-                .map(calendarTopicMapper::toCalendarTopicDTO)
-                .toList();
     }
 
     private LocalDate updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays, LocalDate currentDate) {

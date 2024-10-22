@@ -9,7 +9,7 @@ import org.fms.training.common.entity.SlotTimeSuggestion;
 import java.util.List;
 
 public interface TrainingCalendarService {
-    List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request);
+    void generateTrainingCalendar(GenerateCalendarRequest request);
 
     List<CalendarTopicDTO> displayTrainingCalendar(Integer groupId);
 

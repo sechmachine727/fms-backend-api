@@ -20,8 +20,8 @@ public class TrainingCalendarController {
 
     @PostMapping("/generate")
     public ResponseEntity<List<CalendarTopicDTO>> generateTrainingCalendar(@RequestBody GenerateCalendarRequest request) {
-        List<CalendarTopicDTO> calendarTopics = trainingCalendarService.generateTrainingCalendar(request);
-        return ResponseEntity.ok(calendarTopics);
+        trainingCalendarService.generateTrainingCalendar(request);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/display/{groupId}")
