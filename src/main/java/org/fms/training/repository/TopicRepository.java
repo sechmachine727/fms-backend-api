@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Integer> {
+    @Query(value = "SELECT * FROM Topic ORDER BY COALESCE(Last_Modified_Date, TIMESTAMP '1970-01-01') DESC", nativeQuery = true)
     List<Topic> getAllByOrderByLastModifiedDateDesc();
 
     @Query("SELECT t FROM Topic t WHERE t.id = :id")
