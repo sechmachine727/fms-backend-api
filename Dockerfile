@@ -1,4 +1,4 @@
-FROM ibm-semeru-runtimes:open-17.0.12.1_7-jre-jammy
+FROM eclipse-temurin:23_37-jre-alpine
 
 # Set the working directory
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
 COPY src/main/resources/templates/Template_Import_Syllabus.xlsx /app/templates/Template_Import_Syllabus.xlsx
 
 # Expose the port your app runs on
-EXPOSE 8080
+EXPOSE 8443
 
 # Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]

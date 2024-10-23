@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fms.training.common.converter.StatusConverter;
-import org.fms.training.common.enums.Status;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,10 +24,6 @@ public class CalendarTopic {
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
-
-    @Convert(converter = StatusConverter.class)
-    @Column(name = "status", nullable = false)
-    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)

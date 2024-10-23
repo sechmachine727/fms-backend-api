@@ -14,7 +14,7 @@ public interface TopicMapper {
     @Mapping(source = "version", target = "version")
     @Mapping(source = "technicalGroup", target = "technicalGroup")
     @Mapping(source = "lastModifiedBy", target = "lastModifiedBy")
-    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "lastModifiedDate", target = "modifiedDate", dateFormat = "dd-MM-YYYY")
     ListTopicDTO toListDTO(Topic topic);
 
     @Mapping(source = "id", target = "id")

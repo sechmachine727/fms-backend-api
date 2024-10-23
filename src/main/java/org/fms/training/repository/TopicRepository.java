@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Integer> {
+    @Query(value = "SELECT * FROM Topic ORDER BY COALESCE(Last_Modified_Date, TIMESTAMP '1970-01-01') DESC", nativeQuery = true)
     List<Topic> getAllByOrderByLastModifiedDateDesc();
 
     @Query("SELECT t FROM Topic t WHERE t.id = :id")
@@ -20,4 +21,9 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
     List<Topic> findByStatus(Status status);
 
     Optional<Topic> findByTopicCodeAndVersion(String topicCode, String version);
+
+    @Query("SELECT t FROM Topic t JOIN TopicTrainingProgram ttp ON t.id = ttp.topic.id " +
+            "JOIN TrainingProgram tp ON ttp.trainingProgram.id = tp.id " +
+            "JOIN Group g on g.trainingProgram.id = tp.id WHERE g.id = :groupId")
+    List<Topic> findTopicsByGroupId(@Param("groupId") Integer groupId);
 }

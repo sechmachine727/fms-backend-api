@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.trainingcalendardto.CalendarTopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.GenerateCalendarRequest;
 import org.fms.training.common.dto.trainingcalendardto.SlotTimeSettings;
+import org.fms.training.common.dto.trainingcalendardto.external.TopicDTO;
 import org.fms.training.common.dto.trainingcalendardto.external.TopicTrainer;
+import org.fms.training.common.dto.trainingcalendardto.external.TrainerDTO;
 import org.fms.training.common.entity.*;
 import org.fms.training.common.enums.Status;
 import org.fms.training.common.mapper.trainingcalendarmapper.CalendarTopicMapper;
@@ -21,9 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,98 +40,171 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
     private final CalendarTopicMapper calendarTopicMapper;
 
     @Override
-    public List<CalendarTopicDTO> generateTrainingCalendar(GenerateCalendarRequest request) {
-        Group group = groupRepository.findById(request.groupId())
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find any group matching with id provided."));
-
-        try {
-            LocalDateTime parsedStartDate = LocalDateTime.parse(request.actualStartDate());
-            group.setActualStartDate(parsedStartDate);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Please use ISO-8601 format.", e);
-        }
-
-        SlotTimeSuggestion slotTimeSuggestion = slotTimeSuggestionRepository.findById(request.slotTimeSuggestionId())
-                .orElseThrow(() -> new ResourceNotFoundException("Could not find any slot time suggestion with id matching with id provided."));
-        String slotTimeSuggestions = slotTimeSuggestion.getSuggestionName();
-
-        SlotTimeSettings slotTimeSettings = parseSlotTimeSuggestions(slotTimeSuggestions);
-        List<Holiday> holidays = holidayRepository.findAllByStatus(Status.ACTIVE);
-
-        deactivateOldCalendarTopics(group);
-
-        List<CalendarTopic> calendarTopics = new ArrayList<>();
-        LocalDate currentDate = group.getActualStartDate().toLocalDate();
-
-        for (TopicTrainer topicTrainer : request.topics()) {
-            Trainer trainer = trainerRepository.findById(topicTrainer.trainerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Could not find any trainer associated with id provided."));
-            Topic topic = topicRepository.findById(topicTrainer.topicId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Could not find any topic associated with id provided."));
-
-            CalendarTopic calendarTopic = new CalendarTopic();
-            calendarTopic.setGroup(group);
-            calendarTopic.setTopic(topic);
-            calendarTopic.setTrainer(trainer);
-            calendarTopic.setStatus(Status.ACTIVE);
-
-            LocalDate topicStartDate = currentDate;
-            int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
-
-            for (int i = 0; i < topic.getUnits().size(); i++) {
-                while (!slotTimeSettings.trainingDaysOfWeek().contains(currentDate.getDayOfWeek()) || isHoliday(currentDate, holidays)) {
-                    currentDate = currentDate.plusDays(1);
-                }
-
-                Lesson lesson = new Lesson();
-                lesson.setCalendarTopic(calendarTopic);
-                lesson.setUnit(topic.getUnits().get(i));
-                lesson.setStartDate(currentDate);
-                lesson.setStartTime(slotTimeSettings.startTime());
-                lesson.setEndTime(slotTimeSettings.endTime());
-
-                LocalDate endDate = currentDate;
-                for (int d = 1; d < daysPerUnit; d++) {
-                    do {
-                        endDate = endDate.plusDays(1);
-                    } while (!slotTimeSettings.trainingDaysOfWeek().contains(endDate.getDayOfWeek()) || isHoliday(endDate, holidays));
-                }
-                lesson.setEndDate(endDate);
-
-                if (calendarTopic.getLessons() == null) {
-                    calendarTopic.setLessons(new ArrayList<>());
-                }
-                calendarTopic.getLessons().add(lesson);
-
-                currentDate = endDate.plusDays(1);
-            }
-            calendarTopic.setStartDate(topicStartDate);
-            calendarTopic.setEndDate(currentDate.minusDays(1));
-
-            calendarTopics.add(calendarTopic);
-        }
-
-        if (!calendarTopics.isEmpty()) {
-            CalendarTopic lastCalendarTopic = calendarTopics.get(calendarTopics.size() - 1);
-            LocalDate lastEndDate = lastCalendarTopic.getEndDate();
-            group.setActualEndDate(lastEndDate.atStartOfDay());
-        }
-        calendarTopicRepository.saveAll(calendarTopics);
-
+    public List<CalendarTopicDTO> displayTrainingCalendar(Integer groupId) {
+        Group group = getGroupById(groupId);
+        List<CalendarTopic> calendarTopics = calendarTopicRepository.findAllByGroup(group);
+        calendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
         return calendarTopics.stream()
                 .map(calendarTopicMapper::toCalendarTopicDTO)
                 .toList();
     }
 
+    @Override
+    public List<SlotTimeSuggestion> getSlotTimeSuggestions() {
+        return slotTimeSuggestionRepository.findAll();
+    }
 
-    private void deactivateOldCalendarTopics(Group group) {
-        List<CalendarTopic> oldCalendarTopics = calendarTopicRepository.findAllByGroupAndStatus(group, Status.ACTIVE);
-        oldCalendarTopics.forEach(ct -> ct.setStatus(Status.INACTIVE));
-        calendarTopicRepository.saveAll(oldCalendarTopics);
+    @Override
+    public List<TrainerDTO> getTrainers() {
+        return trainerRepository.getTrainers().stream()
+                .map(trainer -> new TrainerDTO(trainer.getId(), trainer.getUser().getName()))
+                .toList();
+    }
+
+    @Override
+    public List<TopicDTO> getTopicsByGroup(Integer groupId) {
+        Group group = getGroupById(groupId);
+        return topicRepository.findTopicsByGroupId(group.getId()).stream()
+                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicName(), topic.getTopicCode(), topic.getVersion()))
+                .toList();
+    }
+
+    @Override
+    public List<TopicDTO> getAvailableTopics() {
+        return topicRepository.findByStatus(Status.ACTIVE).stream()
+                .map(topic -> new TopicDTO(topic.getId(), topic.getTopicName(), topic.getTopicCode(), topic.getVersion()))
+                .toList();
+    }
+
+    @Override
+    public void generateTrainingCalendar(GenerateCalendarRequest request) {
+        Group group = getGroupById(request.groupId());
+        group.setActualStartDate(parseStartDate(request.actualStartDate()));
+
+        SlotTimeSuggestion slotTimeSuggestion = getSlotTimeSuggestionById(request.slotTimeSuggestionId());
+        SlotTimeSettings slotTimeSettings = parseSlotTimeSuggestions(slotTimeSuggestion.getSuggestionName());
+        List<Holiday> holidays = holidayRepository.findAllByStatus(Status.ACTIVE);
+
+        List<CalendarTopic> existingCalendarTopics = calendarTopicRepository.findAllByGroup(group);
+        Map<Integer, CalendarTopic> existingCalendarTopicMap = existingCalendarTopics.stream()
+                .collect(Collectors.toMap(ct -> ct.getTopic().getId(), ct -> ct));
+
+        // Identify topics to be removed
+        Set<Integer> requestTopicIds = request.topics().stream()
+                .map(TopicTrainer::topicId)
+                .collect(Collectors.toSet());
+
+        List<CalendarTopic> topicsToRemove = existingCalendarTopics.stream()
+                .filter(ct -> !requestTopicIds.contains(ct.getTopic().getId()))
+                .toList();
+
+        // Remove topics and their lessons
+        calendarTopicRepository.deleteAll(topicsToRemove);
+
+        List<CalendarTopic> updatedCalendarTopics = new ArrayList<>();
+        LocalDate currentDate = group.getActualStartDate().toLocalDate();
+
+        for (TopicTrainer topicTrainer : request.topics()) {
+            Trainer trainer = getTrainerById(topicTrainer.trainerId());
+            Topic topic = getTopicById(topicTrainer.topicId());
+
+            CalendarTopic calendarTopic = existingCalendarTopicMap.getOrDefault(topic.getId(), new CalendarTopic());
+
+            calendarTopic.setGroup(group);
+            calendarTopic.setTopic(topic);
+            calendarTopic.setTrainer(trainer);
+
+            currentDate = updateOrCreateLessons(calendarTopic, topic, slotTimeSettings, holidays, currentDate);
+
+            if (!existingCalendarTopicMap.containsKey(topic.getId())) {
+                updatedCalendarTopics.add(calendarTopic);
+            }
+        }
+
+        if (!updatedCalendarTopics.isEmpty()) {
+            CalendarTopic lastCalendarTopic = updatedCalendarTopics.get(updatedCalendarTopics.size() - 1);
+            group.setActualEndDate(lastCalendarTopic.getEndDate().atStartOfDay());
+        }
+
+        calendarTopicRepository.saveAll(updatedCalendarTopics);
+    }
+
+    private LocalDate updateOrCreateLessons(CalendarTopic calendarTopic, Topic topic, SlotTimeSettings slotTimeSettings, List<Holiday> holidays, LocalDate currentDate) {
+        int daysPerUnit = slotTimeSettings.slotType().equalsIgnoreCase("PartTime") ? 2 : 1;
+        List<Lesson> existingLessons = Optional.ofNullable(calendarTopic.getLessons()).orElse(new ArrayList<>());
+        Map<Integer, Lesson> existingLessonsMap = existingLessons.stream().collect(Collectors.toMap(lesson -> lesson.getUnit().getId(), lesson -> lesson));
+
+        LocalDate topicStartDate = currentDate;
+
+        for (int i = 0; i < topic.getUnits().size(); i++) {
+            while (!slotTimeSettings.trainingDaysOfWeek().contains(currentDate.getDayOfWeek()) || isHoliday(currentDate, holidays)) {
+                currentDate = currentDate.plusDays(1);
+            }
+
+            Lesson lesson = existingLessonsMap.getOrDefault(topic.getUnits().get(i).getId(), new Lesson());
+            lesson.setCalendarTopic(calendarTopic);
+            lesson.setUnit(topic.getUnits().get(i));
+            lesson.setStartDate(currentDate);
+            lesson.setStartTime(slotTimeSettings.startTime());
+            lesson.setEndTime(slotTimeSettings.endTime());
+
+            LocalDate endDate = currentDate;
+            for (int d = 1; d < daysPerUnit; d++) {
+                do {
+                    endDate = endDate.plusDays(1);
+                } while (!slotTimeSettings.trainingDaysOfWeek().contains(endDate.getDayOfWeek()) || isHoliday(endDate, holidays));
+            }
+
+            lesson.setEndDate(endDate);
+
+            if (!existingLessonsMap.containsKey(topic.getUnits().get(i).getId())) {
+                if (calendarTopic.getLessons() == null) {
+                    calendarTopic.setLessons(new ArrayList<>());
+                }
+                calendarTopic.getLessons().add(lesson);
+            }
+
+            currentDate = endDate.plusDays(1);
+        }
+        calendarTopic.setStartDate(topicStartDate);
+        calendarTopic.setEndDate(currentDate.minusDays(1));
+
+        calendarTopic.getLessons().sort(Comparator.comparing(Lesson::getStartDate)); // Sort lessons by start date
+
+        return currentDate;
+    }
+
+    private Group getGroupById(Integer groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find any group matching with id provided."));
+    }
+
+    private LocalDateTime parseStartDate(String actualStartDate) {
+        try {
+            return LocalDateTime.parse(actualStartDate);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Please use ISO-8601 format.", e);
+        }
+    }
+
+    private SlotTimeSuggestion getSlotTimeSuggestionById(Integer slotTimeSuggestionId) {
+        return slotTimeSuggestionRepository.findById(slotTimeSuggestionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find any slot time suggestion with id matching with id provided."));
+    }
+
+    private Trainer getTrainerById(Integer trainerId) {
+        return trainerRepository.findById(trainerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find any trainer associated with id provided."));
+    }
+
+    private Topic getTopicById(Integer topicId) {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find any topic associated with id provided."));
     }
 
     private boolean isHoliday(LocalDate date, List<Holiday> holidays) {
-        return holidays.stream().anyMatch(holiday -> !holiday.getStatus().equals(Status.INACTIVE) && (date.isEqual(holiday.getStartDate()) || (date.isAfter(holiday.getStartDate()) && date.isBefore(holiday.getEndDate()))));
+        return holidays.stream().anyMatch(holiday -> !holiday.getStatus().equals(Status.INACTIVE) &&
+                (date.isEqual(holiday.getStartDate()) || (date.isAfter(holiday.getStartDate()) && date.isBefore(holiday.getEndDate()))));
     }
 
     private SlotTimeSettings parseSlotTimeSuggestions(String slotTimeSuggestions) {
@@ -155,7 +229,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
         } catch (IllegalArgumentException e) {
             logger.error("Error parsing slotTimeSuggestions: {}", e.getMessage());
-            throw e; // Re-throw for the calling method to handle
+            throw e;
         }
     }
 
@@ -183,5 +257,4 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         }
         return DayOfWeek.of(dayOfWeekInt - 1);
     }
-
 }

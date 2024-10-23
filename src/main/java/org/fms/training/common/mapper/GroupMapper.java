@@ -32,10 +32,10 @@ public interface GroupMapper {
     @Mapping(source = "keyProgram.keyProgramName", target = "keyProgramName")
     @Mapping(source = "userGroups", target = "assignedUserIds", qualifiedByName = "toUserId")
     @Mapping(source = "userGroups", target = "assignedUserAccounts", qualifiedByName = "toAccount")
-    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MM-YYYY")
     ReadGroupDTO toReadGroupDTO(Group group);
 
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
@@ -45,10 +45,10 @@ public interface GroupMapper {
     @Mapping(source = "site.siteName", target = "siteName")
     @Mapping(source = "location.locationName", target = "locationName")
     @Mapping(source = "userGroups", target = "classAdminAccount")
-    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MMM-YYYY")
-    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MMM-YYYY")
+    @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MM-YYYY")
     ListGroupDTO toListGroupDTO(Group group);
 
     @Mapping(target = "trainingProgram", source = "trainingProgramId")
