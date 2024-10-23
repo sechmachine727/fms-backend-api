@@ -27,7 +27,7 @@ security:
 server:
   compression:
     enabled: true
-    min-response-size: 25KB
+    min-response-size: 50KB
   port: 8443
   ssl:
     enabled: true
