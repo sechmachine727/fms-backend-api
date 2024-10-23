@@ -47,5 +47,5 @@ jobs:
 
       - name: Recreate container with Portainer webhook
         run: |
-          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/cf537211-d7cb-486c-9228-5a845e31097c
+          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/cf537211-d7cb-486c-9228-5a845e31097c
           echo "Service updated"
