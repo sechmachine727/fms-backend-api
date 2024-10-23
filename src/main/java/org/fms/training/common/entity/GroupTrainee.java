@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.common.converter.TraineeGroupStatusTypeConverter;
 import org.fms.training.common.enums.Status;
+import org.fms.training.common.enums.TraineeGroupStatusType;
+import org.fms.training.common.enums.TrainingProgramStatus;
 
 import java.time.LocalDateTime;
 
@@ -40,7 +42,7 @@ public class GroupTrainee {
 
     @Convert(converter = TraineeGroupStatusTypeConverter.class)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private TraineeGroupStatusType status;
 
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;

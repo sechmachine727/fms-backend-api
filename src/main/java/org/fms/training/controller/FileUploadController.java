@@ -3,7 +3,8 @@ package org.fms.training.controller;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.fms.training.common.constant.Authorization;
-import org.fms.training.service.ImportService;
+import org.fms.training.service.TopicImportService;
+import org.fms.training.service.TraineeImportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,32 @@ import java.io.InputStream;
 @RequestMapping("/api/import")
 public class FileUploadController {
 
-    private final ImportService importService;
+    private final TopicImportService topicImportService;
+    private final TraineeImportService traineeImportService;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/topics", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("confirm") boolean confirmUpdate) {
         try (InputStream inputStream = file.getInputStream()) {
-            importService.importDataFromStream(inputStream, confirmUpdate);
+            topicImportService.importDataFromStream(inputStream, confirmUpdate);
             return ResponseEntity.ok("File imported successfully.");
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to import file: " + e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/trainees", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> importTrainees(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("groupId") Integer groupId){
+        try (InputStream inputStream = file.getInputStream()) {
+            traineeImportService.importTraineesFromExcel(inputStream, groupId);
+            return ResponseEntity.ok("Trainees imported successfully.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to import trainees: " + e.getMessage());
         }
     }
 
