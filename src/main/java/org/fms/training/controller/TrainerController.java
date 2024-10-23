@@ -5,6 +5,7 @@ import org.fms.training.common.dto.trainerdto.ListTrainerDTO;
 import org.fms.training.common.dto.trainerdto.ReadTrainerDTO;
 import org.fms.training.common.dto.trainerdto.SaveTrainerDTO;
 import org.fms.training.service.TrainerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class TrainerController {
     @PostMapping
     public ResponseEntity<String> addTrainer(@RequestBody SaveTrainerDTO saveTrainerDTO) {
         trainerService.addTrainer(saveTrainerDTO);
-        return ResponseEntity.ok("Add trainer success");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Add trainer success");
     }
 
     @PutMapping("/{id}")

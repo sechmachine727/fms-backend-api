@@ -5,6 +5,7 @@ import org.fms.training.common.dto.traineedto.ListTraineeDTO;
 import org.fms.training.common.dto.traineedto.ReadTraineeDTO;
 import org.fms.training.common.dto.traineedto.SaveTraineeDTO;
 import org.fms.training.service.TraineeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class TraineeController {
     @PostMapping
     public ResponseEntity<String> addTrainee(@RequestBody SaveTraineeDTO saveTraineeDTO) {
         traineeService.addTrainee(saveTraineeDTO);
-        return ResponseEntity.ok("Add trainee success");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Add trainee success");
     }
 
     @PutMapping("/{id}")

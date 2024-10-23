@@ -7,6 +7,7 @@ import org.fms.training.common.dto.groupdto.ListGroupDTO;
 import org.fms.training.common.dto.groupdto.ReadGroupDTO;
 import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.service.GroupService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<String> createGroup(@RequestBody SaveGroupDTO saveGroupDTO) {
         groupService.createGroup(saveGroupDTO);
-        return ResponseEntity.ok("Create group success");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Create group success");
     }
 
     @RolesAllowed({Authorization.GROUP_ADMIN})
