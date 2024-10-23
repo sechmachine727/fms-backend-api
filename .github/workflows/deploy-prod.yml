@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java
-        run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $GITHUB_ENV
+        run: echo "JAVA_HOME=/usr/lib/jvm/java-17-graalvm-ee" >> $GITHUB_ENV
         shell: bash
 
       - name: Verify Java version
@@ -47,5 +47,5 @@ jobs:
 
       - name: Recreate container with Portainer webhook
         run: |
-          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/8bcfcb79-7e07-4071-a2de-8a4357f70610
-          echo "Container recreated"
+          curl -X POST https://archlinux.tailcfca2c.ts.net:9443/api/webhooks/cf537211-d7cb-486c-9228-5a845e31097c
+          echo "Service updated"

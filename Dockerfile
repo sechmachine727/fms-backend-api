@@ -1,4 +1,4 @@
-FROM container-registry.oracle.com/graalvm/jdk:23.0.1
+FROM eclipse-temurin:23_37-jre-alpine
 
 # Set the working directory
 WORKDIR /app
