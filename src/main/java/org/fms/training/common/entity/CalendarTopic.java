@@ -35,11 +35,7 @@ public class CalendarTopic {
     private Topic topic;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL)
-    private List<CalendarTopicSlotTime> calendarTopicSlotTimes;
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
     @JsonBackReference

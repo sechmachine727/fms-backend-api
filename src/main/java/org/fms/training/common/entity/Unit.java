@@ -29,7 +29,7 @@ public class Unit {
     @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UnitSection> unitSections = new ArrayList<>();
 
-    @OneToMany(mappedBy = "unit")
+    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
     @ManyToOne

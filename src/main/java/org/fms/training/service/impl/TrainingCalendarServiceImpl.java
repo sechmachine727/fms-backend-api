@@ -45,7 +45,10 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
         List<CalendarTopic> calendarTopics = calendarTopicRepository.findAllByGroup(group);
         calendarTopics.sort(Comparator.comparing(CalendarTopic::getStartDate)); // Sort by start date
         return calendarTopics.stream()
-                .map(calendarTopicMapper::toCalendarTopicDTO)
+                .map(calendarTopic -> {
+                    calendarTopic.getLessons().sort(Comparator.comparing(Lesson::getStartDate)); // Sort lessons by start date
+                    return calendarTopicMapper.toCalendarTopicDTO(calendarTopic);
+                })
                 .toList();
     }
 
@@ -56,7 +59,7 @@ public class TrainingCalendarServiceImpl implements TrainingCalendarService {
 
     @Override
     public List<TrainerDTO> getTrainers() {
-        return trainerRepository.getTrainers().stream()
+        return trainerRepository.getActiveTrainers().stream()
                 .map(trainer -> new TrainerDTO(trainer.getId(), trainer.getUser().getName()))
                 .toList();
     }

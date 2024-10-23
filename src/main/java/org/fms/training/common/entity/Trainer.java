@@ -42,7 +42,7 @@ public class Trainer {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "trainer")
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<CalendarTopic> calendarTopics;
 }
