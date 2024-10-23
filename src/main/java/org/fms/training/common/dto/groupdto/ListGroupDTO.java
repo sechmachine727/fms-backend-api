@@ -2,6 +2,7 @@ package org.fms.training.common.dto.groupdto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fms.training.common.dto.groupdto.external.AssignedUserDTO;
 import org.fms.training.common.enums.GroupStatus;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ListGroupDTO {
     private String siteName;
     private String locationName;
     private String note;
-    private List<String> classAdminAccount;
+    private List<AssignedUserDTO> assignedUsers;
     private String expectedStartDate;
     private String expectedEndDate;
     private String actualStartDate;

@@ -1,4 +1,4 @@
-package org.fms.training.common.mapper;
+package org.fms.training.common.mapper.groupmapper;
 
 import org.fms.training.common.dto.groupdto.ListGroupDTO;
 import org.fms.training.common.dto.groupdto.ReadGroupDTO;
@@ -6,36 +6,15 @@ import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.common.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-import java.util.List;
-import java.util.Objects;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {GroupTrainingProgramMapper.class, AssignedUserMapper.class})
 public interface GroupMapper {
-    @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
-    @Mapping(source = "trainingProgram.trainingProgramName", target = "trainingProgramName")
-    @Mapping(source = "technicalGroup.code", target = "technicalGroupCode")
-    @Mapping(source = "site.id", target = "siteId")
-    @Mapping(source = "site.siteName", target = "siteName")
-    @Mapping(source = "location.id", target = "locationId")
-    @Mapping(source = "location.locationName", target = "locationName")
-    @Mapping(source = "deliveryType.id", target = "deliveryTypeId")
-    @Mapping(source = "deliveryType.deliveryTypeName", target = "deliveryTypeName")
-    @Mapping(source = "traineeType.id", target = "traineeTypeId")
-    @Mapping(source = "traineeType.traineeTypeName", target = "traineeTypeName")
-    @Mapping(source = "scope.id", target = "scopeId")
-    @Mapping(source = "scope.scopeName", target = "scopeName")
-    @Mapping(source = "formatType.id", target = "formatTypeId")
-    @Mapping(source = "formatType.formatTypeName", target = "formatTypeName")
-    @Mapping(source = "keyProgram.id", target = "keyProgramId")
-    @Mapping(source = "keyProgram.keyProgramName", target = "keyProgramName")
-    @Mapping(source = "userGroups", target = "assignedUserIds", qualifiedByName = "toUserId")
-    @Mapping(source = "userGroups", target = "assignedUserAccounts", qualifiedByName = "toAccount")
     @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "trainingProgram", target = "trainingProgram")
+    @Mapping(source = "userGroups", target = "assignedUsers")
     ReadGroupDTO toReadGroupDTO(Group group);
 
     @Mapping(source = "trainingProgram.id", target = "trainingProgramId")
@@ -44,11 +23,11 @@ public interface GroupMapper {
     @Mapping(source = "traineeType.traineeTypeName", target = "traineeTypeName")
     @Mapping(source = "site.siteName", target = "siteName")
     @Mapping(source = "location.locationName", target = "locationName")
-    @Mapping(source = "userGroups", target = "classAdminAccount")
     @Mapping(source = "expectedStartDate", target = "expectedStartDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "expectedEndDate", target = "expectedEndDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "actualStartDate", target = "actualStartDate", dateFormat = "dd-MM-YYYY")
     @Mapping(source = "actualEndDate", target = "actualEndDate", dateFormat = "dd-MM-YYYY")
+    @Mapping(source = "userGroups", target = "assignedUsers")
     ListGroupDTO toListGroupDTO(Group group);
 
     @Mapping(target = "trainingProgram", source = "trainingProgramId")
@@ -60,34 +39,9 @@ public interface GroupMapper {
     @Mapping(target = "scope", source = "scopeId")
     @Mapping(target = "formatType", source = "formatTypeId")
     @Mapping(target = "keyProgram", source = "keyProgramId")
+    @Mapping(target = "expectedStartDate", source = "expectedStartDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @Mapping(target = "expectedEndDate", source = "expectedEndDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     Group toGroupEntity(SaveGroupDTO saveGroupDTO);
-
-    @Named("toUserId")
-    default List<Integer> convertToUserId(List<UserGroup> userGroups) {
-        return userGroups.stream()
-                .map(userGroup -> userGroup.getUser().getId())
-                .toList();
-    }
-
-    @Named("toAccount")
-    default String convertToAccount(UserGroup userGroup) {
-        return userGroup.getUser().getAccount();
-    }
-
-    default List<String> convertToClassAdminAccount(List<UserGroup> userGroups) {
-        return userGroups.stream()
-                .map(userGroup -> {
-                    User user = userGroup.getUser();
-                    for (UserRole role : user.getUserRoles()) {
-                        if (role.getRole().getRoleName().contains("GROUP_ADMIN")) {
-                            return user.getAccount();
-                        }
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .toList();
-    }
 
     default TrainingProgram mapTrainingProgram(Integer id) {
         if (id == null) {

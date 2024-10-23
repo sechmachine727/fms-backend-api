@@ -4,7 +4,7 @@ import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.common.entity.Group;
 import org.fms.training.common.entity.User;
 import org.fms.training.common.enums.GroupStatus;
-import org.fms.training.common.mapper.GroupMapper;
+import org.fms.training.common.mapper.groupmapper.GroupMapper;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
 import org.fms.training.repository.GroupRepository;
