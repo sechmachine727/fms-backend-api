@@ -7,7 +7,7 @@ WORKDIR /app
 COPY target/fms-api-0.0.1-SNAPSHOT.jar app.jar
 
 # Copy the templates folder into the container
-COPY src/main/resources/templates /app
+COPY src/main/resources/templates /app/templates
 
 # Expose the port your app runs on
 EXPOSE 8443
