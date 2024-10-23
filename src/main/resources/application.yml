@@ -28,13 +28,13 @@ server:
   compression:
     enabled: true
     min-response-size: 50KB
-  port: 8443
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-password: moidaden
-    key-password: moidaden
-    key-store-type: PKCS12
-    key-alias: fms-backend-api
-    protocol: TLS
-    enabled-protocols: TLSv1.2
+  port: 8080
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore.p12
+#    key-store-password: moidaden
+#    key-password: moidaden
+#    key-store-type: PKCS12
+#    key-alias: fms-backend-api
+#    protocol: TLS
+#    enabled-protocols: TLSv1.2
