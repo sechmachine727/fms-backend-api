@@ -60,7 +60,7 @@ public class User {
     private List<UserRole> userRoles;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<UserGroup> userGroups;
 }

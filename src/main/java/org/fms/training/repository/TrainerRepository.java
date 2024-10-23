@@ -15,5 +15,11 @@ public interface TrainerRepository extends JpaRepository<Trainer, Integer> {
             "JOIN Role r ON ur.Role_Id = r.Role_Id " +
             "WHERE u.Status = 'Active' " +
             "AND r.Role_Name = 'TRAINER'", nativeQuery = true)
-    List<Trainer> getTrainers();
+    List<Trainer> getActiveTrainers();
+
+    @Query(value = "SELECT t.* FROM Trainer t " +
+            "JOIN Fms_User u ON t.User_Id = u.User_Id ORDER BY u.Account", nativeQuery = true)
+    List<Trainer> getAllByOrderByUserAccountAsc();
+
+    boolean existsByPhone(String phone);
 }
