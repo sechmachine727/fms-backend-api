@@ -38,15 +38,17 @@ public class TraineeImportServiceImpl implements TraineeImportService {
                 throw new IllegalArgumentException("Sheet 'Trainees' not found.");
             }
 
+            Group group = groupRepository.findById(groupId)
+                    .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
+
             // Đọc từng dòng trong file Excel (bỏ qua dòng tiêu đề)
             for (int rowIndex = 2; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
                 if (row == null || isRowEmpty(row)) {
-                    // Nếu dòng rỗng, bỏ qua và tiếp tục
-                    continue;
+                    continue; // Bỏ qua các dòng rỗng
                 }
 
-                // Lấy thông tin của trainee và kiểm tra tính hợp lệ
+                // Lấy thông tin của trainee
                 String name = getCellValueAsString(row.getCell(0));
                 LocalDate dob = getCellValueAsDate(row.getCell(1));
                 String genderStr = getCellValueAsString(row.getCell(2));
@@ -61,49 +63,101 @@ public class TraineeImportServiceImpl implements TraineeImportService {
                 // Kiểm tra tính hợp lệ
                 validateTrainee(name, dob, gender, gpa, phone, nationalId, language, address, email);
 
-                // Tạo Trainee và lưu vào DB
-                Trainee trainee = new Trainee();
-                trainee.setName(name);
-                trainee.setDob(dob);
-                trainee.setGender(gender);
-                trainee.setGpa(gpa);
-                trainee.setPhone(phone);
-                trainee.setNationalId(nationalId);
-                trainee.setLanguage(language);
-                trainee.setUniversity(getCellValueAsString(row.getCell(7)));
-                trainee.setUniversityGraduationDate(getCellValueAsDate(row.getCell(8)));
-                trainee.setAddress(address);
-                trainee.setEmail(email);
+                // Kiểm tra email trong cùng group
+                GroupTrainee existingGroupTrainee = groupTraineeRepository.findByTraineeEmailAndGroupId(email, groupId);
+                if (existingGroupTrainee != null) {
+                    // Nếu email đã tồn tại trong nhóm, update thông tin Trainee
+                    Trainee existingTrainee = existingGroupTrainee.getTrainee();
+                    updateTrainee(existingTrainee, name, dob, gender, gpa, phone, nationalId, language, address, email);
+                    traineeRepository.save(existingTrainee);
 
-                Trainee savedTrainee = traineeRepository.save(trainee);
+                    updateEntryInformation(existingTrainee, row);
+                } else {
+                    // Kiểm tra trùng nationalId và phone trên toàn bộ DB
+                    checkDuplicateNationalIdAndPhone(nationalId, phone);
 
-                // Lưu Entry Information liên kết với trainee
-                EntryInformation entryInformation = new EntryInformation();
-                entryInformation.setTrainee(savedTrainee);
-                entryInformation.setToeicScore(getCellValueAsInteger(row.getCell(11)));
-                entryInformation.setEnglishCommunicationSkill(getCellValueAsString(row.getCell(12)));
-                entryInformation.setTechnicalSkill(getCellValueAsString(row.getCell(13)));
-                entryInformation.setInterviewScore(getCellValueAsDouble(row.getCell(14)));
-                entryInformation.setInterviewRank(getCellValueAsString(row.getCell(15)));
+                    // Nếu không tồn tại email trong group, thêm mới Trainee
+                    Trainee newTrainee = new Trainee();
+                    newTrainee.setName(name);
+                    newTrainee.setDob(dob);
+                    newTrainee.setGender(gender);
+                    newTrainee.setGpa(gpa);
+                    newTrainee.setPhone(phone);
+                    newTrainee.setNationalId(nationalId);
+                    newTrainee.setLanguage(language);
+                    newTrainee.setUniversity(getCellValueAsString(row.getCell(7)));
+                    newTrainee.setUniversityGraduationDate(getCellValueAsDate(row.getCell(8)));
+                    newTrainee.setAddress(address);
+                    newTrainee.setEmail(email);
 
-                entryInformationRepository.save(entryInformation);
+                    Trainee savedTrainee = traineeRepository.save(newTrainee);
+                    saveEntryInformation(savedTrainee, row);
 
-                // Tạo GroupTrainee và lưu vào DB
-                Group group = groupRepository.findById(groupId)
-                        .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
-
-                GroupTrainee groupTrainee = new GroupTrainee();
-                groupTrainee.setTrainee(savedTrainee);
-                groupTrainee.setGroup(group);
-                groupTrainee.setStatus(TraineeGroupStatusType.ACTIVE);
-                groupTrainee.setNote(getCellValueAsString(row.getCell(16)));
-                groupTraineeRepository.save(groupTrainee);
+                    // Tạo mới GroupTrainee và lưu vào DB
+                    GroupTrainee newGroupTrainee = new GroupTrainee();
+                    newGroupTrainee.setTrainee(savedTrainee);
+                    newGroupTrainee.setGroup(group);
+                    newGroupTrainee.setStatus(TraineeGroupStatusType.ACTIVE); // Đặt trạng thái mặc định
+                    newGroupTrainee.setNote(getCellValueAsString(row.getCell(16)));
+                    groupTraineeRepository.save(newGroupTrainee);
+                }
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to import trainees from Excel: "+ e.getMessage(), e);
+            throw new RuntimeException("Failed to import trainees from Excel: " + e.getMessage(), e);
         }
     }
+
+    // Kiểm tra trùng nationalId và phone trong toàn bộ DB
+    private void checkDuplicateNationalIdAndPhone(String nationalId, String phone) {
+        if (traineeRepository.existsByNationalId(nationalId)) {
+            throw new IllegalStateException("National ID already exists: " + nationalId);
+        }
+        if (traineeRepository.existsByPhone(phone)) {
+            throw new IllegalStateException("Phone number already exists: " + phone);
+        }
+    }
+
+    // Cập nhật thông tin Trainee nếu đã tồn tại
+    private void updateTrainee(Trainee trainee, String name, LocalDate dob, Gender gender, Double gpa, String phone, String nationalId, String language, String address, String email) {
+        trainee.setName(name);
+        trainee.setDob(dob);
+        trainee.setGender(gender);
+        trainee.setGpa(gpa);
+        trainee.setPhone(phone);
+        trainee.setNationalId(nationalId);
+        trainee.setLanguage(language);
+        trainee.setAddress(address);
+        trainee.setEmail(email);
+    }
+
+    // Cập nhật hoặc lưu Entry Information
+    private void updateEntryInformation(Trainee trainee, Row row) {
+        EntryInformation entryInformation = trainee.getEntryInformation();
+        if (entryInformation == null) {
+            entryInformation = new EntryInformation();
+            entryInformation.setTrainee(trainee);
+        }
+        entryInformation.setToeicScore(getCellValueAsInteger(row.getCell(11)));
+        entryInformation.setEnglishCommunicationSkill(getCellValueAsString(row.getCell(12)));
+        entryInformation.setTechnicalSkill(getCellValueAsString(row.getCell(13)));
+        entryInformation.setInterviewScore(getCellValueAsDouble(row.getCell(14)));
+        entryInformation.setInterviewRank(getCellValueAsString(row.getCell(15)));
+        entryInformationRepository.save(entryInformation);
+    }
+
+    private void saveEntryInformation(Trainee trainee, Row row) {
+        EntryInformation entryInformation = new EntryInformation();
+        entryInformation.setTrainee(trainee);
+        entryInformation.setToeicScore(getCellValueAsInteger(row.getCell(11)));
+        entryInformation.setEnglishCommunicationSkill(getCellValueAsString(row.getCell(12)));
+        entryInformation.setTechnicalSkill(getCellValueAsString(row.getCell(13)));
+        entryInformation.setInterviewScore(getCellValueAsDouble(row.getCell(14)));
+        entryInformation.setInterviewRank(getCellValueAsString(row.getCell(15)));
+        entryInformationRepository.save(entryInformation);
+    }
+
+
 
     private void validateTrainee(String name, LocalDate dob, Gender gender, Double gpa, String phone, String nationalId, String language, String address, String email) {
         // Name validation
