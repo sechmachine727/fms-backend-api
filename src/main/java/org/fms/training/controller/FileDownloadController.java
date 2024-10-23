@@ -34,4 +34,18 @@ public class FileDownloadController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(fileInputStream));
     }
+
+    @GetMapping("/download-trainee-template")
+    public ResponseEntity<InputStreamResource> downloadTraineeTemplate() throws IOException {
+        Path filePath = Paths.get("templates/Template_Import_Trainee.xlsx");
+        ByteArrayInputStream fileInputStream = new ByteArrayInputStream(Files.readAllBytes(filePath));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Template_Import_Trainee.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(fileInputStream));
+    }
 }
