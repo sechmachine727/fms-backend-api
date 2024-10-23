@@ -46,23 +46,35 @@ public class TraineeImportServiceImpl implements TraineeImportService {
                     continue;
                 }
 
-                // Lấy thông tin của trainee
-                Trainee trainee = new Trainee();
-                trainee.setName(getCellValueAsString(row.getCell(0)));
-                trainee.setDob(getCellValueAsDate(row.getCell(1)));
+                // Lấy thông tin của trainee và kiểm tra tính hợp lệ
+                String name = getCellValueAsString(row.getCell(0));
+                LocalDate dob = getCellValueAsDate(row.getCell(1));
                 String genderStr = getCellValueAsString(row.getCell(2));
                 Gender gender = convertToGender(genderStr);
+                Double gpa = getCellValueAsDouble(row.getCell(3));
+                String phone = getCellValueAsString(row.getCell(4));
+                String nationalId = getCellValueAsString(row.getCell(5));
+                String language = getCellValueAsString(row.getCell(6));
+                String address = getCellValueAsString(row.getCell(9));
+                String email = getCellValueAsString(row.getCell(10));
+
+                // Kiểm tra tính hợp lệ
+                validateTrainee(name, dob, gender, gpa, phone, nationalId, language, address, email);
+
+                // Tạo Trainee và lưu vào DB
+                Trainee trainee = new Trainee();
+                trainee.setName(name);
+                trainee.setDob(dob);
                 trainee.setGender(gender);
-                trainee.setGpa(getCellValueAsDouble(row.getCell(3)));
-                trainee.setPhone(getCellValueAsString(row.getCell(4)));
-                trainee.setNationalId(getCellValueAsString(row.getCell(5)));
-                trainee.setLanguage(getCellValueAsString(row.getCell(6)));
+                trainee.setGpa(gpa);
+                trainee.setPhone(phone);
+                trainee.setNationalId(nationalId);
+                trainee.setLanguage(language);
                 trainee.setUniversity(getCellValueAsString(row.getCell(7)));
                 trainee.setUniversityGraduationDate(getCellValueAsDate(row.getCell(8)));
-                trainee.setAddress(getCellValueAsString(row.getCell(9)));
-                trainee.setEmail(getCellValueAsString(row.getCell(10)));
+                trainee.setAddress(address);
+                trainee.setEmail(email);
 
-                // Lưu trainee vào DB
                 Trainee savedTrainee = traineeRepository.save(trainee);
 
                 // Lưu Entry Information liên kết với trainee
@@ -74,17 +86,16 @@ public class TraineeImportServiceImpl implements TraineeImportService {
                 entryInformation.setInterviewScore(getCellValueAsDouble(row.getCell(14)));
                 entryInformation.setInterviewRank(getCellValueAsString(row.getCell(15)));
 
-                // Lưu entry information vào DB
                 entryInformationRepository.save(entryInformation);
 
-                // Tạo GroupTrainee liên kết với trainee và groupId
+                // Tạo GroupTrainee và lưu vào DB
                 Group group = groupRepository.findById(groupId)
                         .orElseThrow(() -> new IllegalArgumentException("Group not found with id: " + groupId));
 
                 GroupTrainee groupTrainee = new GroupTrainee();
                 groupTrainee.setTrainee(savedTrainee);
                 groupTrainee.setGroup(group);
-                groupTrainee.setStatus(TraineeGroupStatusType.ACTIVE); // Đặt trạng thái mặc định
+                groupTrainee.setStatus(TraineeGroupStatusType.ACTIVE);
                 groupTrainee.setNote(getCellValueAsString(row.getCell(16)));
                 groupTraineeRepository.save(groupTrainee);
             }
@@ -94,23 +105,65 @@ public class TraineeImportServiceImpl implements TraineeImportService {
         }
     }
 
+    private void validateTrainee(String name, LocalDate dob, Gender gender, Double gpa, String phone, String nationalId, String language, String address, String email) {
+        // Name validation
+        if (name == null || name.isEmpty() || name.length() > 50) {
+            throw new IllegalArgumentException("Invalid name: Name is required and must be less than 50 characters.");
+        }
+
+        // Dob validation
+        if (dob == null) {
+            throw new IllegalArgumentException("Invalid dob: Date of birth is required.");
+        }
+
+        // Gender validation
+        if (gender == null) {
+            throw new IllegalArgumentException("Invalid gender: Gender is required.");
+        }
+
+        // GPA validation
+        if (gpa == null || gpa < 0.0 || gpa > 4.0) {
+            throw new IllegalArgumentException("Invalid GPA: GPA must be between 0.0 and 4.0.");
+        }
+
+        // Phone validation
+        if (phone == null || !phone.matches("\\d{10}")) {
+            throw new IllegalArgumentException("Invalid phone: Phone must be 10 digits.");
+        }
+
+        // National ID validation
+        if (nationalId == null || nationalId.length() != 12) {
+            throw new IllegalArgumentException("Invalid National ID: Must be 12 characters.");
+        }
+
+        // Language validation
+        if (language == null || language.isEmpty()) {
+            throw new IllegalArgumentException("Invalid language: Language is required.");
+        }
+
+        // Address validation
+        if (address == null || address.isEmpty()) {
+            throw new IllegalArgumentException("Invalid address: Address is required.");
+        }
+
+        // Email validation
+        if (email == null || !email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+            throw new IllegalArgumentException("Invalid email: Email format is incorrect.");
+        }
+    }
+
+
     private String getCellValueAsString(Cell cell) {
         if (cell == null) return null;
         return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : String.valueOf(cell.getNumericCellValue());
     }
 
     private LocalDate getCellValueAsDate(Cell cell) {
-        if (cell == null) {
-            return null;
-        }
-
         if (cell.getCellType() == CellType.NUMERIC) {
-            // Excel stores date as numeric type, we need to convert it
             if (DateUtil.isCellDateFormatted(cell)) {
                 return cell.getLocalDateTimeCellValue().toLocalDate();
             }
         } else if (cell.getCellType() == CellType.STRING) {
-            // If the cell is stored as String, we try to parse it
             String dateStr = cell.getStringCellValue();
             try {
                 return LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE); // Format yyyy-MM-dd
@@ -119,7 +172,7 @@ public class TraineeImportServiceImpl implements TraineeImportService {
             }
         }
 
-        return null; // Return null if cell type is not recognized
+        return null;
     }
 
 
@@ -134,9 +187,6 @@ public class TraineeImportServiceImpl implements TraineeImportService {
     }
 
     private Gender convertToGender(String genderStr) {
-        if (genderStr == null || genderStr.isEmpty()) {
-            throw new IllegalStateException("Gender is required");
-        }
         try {
             return Gender.valueOf(genderStr.toUpperCase());
         } catch (IllegalArgumentException e) {
