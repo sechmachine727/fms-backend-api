@@ -26,7 +26,7 @@ public class FileUploadController {
     private final TopicImportService topicImportService;
     private final TraineeImportService traineeImportService;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/topics", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("confirm") boolean confirmUpdate) {
         try (InputStream inputStream = file.getInputStream()) {
             topicImportService.importDataFromStream(inputStream, confirmUpdate);
