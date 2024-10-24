@@ -26,7 +26,7 @@ public interface TrainerRepository extends JpaRepository<Trainer, Integer> {
             "JOIN u.userRoles ur " +
             "JOIN ur.role r " +
             "WHERE r.roleName = 'TRAINER' " +
-            "AND u.id NOT IN (SELECT t.user.id FROM Trainer t)")
+            "AND u.id NOT IN (SELECT t.user.id FROM Trainer t) ORDER BY u.account")
     List<User> getAllUserWithTrainerRoleExcludingHavingTrainerId();
 
     boolean existsByPhone(String phone);
