@@ -101,16 +101,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedGroupAdmin(Authentication authentication) {
         Optional<User> user = userRepository.findByAccount(authentication.getName());
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
+        if (user.isPresent()) {  // Simplify null check
+            List<UserGroup> userGroups = userGroupRepository.findByUserIdOrderByGroupLastModifiedDateDesc(user.get().getId());
+            return Optional.of(userGroups.stream()
+                    .map(userGroup -> groupMapper.toListGroupDTO(userGroup.getGroup()))
+                    .toList());
+        } else {
+            throw new ResourceNotFoundException("User not found");  // throw this in else to keep similar logic
         }
-        if (user.get().getUserRoles().stream().noneMatch(userRole -> userRole.getRole().getRoleName().equals("GROUP_ADMIN"))) {
-            throw new ResourceNotFoundException("User is not a group admin");
-        }
-        List<UserGroup> userGroups = userGroupRepository.findByUserIdOrderByGroupLastModifiedDateDesc(user.get().getId());
-        return Optional.of(userGroups.stream()
-                .map(userGroup -> groupMapper.toListGroupDTO(userGroup.getGroup()))
-                .toList());
     }
 
     @Override

@@ -57,7 +57,7 @@ public class Topic {
     @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
 
-    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "topic", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Unit> units;
 
     @OneToMany(mappedBy = "topic")

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
-    @Query(value = "SELECT * FROM Fms_Group g ORDER BY COALESCE(g.Last_Modified_Date, TIMESTAMP '1999-01-01') DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM Fms_Group g ORDER BY Last_Modified_Date DESC NULLS LAST", nativeQuery = true)
     List<Group> getAllByOrderByLastModifiedDateDesc();
 
     Optional<Group> findByGroupName(String name);

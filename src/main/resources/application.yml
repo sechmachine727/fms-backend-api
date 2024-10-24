@@ -15,7 +15,6 @@ spring:
     jpa:
         hibernate:
             ddl-auto: none
-        show-sql: true
     web:
         resources:
             add-mappings: true

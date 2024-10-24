@@ -26,10 +26,11 @@ public class Unit {
     private Integer unitNumber;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UnitSection> unitSections = new ArrayList<>();
 
-    @OneToMany(mappedBy = "unit", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToMany(mappedBy = "unit", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
     @ManyToOne

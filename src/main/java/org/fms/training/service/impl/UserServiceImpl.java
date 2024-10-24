@@ -26,7 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,22 +55,19 @@ public class UserServiceImpl implements UserService {
         user.setEncryptedPassword(encodedPassword);
         User savedUser = userRepository.save(user);
 
-        List<Role> assignedRoles = new ArrayList<>();
-        if (saveUserDTO.getRoles() != null) {
-            List<UserRole> userRoles = saveUserDTO.getRoles().stream()
-                    .map(roleId -> {
-                        Role role = roleRepository.findById(roleId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Role does not exist " + roleId));
-                        assignedRoles.add(role);
-                        UserRole userRole = new UserRole();
-                        userRole.setUser(savedUser);
-                        userRole.setRole(role);
-                        return userRole;
-                    })
-                    .toList();
-            userRoleRepository.saveAll(userRoles);
-            savedUser.setUserRoles(userRoles);
-        }
+        List<Role> assignedRoles = roleRepository.findAllById(saveUserDTO.getRoles());
+
+        List<UserRole> userRoles = assignedRoles.stream()
+                .map(role -> {
+                    UserRole userRole = new UserRole();
+                    userRole.setUser(savedUser);
+                    userRole.setRole(role);
+                    return userRole;
+                })
+                .toList();
+
+        userRoleRepository.saveAll(userRoles);
+        savedUser.setUserRoles(userRoles);
 
         // Prepare role names as a string
         String rolesString = assignedRoles.stream()
@@ -190,14 +190,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<ReadUserDTO> findById(Integer id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdFetchDepartmentAndRoles(id)
                 .map(userMapper::toReadUserDTO);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByAccount(username)
+        User user = userRepository.findByAccountFetchRoles(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (user.getStatus() == null || user.getStatus() != Status.ACTIVE) {
             throw new UsernameNotFoundException("User is not active");
@@ -259,8 +259,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<ClassAdminDTO> getClassAdminUsers() {
-        List<User> classAdminUsers = userRoleRepository.findUsersByRoleName("GROUP_ADMIN");
-        return classAdminUsers.stream()
+        return userRepository.findAllByRoleName("GROUP_ADMIN")
+                .stream()
                 .map(userMapper::toClassAdminDTO)
                 .toList();
     }
