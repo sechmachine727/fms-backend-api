@@ -2,7 +2,7 @@ package org.fms.training.service.impl;
 
 import org.fms.training.common.dto.technicalgroupdto.ListTechnicalGroupDTO;
 import org.fms.training.common.entity.TechnicalGroup;
-import org.fms.training.common.mapper.TechnicalGroupMapper;
+import org.fms.training.common.mapper.groupmapper.TechnicalGroupMapper;
 import org.fms.training.repository.TechnicalGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,7 @@
 package org.fms.training.common.mapper;
 
 import org.fms.training.common.dto.trainerdto.ListTrainerDTO;
+import org.fms.training.common.dto.trainerdto.ListUserToAddDTO;
 import org.fms.training.common.dto.trainerdto.ReadTrainerDTO;
 import org.fms.training.common.dto.trainerdto.SaveTrainerDTO;
 import org.fms.training.common.entity.Trainer;
@@ -26,6 +27,8 @@ public interface TrainerMapper {
     @Mapping(source = "user.contractType", target = "contractType")
     @Mapping(source = "user.status", target = "trainerStatus")
     ReadTrainerDTO toReadTrainerDTO(Trainer trainer);
+
+    ListUserToAddDTO toListUserToAddDTO(User user);
 
     void updateTrainerEntityFromDTO(SaveTrainerDTO saveTrainerDTO, @MappingTarget Trainer trainer);
 

@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AssignedUserMapper {
-    @Mapping(source = "userGroup.user.id", target = "userId")
-    @Mapping(source = "userGroup.user.account", target = "userAccount")
+    @Mapping(source = "userGroup.user.id", target = "id")
+    @Mapping(source = "userGroup.user.account", target = "account")
     AssignedUserDTO toAssignedUserDTO(UserGroup userGroup);
 }

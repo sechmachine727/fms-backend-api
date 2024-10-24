@@ -11,4 +11,6 @@ import java.util.List;
 public interface UserGroupRepository extends JpaRepository<UserGroup, Integer> {
     @Query("SELECT ug FROM UserGroup ug JOIN ug.group g WHERE ug.user.id = :userId ORDER BY g.lastModifiedDate DESC NULLS LAST")
     List<UserGroup> findByUserIdOrderByGroupLastModifiedDateDesc(Integer userId);
+
+    List<UserGroup> findByGroupId(Integer id);
 }

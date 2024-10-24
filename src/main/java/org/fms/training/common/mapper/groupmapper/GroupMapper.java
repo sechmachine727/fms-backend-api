@@ -6,6 +6,7 @@ import org.fms.training.common.dto.groupdto.SaveGroupDTO;
 import org.fms.training.common.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {GroupTrainingProgramMapper.class, AssignedUserMapper.class})
 public interface GroupMapper {
@@ -42,6 +43,19 @@ public interface GroupMapper {
     @Mapping(target = "expectedStartDate", source = "expectedStartDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     @Mapping(target = "expectedEndDate", source = "expectedEndDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     Group toGroupEntity(SaveGroupDTO saveGroupDTO);
+
+    @Mapping(target = "trainingProgram", source = "trainingProgramId")
+    @Mapping(target = "technicalGroup", source = "technicalGroupId")
+    @Mapping(target = "site", source = "siteId")
+    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "deliveryType", source = "deliveryTypeId")
+    @Mapping(target = "traineeType", source = "traineeTypeId")
+    @Mapping(target = "scope", source = "scopeId")
+    @Mapping(target = "formatType", source = "formatTypeId")
+    @Mapping(target = "keyProgram", source = "keyProgramId")
+    @Mapping(target = "expectedStartDate", source = "expectedStartDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @Mapping(target = "expectedEndDate", source = "expectedEndDate", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    void updateGroupEntity(SaveGroupDTO saveGroupDTO, @MappingTarget Group group);
 
     default TrainingProgram mapTrainingProgram(Integer id) {
         if (id == null) {

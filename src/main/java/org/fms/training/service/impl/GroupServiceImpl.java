@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +100,65 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
+    public void updateGroup(Integer id, SaveGroupDTO saveGroupDTO) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Group does not exist " + id));
+
+        validFieldsCheck(group, saveGroupDTO);
+        groupMapper.updateGroupEntity(saveGroupDTO, group);
+
+        // Save the group first to get its ID
+        Group savedGroup = groupRepository.save(group);
+
+        // Fetch existing user associations
+        List<UserGroup> existingUserGroups = userGroupRepository.findByGroupId(id);
+        Map<Integer, UserGroup> existingUserMap = existingUserGroups.stream()
+                .collect(Collectors.toMap(ug -> ug.getUser().getId(), ug -> ug));
+
+        // Prepare new user associations
+        List<Integer> newUserIds = saveGroupDTO.getAssignedUserIds();
+        List<UserGroup> newUserGroups = newUserIds.stream()
+                .filter(userId -> !existingUserMap.containsKey(userId))
+                .map(userId -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                    UserGroup userGroup = new UserGroup();
+                    userGroup.setGroup(savedGroup);
+                    userGroup.setUser(user);
+                    return userGroup;
+                })
+                .toList();
+
+        // Remove users that are not in the request
+        existingUserGroups.stream()
+                .filter(ug -> !newUserIds.contains(ug.getUser().getId()))
+                .forEach(userGroupRepository::delete);
+
+        // Add new users that are in the request but not in the existing associations
+        userGroupRepository.saveAll(newUserGroups);
+
+        // If the group's status is "ASSIGNED", notify the new users
+        if (group.getStatus() == GroupStatus.ASSIGNED) {
+            // Get new user's email addresses
+            List<String> newUserEmails = newUserGroups.stream()
+                    .map(ug -> ug.getUser().getEmail())
+                    .toList();
+
+            // Send email notification to each new user asynchronously
+            newUserEmails.forEach(email -> {
+                Map<String, Object> emailVariables = Map.of(
+                        "groupName", group.getGroupName(),
+                        "groupCode", group.getGroupCode()
+                );
+
+                // Call the async email service (no try-catch needed, exceptions handled in async method)
+                emailService.sendHtmlEmail(email, "You have been assigned to a new group", "group-assigned-email", emailVariables);
+            });
+        }
+    }
+
+    @Override
     public Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedGroupAdmin(Authentication authentication) {
         Optional<User> user = userRepository.findByAccount(authentication.getName());
         if (user.isPresent()) {  // Simplify null check
@@ -127,6 +187,42 @@ public class GroupServiceImpl implements GroupService {
         Map<String, String> errors = new HashMap<>();
 
         if (groupRepository.existsByGroupCode(saveGroupDTO.getGroupCode())) {
+            errors.put("groupCode", "Group code already exists.");
+        }
+
+        // Parse and validate dates
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        try {
+            startDate = LocalDateTime.parse(saveGroupDTO.getExpectedStartDate(), formatter);
+            endDate = LocalDateTime.parse(saveGroupDTO.getExpectedEndDate(), formatter);
+        } catch (DateTimeParseException e) {
+            errors.put("dateFormat", "Invalid date format. Please use yyyy-MM-dd'T'HH:mm:ss.SSS.");
+            throw new ValidationException(errors);
+        }
+
+        // Validate start date is not after end date
+        if (startDate.isAfter(endDate)) {
+            errors.put("dateOrder", "Start date cannot be after end date.");
+        }
+
+        // Validate end date is not in the past
+        if (endDate.isBefore(LocalDateTime.now())) {
+            errors.put("datePast", "End date cannot be in the past.");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+    }
+
+    private void validFieldsCheck(Group group, SaveGroupDTO saveGroupDTO) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (!group.getGroupCode().equals(saveGroupDTO.getGroupCode()) &&
+                groupRepository.existsByGroupCode(saveGroupDTO.getGroupCode())) {
             errors.put("groupCode", "Group code already exists.");
         }
 

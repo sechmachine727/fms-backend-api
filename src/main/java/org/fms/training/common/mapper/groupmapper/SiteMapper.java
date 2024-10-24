@@ -1,4 +1,4 @@
-package org.fms.training.common.mapper;
+package org.fms.training.common.mapper.groupmapper;
 
 import org.fms.training.common.dto.sitedto.SiteDTO;
 import org.fms.training.common.entity.Site;

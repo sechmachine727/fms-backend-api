@@ -2,7 +2,7 @@ package org.fms.training.service.impl;
 
 import org.fms.training.common.dto.sitedto.SiteDTO;
 import org.fms.training.common.entity.Site;
-import org.fms.training.common.mapper.SiteMapper;
+import org.fms.training.common.mapper.groupmapper.SiteMapper;
 import org.fms.training.repository.SiteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

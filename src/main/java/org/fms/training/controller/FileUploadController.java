@@ -41,7 +41,7 @@ public class FileUploadController {
     @PostMapping(value = "/trainees", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importTrainees(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("groupId") Integer groupId){
+            @RequestParam("groupId") Integer groupId) {
         try (InputStream inputStream = file.getInputStream()) {
             traineeImportService.importTraineesFromExcel(inputStream, groupId);
             return ResponseEntity.ok("Trainees imported successfully.");

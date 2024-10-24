@@ -1,6 +1,7 @@
 package org.fms.training.service;
 
 import org.fms.training.common.dto.trainerdto.ListTrainerDTO;
+import org.fms.training.common.dto.trainerdto.ListUserToAddDTO;
 import org.fms.training.common.dto.trainerdto.ReadTrainerDTO;
 import org.fms.training.common.dto.trainerdto.SaveTrainerDTO;
 
@@ -13,6 +14,8 @@ public interface TrainerService {
     void updateTrainer(Integer id, SaveTrainerDTO saveTrainerDTO);
 
     List<ListTrainerDTO> getAllTrainers();
+
+    List<ListUserToAddDTO> getAllUserWithTrainerRoleExcludingHavingTrainerId();
 
     Optional<ReadTrainerDTO> getTrainerById(Integer id);
 }

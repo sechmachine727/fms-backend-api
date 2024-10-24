@@ -2,7 +2,7 @@ package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.deliverytypedto.DeliveryTypeDTO;
-import org.fms.training.common.mapper.DeliveryTypeMapper;
+import org.fms.training.common.mapper.groupmapper.DeliveryTypeMapper;
 import org.fms.training.repository.DeliveryTypeRepository;
 import org.fms.training.service.DeliveryTypeService;
 import org.springframework.stereotype.Service;

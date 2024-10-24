@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fms.training.common.converter.TraineeGroupStatusTypeConverter;
-import org.fms.training.common.enums.Status;
 import org.fms.training.common.enums.TraineeGroupStatusType;
-import org.fms.training.common.enums.TrainingProgramStatus;
 
 import java.time.LocalDateTime;
 

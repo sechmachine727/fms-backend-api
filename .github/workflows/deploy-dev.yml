@@ -1,50 +1,50 @@
 name: Deploy Dev Environment
 
 on:
-  push:
-    branches:
-      - development
+    push:
+        branches:
+            - development
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
-    permissions:
-      contents: write
-      packages: write
-      id-token: write
+    build-and-deploy:
+        runs-on: self-hosted
+        permissions:
+            contents: write
+            packages: write
+            id-token: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
 
-      - name: Set up Java
-        run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $GITHUB_ENV
-        shell: bash
+            -   name: Set up Java
+                run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $GITHUB_ENV
+                shell: bash
 
-      - name: Verify Java version
-        run: java -version
+            -   name: Verify Java version
+                run: java -version
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml -DskipTests
+            -   name: Build with Maven
+                run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
 
-      - name: Log into docker
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+            -   name: Log into docker
+                uses: docker/login-action@v3
+                with:
+                    username: ${{ secrets.DOCKERHUB_USERNAME }}
+                    password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: sechmachine/fms:dev
+            -   name: Build and push Docker image
+                id: build-and-push
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    push: true
+                    tags: sechmachine/fms:dev
 
-      - name: Recreate container with Portainer webhook
-        run: |
-          curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/6bcd8368-effd-455f-bf8c-be6262008de4
-          echo "Container recreated"
+            -   name: Recreate container with Portainer webhook
+                run: |
+                    curl -X POST --insecure https://100.100.112.9:9443/api/webhooks/6bcd8368-effd-455f-bf8c-be6262008de4
+                    echo "Container recreated"

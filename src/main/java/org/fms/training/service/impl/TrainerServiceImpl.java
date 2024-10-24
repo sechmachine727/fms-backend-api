@@ -2,13 +2,16 @@ package org.fms.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.trainerdto.ListTrainerDTO;
+import org.fms.training.common.dto.trainerdto.ListUserToAddDTO;
 import org.fms.training.common.dto.trainerdto.ReadTrainerDTO;
 import org.fms.training.common.dto.trainerdto.SaveTrainerDTO;
 import org.fms.training.common.entity.Trainer;
+import org.fms.training.common.entity.User;
 import org.fms.training.common.mapper.TrainerMapper;
 import org.fms.training.exception.ResourceNotFoundException;
 import org.fms.training.exception.ValidationException;
 import org.fms.training.repository.TrainerRepository;
+import org.fms.training.repository.UserRepository;
 import org.fms.training.service.TrainerService;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class TrainerServiceImpl implements TrainerService {
     private final TrainerMapper trainerMapper;
     private final TrainerRepository trainerRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void addTrainer(SaveTrainerDTO saveTrainerDTO) {
@@ -48,6 +52,14 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    public List<ListUserToAddDTO> getAllUserWithTrainerRoleExcludingHavingTrainerId() {
+        List<User> users = trainerRepository.getAllUserWithTrainerRoleExcludingHavingTrainerId();
+        return users.stream()
+                .map(trainerMapper::toListUserToAddDTO)
+                .toList();
+    }
+
+    @Override
     public Optional<ReadTrainerDTO> getTrainerById(Integer id) {
         return trainerRepository.findById(id)
                 .map(trainerMapper::toReadTrainerDTO);
@@ -59,6 +71,13 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainerRepository.existsByPhone(saveTrainerDTO.phone())) {
             errors.put("phone", "Trainer with phone " + saveTrainerDTO.phone() + " already exists");
         }
+        if (trainerRepository.existsByUserId(saveTrainerDTO.userId())) {
+            errors.put("user", "Trainer with user id " + saveTrainerDTO.userId() + " already exists");
+        }
+        if (!userRepository.existsUserByRoleTrainer(saveTrainerDTO.userId())) {
+            errors.put("user", "User with id " + saveTrainerDTO.userId() + " is not a trainer");
+        }
+
 
         if (!errors.isEmpty()) {
             throw new ValidationException(errors);
@@ -70,6 +89,12 @@ public class TrainerServiceImpl implements TrainerService {
 
         if (!trainer.getPhone().equals(saveTrainerDTO.phone()) && trainerRepository.existsByPhone(saveTrainerDTO.phone())) {
             errors.put("phone", "Trainer with phone " + saveTrainerDTO.phone() + " already exists");
+        }
+        if (!trainer.getUser().getId().equals(saveTrainerDTO.userId()) && trainerRepository.existsByUserId(saveTrainerDTO.userId())) {
+            errors.put("user", "Trainer with user id " + saveTrainerDTO.userId() + " already exists");
+        }
+        if (!userRepository.existsUserByRoleTrainer(saveTrainerDTO.userId())) {
+            errors.put("user", "User with id " + saveTrainerDTO.userId() + " is not a trainer");
         }
 
         if (!errors.isEmpty()) {

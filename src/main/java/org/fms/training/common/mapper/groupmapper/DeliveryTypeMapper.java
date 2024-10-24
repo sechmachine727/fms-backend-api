@@ -1,4 +1,4 @@
-package org.fms.training.common.mapper;
+package org.fms.training.common.mapper.groupmapper;
 
 import org.fms.training.common.dto.deliverytypedto.DeliveryTypeDTO;
 import org.fms.training.common.entity.DeliveryType;

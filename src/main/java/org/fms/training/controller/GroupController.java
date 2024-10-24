@@ -58,4 +58,11 @@ public class GroupController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @RolesAllowed({Authorization.DELIVERABLES_MANAGER})
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateGroup(@PathVariable Integer id, @RequestBody SaveGroupDTO saveGroupDTO) {
+        groupService.updateGroup(id, saveGroupDTO);
+        return ResponseEntity.ok("Update group success");
+    }
 }

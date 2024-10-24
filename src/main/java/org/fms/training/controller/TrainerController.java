@@ -2,6 +2,7 @@ package org.fms.training.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fms.training.common.dto.trainerdto.ListTrainerDTO;
+import org.fms.training.common.dto.trainerdto.ListUserToAddDTO;
 import org.fms.training.common.dto.trainerdto.ReadTrainerDTO;
 import org.fms.training.common.dto.trainerdto.SaveTrainerDTO;
 import org.fms.training.service.TrainerService;
@@ -39,5 +40,10 @@ public class TrainerController {
     public ResponseEntity<String> updateTrainer(@PathVariable Integer id, @RequestBody SaveTrainerDTO saveTrainerDTO) {
         trainerService.updateTrainer(id, saveTrainerDTO);
         return ResponseEntity.ok("Update trainer success");
+    }
+
+    @GetMapping("/users-to-add")
+    public ResponseEntity<List<ListUserToAddDTO>> getAllUserWithTrainerRoleExcludingHavingTrainerId() {
+        return ResponseEntity.ok(trainerService.getAllUserWithTrainerRoleExcludingHavingTrainerId());
     }
 }

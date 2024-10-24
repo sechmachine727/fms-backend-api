@@ -158,7 +158,6 @@ public class TraineeImportServiceImpl implements TraineeImportService {
     }
 
 
-
     private void validateTrainee(String name, LocalDate dob, Gender gender, Double gpa, String phone, String nationalId, String language, String address, String email) {
         // Name validation
         if (name == null || name.isEmpty() || name.length() > 50) {

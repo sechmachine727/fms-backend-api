@@ -16,6 +16,8 @@ public interface GroupService {
 
     void createGroup(SaveGroupDTO saveGroupDTO);
 
+    void updateGroup(Integer id, SaveGroupDTO saveGroupDTO);
+
     Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedGroupAdmin(Authentication authentication);
 
     Optional<List<ListGroupDTO>> getAllGroupsByAuthenticatedCreator(Authentication authentication);
