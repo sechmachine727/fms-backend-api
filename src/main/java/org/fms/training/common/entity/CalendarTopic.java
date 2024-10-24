@@ -35,7 +35,7 @@ public class CalendarTopic {
     private Topic topic;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "calendarTopic", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
     @JsonBackReference
