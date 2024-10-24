@@ -4,6 +4,7 @@ import org.fms.training.common.enums.Status;
 
 public record ReadTrainerDTO(
         Integer id,
+        Integer userId,
         String trainerAccount,
         String trainerEmployeeId,
         String trainerName,

@@ -27,6 +27,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u JOIN u.userRoles ur JOIN ur.role r WHERE r.roleName = :roleName")
     List<User> findAllByRoleName(String roleName);
 
-    @Query("SELECT u FROM User u JOIN u.userRoles ur JOIN ur.role r WHERE r.roleName = 'TRAINER' AND u.id = :userId")
-    boolean existsUserByRoleTrainer(Integer userId);
+    @Query("SELECT COUNT(u) < 1 FROM User u JOIN u.userRoles ur JOIN ur.role r WHERE r.roleName = 'TRAINER' AND u.id = :userId")
+    boolean notExistsUserByRoleTrainer(Integer userId);
 }

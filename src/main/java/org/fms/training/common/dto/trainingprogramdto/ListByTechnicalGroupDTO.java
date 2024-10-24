@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListByTechnicalGroupDTO {
     private Integer id;
-    private String trainingProgramNameVersion;
+    private String trainingProgramName;
 }

@@ -74,7 +74,7 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainerRepository.existsByUserId(saveTrainerDTO.userId())) {
             errors.put("user", "Trainer with user id " + saveTrainerDTO.userId() + " already exists");
         }
-        if (!userRepository.existsUserByRoleTrainer(saveTrainerDTO.userId())) {
+        if (userRepository.notExistsUserByRoleTrainer(saveTrainerDTO.userId())) {
             errors.put("user", "User with id " + saveTrainerDTO.userId() + " is not a trainer");
         }
 
@@ -93,7 +93,7 @@ public class TrainerServiceImpl implements TrainerService {
         if (!trainer.getUser().getId().equals(saveTrainerDTO.userId()) && trainerRepository.existsByUserId(saveTrainerDTO.userId())) {
             errors.put("user", "Trainer with user id " + saveTrainerDTO.userId() + " already exists");
         }
-        if (!userRepository.existsUserByRoleTrainer(saveTrainerDTO.userId())) {
+        if (userRepository.notExistsUserByRoleTrainer(saveTrainerDTO.userId())) {
             errors.put("user", "User with id " + saveTrainerDTO.userId() + " is not a trainer");
         }
 

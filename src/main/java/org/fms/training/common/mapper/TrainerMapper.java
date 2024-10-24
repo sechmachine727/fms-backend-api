@@ -13,6 +13,7 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface TrainerMapper {
+    @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.account", target = "trainerAccount")
     @Mapping(source = "user.employeeId", target = "trainerEmployeeId")
     @Mapping(source = "user.name", target = "trainerName")
@@ -20,6 +21,7 @@ public interface TrainerMapper {
     @Mapping(source = "user.status", target = "trainerStatus")
     ListTrainerDTO toListTrainerDTO(Trainer trainer);
 
+    @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.account", target = "trainerAccount")
     @Mapping(source = "user.employeeId", target = "trainerEmployeeId")
     @Mapping(source = "user.name", target = "trainerName")
@@ -28,6 +30,9 @@ public interface TrainerMapper {
     @Mapping(source = "user.status", target = "trainerStatus")
     ReadTrainerDTO toReadTrainerDTO(Trainer trainer);
 
+    @Mapping(source = "user.id", target = "id")
+    @Mapping(source = "user.account", target = "account")
+    @Mapping(source = "user.name", target = "name")
     ListUserToAddDTO toListUserToAddDTO(User user);
 
     void updateTrainerEntityFromDTO(SaveTrainerDTO saveTrainerDTO, @MappingTarget Trainer trainer);
